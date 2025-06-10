@@ -464,18 +464,20 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 	}
 	
 	private void autoHideMenu() {
-		if (layout.getWest().isCollapsible() && !layout.getWest().isOpen())
-		{
-			//using undocumented js api, need to be retested after every version upgrade
-			String id = layout.getWest().getUuid() + "!real";
-			String btn = layout.getWest().getUuid() + "!btn";
-			String script = "zk.show('" + id + "', false);";
-			script += "$e('"+id+"')._isSlide = false;";
-			script += "$e('"+id+"')._lastSize = null;";
-			script += "$e('"+btn+"').style.display = '';";
-			AuScript aus = new AuScript(layout.getWest(), script);
-			Clients.response("autoHideWest", aus);
-		}
+		  West west = layout.getWest();
+		    if (!west.isCollapsible())          // nada que hacer
+		        return;
+
+		    if (west.isOpen()) {                // la región está visible ⇒ colapsarla
+		        west.setOpen(false);            // animación estándar
+		    } else {
+		        // Está colapsada pero «deslizada» (preview). Cierra el slide.
+		        String uuid = west.getUuid();
+		        String js   =
+		            "var w = zk.Widget.$('" + uuid + "');" +
+		            "if (w && w._sliding) { w.slideOut(false); }";
+		        Clients.evalJavaScript(js);     // usa API pública de ZK
+		    }
 	}
 
 	@Override
