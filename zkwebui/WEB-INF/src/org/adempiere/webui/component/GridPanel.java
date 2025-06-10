@@ -113,6 +113,7 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 	private IADTabPanel tabPanel;
 
 	private Keylistener	keyListener;
+	private boolean keyListenersAttached = false;
 	
 	private int currentCol = 0;
 	
@@ -974,19 +975,38 @@ public class GridPanel extends Borderlayout implements EventListener<Event>
 	 * 
 	 */
 	public void addKeyListener() {
-		if(renderer == null)
-			return;
-		if(keyListener == null) { 
-			keyListener = new Keylistener();
-			if (windowPanel != null)
-				windowPanel.getStatusBar().appendChild(keyListener);
-		}
-		if(!((ADTabPanel)tabPanel).isGridView() )
-			keyListener.setCtrlKeys(CNTRL_KEYS);
-		else 
-			keyListener.setCtrlKeys(CNTRL_KEYS+KEYS_MOVE);
-		
-		keyListener.addEventListener(Events.ON_CTRL_KEY, this);
+	    if (renderer == null) {
+	        return;
+	    }
+
+	    // Si el Keylistener no ha sido creado, crear uno nuevo
+	    if (keyListener == null) {
+	        keyListener = new Keylistener();
+	        if (windowPanel != null) {
+	            windowPanel.getStatusBar().appendChild(keyListener);
+	        }
+	    }
+
+	    // Actualizar las combinaciones de teclas según la vista
+	    String keys = ((ADTabPanel) tabPanel).isGridView() ? CNTRL_KEYS + KEYS_MOVE : CNTRL_KEYS;
+	    keyListener.setCtrlKeys(keys);  // Establecer las combinaciones de teclas
+
+	    // Registrar el EventListener solo una vez
+	    if (!keyListenersAttached) {
+	        keyListener.addEventListener(Events.ON_CTRL_KEY, this);  // Registrar el evento ON_CTRL_KEY
+	        keyListenersAttached = true;  // Marcar que el listener ya ha sido agregado
+	    }
+	}
+
+	/** Limpieza cuando el componente se detacha */
+	public void onDetach() {
+	    if (keyListener != null) {
+	        try {
+	            keyListener.detach();
+	        } catch (Exception ignore) {}
+	        keyListener = null;
+	        keyListenersAttached = false;  // Restablecer el estado para permitir agregar el listener nuevamente
+	    }
 	}
 
 	public void removeKeyListener() {
