@@ -229,7 +229,7 @@ span.z-drop-disallow {
 }
 .z-popup .z-popup-cl,
 .z-popup .z-popup-cr {
-	background-image: url(../images/zul/popup/pp-clr.gif);
+	/*background-image: url(../images/zul/popup/pp-clr.gif);*/
 }
 .z-popup .z-popup-cm {
 	background-image: url(../images/zul/popup/pp-cm.gif);
@@ -652,22 +652,22 @@ div.z-listbox-header th.z-list-header-sort-dsc div.z-list-header-cnt {
 }
 
 tr.z-list-item td.z-list-item-focus {
-	background-image: url(../images/zul/common/focusd.png);
+	/*background-image: url(../images/zul/common/focusd.png);*/
 }
 
 tr.z-list-item-focus, div.z-listcell-cnt{
-	background-image: url(../images/zul/common/focusd.png);
+	/*background-image: url(../images/zul/common/focusd.png);*/
 }
 
 tr.z-list-item-seld, div.z-listcell-cnt{
-	background-image: url(../images/zul/common/focusd.png);
+	/*background-image: url(../images/zul/common/focusd.png);*/
 }
 tr.z-list-item-over, div.z-listcell-cnt{
-	background-image: url(../images/zul/common/focusd.png);
+	/*background-image: url(../images/zul/common/focusd.png);*/
 }
 
 tr.z-list-item-over-seld, div.z-listcell-cnt{
-	background-image: url(../images/zul/common/focusd.png);
+	/*background-image: url(../images/zul/common/focusd.png);*/
 }
 
 
@@ -801,7 +801,7 @@ tr.z-list-group{
 	background-image: url(../images/zul/wnd/panel-corner.png);
 }
 .z-panel-icon {
-	background-image : url(../images/zul/wnd/ol-btn.png);
+	/*background-image : url(../images/zul/wnd/ol-btn.png);*/
 }
 <%-- popup.css.dsp - 7 --%>
 .z-popup .z-popup-tl {
@@ -814,7 +814,7 @@ tr.z-list-group{
 	background-image: url(../images/zul/popup/pp-cm.png);
 }
 .z-popup .z-popup-cl {
-	background-image: url(../images/zul/popup/pp-clr.png);
+	/*background-image: url(../images/zul/popup/pp-clr.png);*/
 }
 .z-popup .z-popup-cr {
 	background-image: url(../images/zul/popup/pp-clr.png);
@@ -1183,5 +1183,5 @@ span.z-vfiletree-tee, span.z-vfiletree-last {
 .z-window-overlapped-icon, 
 .z-window-embedded-icon,
 .z-window-popup-icon{
-	background-image : url(../images/zul/wnd/ol-btn.png);
+	/*background-image : url(../images/zul/wnd/ol-btn.png);*/
 }

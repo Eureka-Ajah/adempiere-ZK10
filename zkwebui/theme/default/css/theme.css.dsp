@@ -180,7 +180,7 @@ html,body {
 
 <%-- button --%>
 .action-button {
-	height: 15px;
+	height: 20px;
 	width: 48px;
 	padding: 0px;
 }

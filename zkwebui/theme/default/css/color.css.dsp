@@ -56,7 +56,7 @@
 <%-- End e-Evolution --%>
 
 <%-- OpenUp Ltda. Inicio --%>
-*, .z-label, .z-checkbox {
+.z-label, .z-checkbox {
   font-family: ${WindowFont};
 }
 .mandatory-decorator-text {
@@ -72,8 +72,16 @@
 .desktop-header-font {
   color: #FFFFFF !important;
 }
-.z-tab-seld *, .z-button *, .form-button *, .adwindow-navbtn-sel * {
+.z-tab-seld *, .form-button *, .adwindow-navbtn-sel * {
   color: #ffffff !important;
+}
+
+.z-button-os{
+	color: #ffffff !important;
+	border-radius: 4px !important;
+    border: none !important; 
+    background-color: #1f9bde;
+    cursor: pointer;
 }
 .z-textbox
 , .z-combobox-inp
