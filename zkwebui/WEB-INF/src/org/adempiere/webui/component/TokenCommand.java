@@ -13,10 +13,12 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import java.util.Map;
+
 import org.adempiere.webui.event.TokenEvent;
 import org.zkoss.lang.Objects;
+import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.Command;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
@@ -27,24 +29,32 @@ import org.zkoss.zk.ui.event.Events;
  * @author hengsin
  *
  */
-public class TokenCommand extends Command {
-
-	public TokenCommand(String id, int flags) {
-		super(id, flags);
-	}
+public class TokenCommand implements AuService {
+	private final Component comp;
+	public TokenCommand(Component comp) {
+        this.comp = comp;
+    }
 
 	@Override
-	protected void process(AuRequest request) {
-		final String[] data = request.getData();
+    public boolean service(AuRequest request, boolean everError) {
+        if (!"onToken".equals(request.getCommand())) {
+            return false; 
+        }
 
-		final Component comp = request.getComponent();
-		if (comp == null)
-			throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED, this);
-		
-		if (data == null || data.length < 2)
-			throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] {
-					Objects.toString(data), this });
-		
-		Events.postEvent(new TokenEvent(getId(), comp, data));
-	}
+        Map<String, Object> dataMap = request.getData();
+        if (dataMap == null || !dataMap.containsKey("arg0") || !dataMap.containsKey("arg1")) {
+            throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] {
+                Objects.toString(dataMap), this
+            });
+        }
+
+        // Extraer los datos como arreglo
+        String[] data = new String[] {
+            (String) dataMap.get("arg0"),
+            (String) dataMap.get("arg1")
+        };
+
+        Events.postEvent(new TokenEvent("onToken", comp, data));
+        return true;
+    }
 }

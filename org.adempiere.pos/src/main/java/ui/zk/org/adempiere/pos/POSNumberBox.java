@@ -151,18 +151,17 @@ public class POSNumberBox extends Div
      * 
      * @param value
      */
-    public void setValue(Object value)
-    {
-    	if (value == null)
-    		decimalBox.setValue(null);
-    	else if (value instanceof BigDecimal)
-    		decimalBox.setValue((BigDecimal) value);
-    	else if (value instanceof Number)
-    		decimalBox.setValue(new BigDecimal(((Number)value).doubleValue()));
-    	else
-    		decimalBox.setValue(new BigDecimal(value.toString()));
+    public void setValue(Object value) {
+        if (value == null) {
+            decimalBox.setValue((BigDecimal) null);
+        } else if (value instanceof BigDecimal) {
+            decimalBox.setValue((BigDecimal) value);
+        } else if (value instanceof Number) {
+            decimalBox.setValue(BigDecimal.valueOf(((Number) value).doubleValue()));
+        } else {
+            decimalBox.setValue(new BigDecimal(value.toString()));
+        }
     }
-    
     /**
      * 
      * @return BigDecimal

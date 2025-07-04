@@ -19,6 +19,7 @@ package org.adempiere.webui;
 
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.DrillCommand;
+import org.adempiere.webui.component.GlobalCommandDispatcher;
 import org.adempiere.webui.component.TokenCommand;
 import org.adempiere.webui.component.ZoomCommand;
 import org.adempiere.webui.desktop.DefaultDesktop;
@@ -40,7 +41,6 @@ import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.spin.authentication.services.OpenIDUtil;
 import org.zkforge.keylistener.Keylistener;
-import org.zkoss.zk.au.Command;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
@@ -113,6 +113,7 @@ public class AdempiereWebUI extends Window implements EventListener, IWebClient
 		HttpSession httpSession = (HttpSession) session.getNativeSession();
 		ServerContext.setCurrentInstance(SessionManager.getSessionContext(httpSession.getId()));
 		this.getPage().setTitle(ThemeManager.getBrowserTitle());
+		this.setAuService(new GlobalCommandDispatcher(this));
 		setId(httpSession.getId());
 		langSession = Env.getContext(Env.getCtx(), Env.LANGUAGE);
 		SessionManager.setApplication(httpSession.getId(), this);
@@ -387,13 +388,6 @@ public class AdempiereWebUI extends Window implements EventListener, IWebClient
 
 	}
 
-	//global command
-	static {
-		new ZoomCommand("onZoom", Command.IGNORE_OLD_EQUIV);
-		new DrillCommand("onDrillAcross", Command.IGNORE_OLD_EQUIV);
-		new DrillCommand("onDrillDown", Command.IGNORE_OLD_EQUIV);
-		new TokenCommand(TokenEvent.ON_USER_TOKEN, Command.IGNORE_OLD_EQUIV);
-	}
 
 	@Override
 	public void changeRole(MUser user)

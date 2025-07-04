@@ -83,7 +83,8 @@ public class Checkbox extends org.zkoss.zul.Checkbox
 	 *	Return Editor value
 	 *  @return value
 	 */
-	public Object getValue()
+	
+	public Object getBooleanValue()
 	{
 		return Boolean.valueOf(isSelected());
 	}	//	getValue

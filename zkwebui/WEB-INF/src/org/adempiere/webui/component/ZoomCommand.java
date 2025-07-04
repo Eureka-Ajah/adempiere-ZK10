@@ -13,11 +13,13 @@
  *****************************************************************************/
 package org.adempiere.webui.component;
 
+import java.util.Map;
+
 import org.adempiere.webui.event.ZoomEvent;
 import org.compiere.model.MQuery;
 import org.zkoss.lang.Objects;
+import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.Command;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.UiException;
@@ -28,45 +30,43 @@ import org.zkoss.zk.ui.event.Events;
  * @author hengsin
  *
  */
-public class ZoomCommand extends Command {
+public class ZoomCommand implements AuService {
 
-	public ZoomCommand(String id, int flags) {
-		super(id, flags);
-	}
+	private final Component comp;
 
-	@Override
-	protected void process(AuRequest request) {
-		final String[] data = request.getData();
+    public ZoomCommand(Component comp) {
+        this.comp = comp;
+    }
 
-		final Component comp = request.getComponent();
-		if (comp == null)
-			throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED, this);
-		
-		if (data == null || data.length < 2)
-			throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] {
-					Objects.toString(data), this });
-		
-		String columnName = data[0];
-		String tableName = MQuery.getZoomTableName(columnName);
-		Object code = null; 
-		if (columnName.endsWith("_ID"))
-		{
-			try {
-				code = Integer.parseInt(data[1]);
-			} catch (Exception e) {
-				code = data[1];
-			}
-		}
-		else
-		{
-			code = data[1];
-		}
-		//
-		MQuery query = new MQuery(tableName);
-		query.addRestriction(columnName, MQuery.EQUAL, code);
-		query.setRecordCount(1);
+    @Override
+    public boolean service(AuRequest request, boolean everError) {
+        if (!"onZoom".equals(request.getCommand())) {
+            return false;
+        }
 
-		Events.postEvent(new ZoomEvent(comp, query));
-	}
+        Map<String, Object> data = request.getData();
+        if (data == null || !data.containsKey("columnName") || !data.containsKey("code")) {
+            throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[]{
+                Objects.toString(data), this
+            });
+        }
+
+        String columnName = (String) data.get("columnName");
+        String tableName = MQuery.getZoomTableName(columnName);
+        Object code;
+
+        try {
+            code = (columnName.endsWith("_ID")) ? Integer.parseInt(data.get("code").toString()) : data.get("code");
+        } catch (Exception e) {
+            code = data.get("code");
+        }
+
+        MQuery query = new MQuery(tableName);
+        query.addRestriction(columnName, MQuery.EQUAL, code);
+        query.setRecordCount(1);
+
+        Events.postEvent(new ZoomEvent(comp, query));
+        return true;
+    }
 
 }

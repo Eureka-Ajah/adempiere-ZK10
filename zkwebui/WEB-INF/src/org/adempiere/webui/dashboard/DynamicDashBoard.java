@@ -108,35 +108,34 @@ public class DynamicDashBoard extends DashboardPanel implements EventListener
 	 */
 	private void createView() {
 		Columns columns = new Columns();
-		prepareSelectQuery();//prepares a select query. 
+		prepareSelectQuery(); // prepares a select query.
 
 		int columnsSize = column.length;
 		for (int i1 = 0; i1 < columnsSize; i1++) {
-			if (column[i1] != null) {
-				column[i1].setSort("auto");
-				columns.appendChild(column[i1]);
+			try {
+				if (column[i1] != null) {
+					column[i1].setSort("auto");
+					columns.appendChild(column[i1]);
+				}
+			} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+				logger.log(Level.SEVERE, "Error al crear columna dinámica", e);
 			}
-
 		}
 		grid.appendChild(columns);
 		columns.setSizable(true);
 		vbox.appendChild(grid);
-
-		//vbox.setStyle("overflow:auto");
-
 		grid.appendChild(createRows());
 		grid.setMold("paging");
 		vbox.setVisible(Boolean.TRUE);
 		this.appendChild(vbox);
 
 		if (pageSize <= 0) {
-			grid.setPageSize(MSysConfig.getIntValue( "DASHBOARD_PAGE_SIZE", 5));// default size
+			grid.setPageSize(MSysConfig.getIntValue("DASHBOARD_PAGE_SIZE", 5)); // default size
 		} else {
-
 			grid.setPageSize(pageSize);
 		}
-		//grid.renderAll();
 	}
+
 
 	/**
 	 * 

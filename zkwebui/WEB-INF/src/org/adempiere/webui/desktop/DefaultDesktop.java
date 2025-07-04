@@ -51,12 +51,11 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkex.zul.Borderlayout;
-import org.zkoss.zkex.zul.Center;
-import org.zkoss.zkex.zul.North;
-import org.zkoss.zkex.zul.West;
-import org.zkoss.zkmax.zul.Portalchildren;
-import org.zkoss.zkmax.zul.Portallayout;
+import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Center;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.North;
+import org.zkoss.zul.West;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
@@ -92,8 +91,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 	private Borderlayout layout;
 
-	private Portallayout portalLayout;
-
+	//private Portallayout portalLayout;
+	private Div portalLayout;
 	private DashboardRunnable dashboardRunnable;
 
 	private int noOfNotice;
@@ -191,14 +190,17 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		Tabpanel homeTab = new Tabpanel();
 		windowContainer.addWindow(homeTab, Msg.getMsg(Env.getCtx(), "Home").replaceAll("&", ""), false);
 
-		portalLayout = createPortalLayout();
-		portalLayout.setWidth("100%");
-		portalLayout.setHeight("100%");
-		portalLayout.setStyle("position: absolute; overflow: auto");
+		//portalLayout = createPortalLayout();
+		//portalLayout.setWidth("100%");
+		//portalLayout.setHeight("100%");
+		//portalLayout.setStyle("position: absolute; overflow: auto");
+		//homeTab.appendChild(portalLayout);
+		// Nuevo layout usando Div con flexbox
+		portalLayout = new Div();
+		portalLayout.setStyle("display: flex; flex-wrap: nowrap; width: 100%; height: 100%; overflow: auto; gap: 10px;");
 		homeTab.appendChild(portalLayout);
-
 		// Dashboard content
-		Portalchildren portalChildren = null;
+		//Portalchildren portalChildren = null;
 		int currentColumnNo = 0;
 		int noOfColumns = 0;
 		int width = 0;
@@ -213,6 +215,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 			noOfColumns = getSessionColumnCount();
 			width = noOfColumns <= 0 ? 100 : 100 / noOfColumns;
+			Div currentColumn = null;
 			for (final MDashboardContent dashboardContent : getDashboardContent()) {
 				MRole role = getDefaultRole();
 				if (Boolean.FALSE.equals(role.getDashboardAccess(
@@ -220,15 +223,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				    continue;
 				
 				int columnNo = dashboardContent.getColumnNo();
-				if (portalChildren == null || currentColumnNo != columnNo) {
+				if (currentColumn == null || currentColumnNo != columnNo) {
 					String columnWidth = "" + width;
 					if (size != null && size.length > 0 && size.length > counter && !Util.isEmpty(size[counter], true))
 						columnWidth = size[counter];
-					portalChildren = new Portalchildren();
-					portalLayout.appendChild(portalChildren);
-					portalChildren.setWidth(columnWidth.trim() + "%");
-					portalChildren.setStyle("padding: 5px");
-
+					currentColumn = new Div();
+					currentColumn.setStyle("flex: 0 0 " + columnWidth.trim() + "%; padding: 5px; box-sizing: border-box;");
+					portalLayout.appendChild(currentColumn);
 					currentColumnNo = columnNo;
 					counter++;
 				}
@@ -245,7 +246,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				panel.setCollapsible(dashboardContent.isCollapsible());
 				panel.setOpen(dashboardContent.isOpenByDefault());
 				panel.setBorder("normal");
-				portalChildren.appendChild(panel);
+				currentColumn.appendChild(panel);
 				Panelchildren content = new Panelchildren();
 				panel.appendChild(content);
 				boolean panelEmpty = true;
@@ -400,9 +401,6 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		dashboardRunnable.start();
 	}
 
-    Portallayout createPortalLayout() {
-        return new Portallayout();
-    }
 
     CLogger getLogger() {
         return logger;

@@ -22,11 +22,9 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.adempiere.webui.apps.AEnv;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.render.ComponentRenderer;
-import org.zkoss.zk.ui.render.SmartWriter;
+import org.zkoss.zk.ui.sys.ComponentCtrl;
 import org.zkoss.zul.Combobox;
 
 /**
@@ -39,53 +37,99 @@ import org.zkoss.zul.Combobox;
  * @author hengsin
  * modify default zk layout for combobox
  */
-public class Combobox2Default implements ComponentRenderer {
-	public void render(Component comp, Writer out) throws IOException {
-		final SmartWriter wh = new SmartWriter(out);
-		final Combobox self = (Combobox) comp;
-		final String uuid = self.getUuid();
-		final String zcls = self.getZclass();
-		final Execution exec = Executions.getCurrent();
+@SuppressWarnings("serial")
+public class Combobox2Default extends Combobox implements ComponentCtrl {
 
-		String tableStyle = AEnv.isInternetExplorer() ? "display:inline" : "display:inline-block";
-		String inputAttrs = self.getInnerAttrs();
-		if (inputAttrs.indexOf("style") >= 0) {
-			inputAttrs = inputAttrs.substring(0, inputAttrs.indexOf("style"));
-		}
-		inputAttrs = inputAttrs.trim() + " style='width: 100%'";
-		wh.write("<span id=\"").write(uuid).write("\"")
-			.write(self.getOuterAttrs())
-			.write(" z.type=\"zul.cb.Cmbox\" z.combo=\"true\">")
-			.write("<table border='0' cellspacing='0' cellpadding='0'")
-			.write(" width='").write(self.getWidth()).write("'")
-			.write(" style='"). write(tableStyle).write("'>")
-			.write("<tr style='white-space:nowrap; border:none").write(self.getWidth()).write("'>");
-		if (self.getWidth() != null && self.getWidth().trim().length() > 0 && !"auto".equals(self.getWidth()))
-		{
-			wh.write("<td style='width: 100%; border:none'>");
-		}
-		else
-		{
-			wh.write("<td style='width: auto; border:none'>");
-		}
-		wh.write("<input id=\"")
-			.write(uuid).write("!real\" autocomplete=\"off\"")
-			.write(" class=\"").write(zcls).write("-inp\" ")
-			.write(inputAttrs).write("/></td><td style='width: 17px'><span id=\"")
-			.write(uuid).write("!btn\" class=\"").write(zcls).write("-btn\"");
+    @Override
+    public void redraw(final Writer out) throws IOException {
+        // 1 ► Identificación y clases CSS
+        final String uuid = getUuid();
+        final String zcls = getZclass();
+        final Execution exec = Executions.getCurrent();
 
-		if (!self.isButtonVisible())
-			wh.write(" style=\"display:none\"");
-		else
-			wh.write(" style=\"margin-left:2px\"");
+        // 2 ► Atributos del <span> contenedor
+        final String outerAttrs = buildOuterAttrs();
 
-		wh.write("><img class=\"").write(zcls).write("-img\" onmousedown=\"return false;\"");
-		wh.write(" src=\"").write(exec.encodeURL("~./img/spacer.gif")).write("\"")
-			.write("\"/></span></td></tr></table><div id=\"").write(uuid).write("!pp\" class=\"")
-			.write(zcls).write("-pp\" style=\"display:none\" tabindex=\"-1\">")
-			.write("<table id=\"").write(uuid)
-			.write("!cave\" cellpadding=\"0\" cellspacing=\"0\">")
-			.writeChildren(self)
-			.write("</table></div></span>");
-	}
+        // 3 ► Atributos del <input> interno
+        String inputAttrs = buildInnerAttrs();
+        final int stylePos = inputAttrs.indexOf("style");
+        if (stylePos >= 0)
+            inputAttrs = inputAttrs.substring(0, stylePos); // quita style anterior
+        inputAttrs = inputAttrs.trim() + " style='width:100%'";
+
+        /* ------------------------------------------------------------------
+         * 4 ► BLOQUE DE APERTURA ( <span> + tablas hasta <table id="…!cave"> )
+         * ------------------------------------------------------------------ */
+        final StringBuilder open = new StringBuilder();
+        open.append("<span id=\"").append(uuid).append("\"")
+            .append(outerAttrs)
+            .append(" z.type=\"zul.cb.Cmbox\" z.combo=\"true\">");
+
+        open.append("<table border='0' cellspacing='0' cellpadding='0' style='display:")
+            .append(AEnv.isInternetExplorer() ? "inline" : "inline-block")
+            .append("; width:").append(getWidth() != null ? getWidth() : "auto").append("'>");
+
+        open.append("<tr style='white-space:nowrap;border:none'>");
+        open.append("<td style='width:100%;border:none'>");
+        open.append("<input id=\"").append(uuid).append("!real\" autocomplete='off' class=\"")
+            .append(zcls).append("-inp\" ").append(inputAttrs).append("/></td>");
+
+        open.append("<td style='width:17px'><span id=\"").append(uuid).append("!btn\" class=\"")
+            .append(zcls).append("-btn\"");
+        if (!isButtonVisible())
+            open.append(" style='display:none'");
+        else
+            open.append(" style='margin-left:2px'");
+        open.append(">");
+        open.append("<img class=\"").append(zcls).append("-img\" onmousedown='return false;' src=\"")
+            .append(exec.encodeURL("~./img/spacer.gif")).append("\"/></span></td>");
+        open.append("</tr></table>");
+
+        open.append("<div id=\"").append(uuid).append("!pp\" class=\"").append(zcls)
+            .append("-pp\" style='display:none' tabindex='-1'>");
+        open.append("<table id=\"").append(uuid).append("!cave\" cellpadding='0' cellspacing='0'>");
+
+        // ► Escribir apertura antes de hijos
+        out.write(open.toString());
+
+        /* ------------------------------------------------------------------
+         * 5 ► Renderizar hijos dentro de !cave
+         * ------------------------------------------------------------------ */
+        for (Object child : getChildren()) {
+            if (child instanceof ComponentCtrl) {
+                ((ComponentCtrl) child).redraw(out);
+            }
+        }
+
+        /* ------------------------------------------------------------------
+         * 6 ► Cierre
+         * ------------------------------------------------------------------ */
+        out.write("</table></div></span>");
+    }
+
+    /* =============================================================== */
+    /* ► Utilidades privadas                                           */
+    /* =============================================================== */
+
+    /** Atributos externos del <span>. */
+    private String buildOuterAttrs() {
+        final StringBuilder sb = new StringBuilder();
+        if (getSclass() != null && !getSclass().isEmpty())
+            sb.append(" class=\"").append(getSclass()).append("\"");
+        if (getStyle() != null && !getStyle().isEmpty())
+            sb.append(" style=\"").append(getStyle()).append("\"");
+        return sb.toString();
+    }
+
+    /** Atributos básicos del <input>. */
+    private String buildInnerAttrs() {
+        final StringBuilder sb = new StringBuilder();
+        if (getTooltiptext() != null)
+            sb.append(" title=\"").append(getTooltiptext()).append("\"");
+        if (getTabindex() >= 0)
+            sb.append(" tabindex=\"").append(getTabindex()).append("\"");
+        if (isReadonly())
+            sb.append(" readonly='readonly'");
+        return sb.toString();
+    }
 }

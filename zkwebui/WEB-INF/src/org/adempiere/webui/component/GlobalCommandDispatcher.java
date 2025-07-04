@@ -16,45 +16,41 @@ package org.adempiere.webui.component;
 import java.util.Map;
 
 import org.adempiere.webui.event.DrillEvent;
+import org.adempiere.webui.event.TokenEvent;
+import org.adempiere.webui.event.ZoomEvent;
 import org.compiere.model.MQuery;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Events;
 
 /**
- * 
+ * Command class to handle user authentication token event
  * @author hengsin
  *
  */
-public class DrillCommand implements AuService {
+public class GlobalCommandDispatcher  implements AuService {
 
-	 private final Component comp;
+	private final Component comp;
 
-	    public DrillCommand(Component comp) {
-	        this.comp = comp;
-	    }
+	public GlobalCommandDispatcher(Component comp) {
+		this.comp = comp;
+	}
 
-	    @Override
-	    public boolean service(AuRequest request, boolean everError) {
-	        if (!"onDrill".equals(request.getCommand())) {
-	            return false; // Not our command
-	        }
+	@Override
+	public boolean service(AuRequest request, boolean everError) {
+		String cmd = request.getCommand();
 
-	        Map<String, Object> data = request.getData();
-	        if (data == null || !data.containsKey("columnName") || !data.containsKey("code")) {
-	            throw new UiException("Illegal request data: " + data);
-	        }
-
-	        String columnName = (String) data.get("columnName");
-	        String code = (String) data.get("code");
-	        String tableName = MQuery.getZoomTableName(columnName);
-
-	        MQuery query = new MQuery(tableName);
-	        query.addRestriction(columnName, MQuery.EQUAL, code);
-
-	        Events.postEvent(new DrillEvent("onDrill", comp, query));
-	        return true;
-	    }
+		switch (cmd) {
+			case "onZoom":
+				return new ZoomCommand(comp).service(request, everError);
+			case "onDrillDown":
+			case "onDrillAcross":
+				return new DrillCommand(comp).service(request, everError);
+			case TokenEvent.ON_USER_TOKEN:
+				return new TokenCommand(comp).service(request, everError);
+			default:
+				return false;
+		}
+	}
 }
