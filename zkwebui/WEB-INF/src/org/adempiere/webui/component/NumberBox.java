@@ -28,6 +28,8 @@ import org.compiere.util.Env;
 import org.zkoss.zhtml.Table;
 import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Decimalbox;
@@ -206,168 +208,93 @@ public class NumberBox extends Div
     
     private Popup getCalculatorPopup()
     {
-        Popup popup = new Popup(); 
+    	final Popup p = new Popup();
+		Vbox vbox = new Vbox();
 
-        Vbox vbox = new Vbox();
+		/* Separador decimal local ------------------------------------------ */
+		char sepChar = DisplayType.getNumberFormat(DisplayType.Number, //
+				Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
+		String sepStr = String.valueOf(sepChar);
 
-        char separatorChar = DisplayType.getNumberFormat(DisplayType.Number, Env.getLanguage(Env.getCtx())).getDecimalFormatSymbols().getDecimalSeparator();
-        String separator = Character.toString(separatorChar);
+		/* Textbox de edición ------------------------------------------------ */
+		txtCalc = new Textbox();
+		String txtCalcId = ensureComponentId(txtCalc);           // Garantiza ID
+		String decUuid   = decimalBox.getUuid();                 // UUID del Decimalbox
 
-        txtCalc = new Textbox();
-        txtCalc.setAction("onKeyPress : return calc.validate('" + 
-        		decimalBox.getId() + "','" + txtCalc.getId() 
-                + "'," + integral + "," + (int)separatorChar + ", event);");
-        txtCalc.setMaxlength(250);
-        txtCalc.setCols(30);
-        
-        String txtCalcId = txtCalc.getId();
+		String jsValidate = String.format(
+				"return calc.validate('%s','%s',%s,%d,event);", //
+				decUuid, txtCalcId, integral, (int) sepChar);
+		txtCalc.setWidgetListener("onKeyPress", jsValidate);
+		txtCalc.setMaxlength(250);
+		txtCalc.setCols(30);
+		vbox.appendChild(txtCalc);
 
-        vbox.appendChild(txtCalc);
-        Hbox row1 = new Hbox();
+		/* Fila 1 ----------------------------------------------------------- */
+		Hbox row1 = new Hbox();
+		row1.appendChild(btnCalc("AC", 40, "calc.clearAll('" + txtCalcId + "')"));
+		row1.appendChild(btnCalc("7", 30, "calc.append('" + txtCalcId + "','7')"));
+		row1.appendChild(btnCalc("8", 30, "calc.append('" + txtCalcId + "','8')"));
+		row1.appendChild(btnCalc("9", 30, "calc.append('" + txtCalcId + "','9')"));
+		row1.appendChild(btnCalc("*", 30, "calc.append('" + txtCalcId + "',' * ')"));
+		vbox.appendChild(row1);
 
-        Button btnAC = new Button();
-        btnAC.setWidth("40px");
-        btnAC.setLabel("AC");
-        btnAC.setAction("onClick : calc.clearAll('" + txtCalcId + "')");
+		/* Fila 2 ----------------------------------------------------------- */
+		Hbox row2 = new Hbox();
+		row2.appendChild(btnCalc("C", 40, "calc.clear('" + txtCalcId + "')"));
+		row2.appendChild(btnCalc("4", 30, "calc.append('" + txtCalcId + "','4')"));
+		row2.appendChild(btnCalc("5", 30, "calc.append('" + txtCalcId + "','5')"));
+		row2.appendChild(btnCalc("6", 30, "calc.append('" + txtCalcId + "','6')"));
+		row2.appendChild(btnCalc("/", 30, "calc.append('" + txtCalcId + "',' / ')"));
+		vbox.appendChild(row2);
 
-        Button btn7 = new Button();
-        btn7.setWidth("30px");
-        btn7.setLabel("7");
-        btn7.setAction("onClick : calc.append('" + txtCalcId + "', '7')");
+		/* Fila 3 ----------------------------------------------------------- */
+		Hbox row3 = new Hbox();
+		row3.appendChild(btnCalc("%", 40,
+				"calc.percentage('" + decUuid + "','" + txtCalcId + "','" + sepStr + "')"));
+		row3.appendChild(btnCalc("1", 30, "calc.append('" + txtCalcId + "','1')"));
+		row3.appendChild(btnCalc("2", 30, "calc.append('" + txtCalcId + "','2')"));
+		row3.appendChild(btnCalc("3", 30, "calc.append('" + txtCalcId + "','3')"));
+		row3.appendChild(btnCalc("-", 30, "calc.append('" + txtCalcId + "',' - ')"));
+		vbox.appendChild(row3);
 
-        Button btn8 = new Button();
-        btn8.setWidth("30px");
-        btn8.setLabel("8");
-        btn8.setAction("onClick : calc.append('" + txtCalcId + "', '8')");
+		/* Fila 4 ----------------------------------------------------------- */
+		Hbox row4 = new Hbox();
+		Button dummy = new Button("$");
+		dummy.setWidth("40px");
+		dummy.setDisabled(true);
+		row4.appendChild(dummy);
 
-        Button btn9 = new Button();
-        btn9.setWidth("30px");
-        btn9.setLabel("9");
-        btn9.setAction("onClick : calc.append('" + txtCalcId + "', '9')");
+		Button dot = btnCalc(sepStr, 30, //
+				"calc.append('" + txtCalcId + "','" + sepStr + "')");
+		dot.setDisabled(integral);
+		row4.appendChild(dot);
 
-        Button btnMultiply = new Button();
-        btnMultiply.setWidth("30px");
-        btnMultiply.setLabel("*");
-        btnMultiply.setAction("onClick : calc.append('" + txtCalcId + "', ' * ')");
+		row4.appendChild(btnCalc("0", 30, "calc.append('" + txtCalcId + "','0')"));
+		row4.appendChild(btnCalc("=", 30,
+				"calc.evaluate('" + decUuid + "','" + txtCalcId + "','" + sepStr + "')"));
+		row4.appendChild(btnCalc("+", 30, "calc.append('" + txtCalcId + "',' + ')"));
+		vbox.appendChild(row4);
 
-        row1.appendChild(btnAC);
-        row1.appendChild(btn7);
-        row1.appendChild(btn8);
-        row1.appendChild(btn9);
-        row1.appendChild(btnMultiply);
-
-        Hbox row2 = new Hbox();
-
-        Button btnC = new Button();
-        btnC.setWidth("40px");
-        btnC.setLabel("C");
-        btnC.setAction("onClick : calc.clear('" + txtCalcId + "')");
-        
-        Button btn4 = new Button();
-        btn4.setWidth("30px");
-        btn4.setLabel("4");
-        btn4.setAction("onClick : calc.append('" + txtCalcId + "', '4')");
-
-        Button btn5 = new Button();
-        btn5.setWidth("30px");
-        btn5.setLabel("5");
-        btn5.setAction("onClick : calc.append('" + txtCalcId + "', '5')");
-
-        Button btn6 = new Button();
-        btn6.setWidth("30px");
-        btn6.setLabel("6");
-        btn6.setAction("onClick : calc.append('" + txtCalcId + "', '6')");
-        
-        Button btnDivide = new Button();
-        btnDivide.setWidth("30px");
-        btnDivide.setLabel("/");
-        btnDivide.setAction("onClick : calc.append('" + txtCalcId + "', ' / ')");
-
-        row2.appendChild(btnC);
-        row2.appendChild(btn4);
-        row2.appendChild(btn5);
-        row2.appendChild(btn6);
-        row2.appendChild(btnDivide);
-
-        Hbox row3 = new Hbox();
-
-        Button btnModulo = new Button();
-        btnModulo.setWidth("40px");
-        btnModulo.setLabel("%");
-        btnModulo.setAction("onClick : calc.percentage('" + decimalBox.getId() + "','" 
-                + txtCalcId + "','" + separator + "')");
-        
-        
-        Button btn1 = new Button();
-        btn1.setWidth("30px");
-        btn1.setLabel("1");
-        btn1.setAction("onClick : calc.append('" + txtCalcId + "', '1')");
-
-        Button btn2 = new Button();
-        btn2.setWidth("30px");
-        btn2.setLabel("2");
-        btn2.setAction("onClick : calc.append('" + txtCalcId + "', '2')");
-
-        Button btn3 = new Button();
-        btn3.setWidth("30px");
-        btn3.setLabel("3");
-        btn3.setAction("onClick : calc.append('" + txtCalcId + "', '3')");
-
-        Button btnSubstract = new Button();
-        btnSubstract.setWidth("30px");
-        btnSubstract.setLabel("-");
-        btnSubstract.setAction("onClick : calc.append('" + txtCalcId + "', ' - ')");
-
-        row3.appendChild(btnModulo);
-        row3.appendChild(btn1);
-        row3.appendChild(btn2);
-        row3.appendChild(btn3);
-        row3.appendChild(btnSubstract);
-
-        Hbox row4 = new Hbox();
-
-        Button btnCurrency = new Button();
-        btnCurrency.setWidth("40px");
-        btnCurrency.setLabel("$");
-        btnCurrency.setDisabled(true);
-
-        Button btn0 = new Button();
-        btn0.setWidth("30px");
-        btn0.setLabel("0");
-        btn0.setAction("onClick : calc.append('" + txtCalcId + "', '0')");
-
-        
-        Button btnDot = new Button();
-        btnDot.setWidth("30px");
-        btnDot.setLabel(separator);
-        btnDot.setDisabled(integral);
-        btnDot.setAction("onClick : calc.append('" + txtCalcId + "', '" + separator + "')");
-
-        Button btnEqual = new Button();
-        btnEqual.setWidth("30px");
-        btnEqual.setLabel("=");
-        btnEqual.setAction("onClick : calc.evaluate('" + decimalBox.getId() + "','" 
-                + txtCalcId + "','" + separator + "')");
-        
-        Button btnAdd = new Button();
-        btnAdd.setWidth("30px");
-        btnAdd.setLabel("+");
-        btnAdd.setAction("onClick : calc.append('" + txtCalcId + "', ' + ')");
-
-        row4.appendChild(btnCurrency);
-        row4.appendChild(btnDot);
-        row4.appendChild(btn0);
-        row4.appendChild(btnEqual);
-        row4.appendChild(btnAdd);
-
-        vbox.appendChild(row1);
-        vbox.appendChild(row2);
-        vbox.appendChild(row3);
-        vbox.appendChild(row4);
-
-        popup.appendChild(vbox);
-        return popup;
+		p.appendChild(vbox);
+		return p;
     }
+    
+    /** Crea un botón de la calculadora con el listener JS apropiado */
+	private Button btnCalc(String label, int widthPx, String js) {
+		Button b = new Button(label);
+		b.setWidth(widthPx + "px");
+		b.setWidgetListener("onClick", js + ";");
+		return b;
+	}
+
+	private String ensureComponentId(HtmlBasedComponent comp) {
+	    if (comp.getId() == null || comp.getId().isEmpty()) {
+	    	String newId = "n" + java.util.UUID.randomUUID().toString().replace("-", "");
+	        comp.setId(newId);
+	    }
+	    return comp.getId();
+	}
+
 
     /**
      * 
