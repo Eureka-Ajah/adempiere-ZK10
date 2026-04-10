@@ -16,10 +16,12 @@
  *****************************************************************************/
 
 package org.adempiere.webui.panel;
+import org.compiere.process.DocAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adempiere.exceptions.AdempiereException;
 import org.adempiere.webui.component.ConfirmPanel;
 import org.adempiere.webui.component.Grid;
 import org.adempiere.webui.component.GridFactory;
@@ -28,11 +30,13 @@ import org.adempiere.webui.component.Row;
 import org.adempiere.webui.component.Rows;
 import org.adempiere.webui.component.Window;
 import org.adempiere.webui.window.FDialog;
+import org.compiere.apps.ProcessCtl;
 import org.compiere.model.GridTab;
 import org.compiere.model.MTable;
 import org.compiere.model.PO;
 import org.compiere.process.DocOptions;
 import org.compiere.process.DocumentEngine;
+import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
@@ -244,7 +248,9 @@ public class WDocActionPanel extends Window implements EventListener
 		lstDocAction.addEventListener(Events.ON_SELECT, this);
 
         confirmPanel = new ConfirmPanel(true);
-        confirmPanel.addActionListener(Events.ON_CLICK, this);
+        //confirmPanel.addActionListener(Events.ON_CLICK, this);
+        confirmPanel.getButton("Ok").addEventListener(Events.ON_CLICK, this);
+        confirmPanel.getButton("Cancel").addEventListener(Events.ON_CLICK, this);
 
 	}
 
@@ -309,15 +315,16 @@ public class WDocActionPanel extends Window implements EventListener
 				KeyEvent keyEvent = (KeyEvent) event;
 				code = keyEvent.getKeyCode();
 			}
-			if (confirmPanel.getButton("Ok").equals(event.getTarget()) 
-					|| code == KEYBOARD_KEY_RETURN)
+			if (event.getTarget().equals(confirmPanel.getButton("Ok")) 
+			        || code == KEYBOARD_KEY_RETURN)
 			{
 				m_OKpressed = true;
 				setValue();
 				this.detach();
 			}
 		}
-		if(confirmPanel.getButton("Cancel").equals(event.getTarget()) || event.getName().equals(Events.ON_CANCEL)) {
+		if (event.getTarget().equals(confirmPanel.getButton("Cancel")) 
+		        || event.getName().equals(Events.ON_CANCEL)) {
 			m_OKpressed = false;
 			this.detach();
 		}
@@ -333,12 +340,61 @@ public class WDocActionPanel extends Window implements EventListener
 
 	private void setValue()
 	{
-		int index = getSelectedIndex();
-		//	Save Selection
-		logger.config("DocAction=" + s_value[index]);
-		gridTab.setValue("DocAction", s_value[index]);
-	}	//	save
+	    int index = getSelectedIndex();
 
+	    String docAction = s_value[index];
+
+	    logger.config("DocAction=" + docAction);
+
+	    if (docAction == null || "--".equals(docAction))
+	    {
+	        throw new AdempiereException("DocAction inválido");
+	    }
+
+	    gridTab.setValue("DocAction", docAction);
+
+	    if (!gridTab.dataSave(false))
+	        return;
+
+	    int tableId = gridTab.getAD_Table_ID();
+	    int recordId = gridTab.getRecord_ID();
+
+	    PO po = MTable.get(Env.getCtx(), tableId).getPO(recordId, null);
+
+	    if (!(po instanceof DocAction))
+	    {
+	        throw new AdempiereException("El documento no implementa DocAction");
+	    }
+
+	    DocAction doc = (DocAction) po;
+
+	    try
+	    {
+	        if (!doc.processIt(docAction))
+	        {
+	            throw new AdempiereException(doc.getProcessMsg());
+	        }
+
+	        ((PO) doc).saveEx();
+	    }
+	    catch (Exception e)
+	    {
+	        throw new AdempiereException("Error procesando documento: " + e.getMessage(), e);
+	    }
+
+	    gridTab.dataRefresh(true);
+
+	    String status = doc.getDocStatus();
+	    String msg = doc.getProcessMsg();
+
+	    if (!"CO".equals(status))
+	    {
+	        throw new AdempiereException(
+	            "No completado. Status=" + status + " Msg=" + msg
+	        );
+	    }
+	}
+	
 	 private void readReference()
 	 {
 	        ArrayList<String> v_value = new ArrayList<String>();
