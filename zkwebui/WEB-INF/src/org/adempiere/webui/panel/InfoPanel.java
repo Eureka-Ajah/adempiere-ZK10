@@ -79,6 +79,7 @@ import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.West;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModelExt;
@@ -439,13 +440,6 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		statusBar.setEastVisibility(false);
 		statusBar.setAttribute("zk_component_ID", "info_statusBar");
 		//
-		Center center = new Center();
-		center.appendChild(confirmPanel);
-		p_southLayout.appendChild(center);
-		South south = new South();
-		south.appendChild(statusBar);
-		p_southLayout.appendChild(south);
-		
 		//
 		// Reset button
 		bReset = confirmPanel.createButton(ConfirmPanel.A_RESET);
@@ -511,13 +505,24 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
         mainPanel.appendChild(north);
         north.appendChild(p_northLayout);
         //
-        center = new Center();
+        
+        Center center = new Center();
         mainPanel.appendChild(center);
         center.appendChild(p_centerLayout);
-        //
-        south = new South();
-        mainPanel.appendChild(south);
-        south.appendChild(p_southLayout);
+        
+        South mainSouth = new South();
+        mainSouth.setSize("100px"); // ajustar si necesario
+
+        Vbox southBox = new Vbox();
+        southBox.setWidth("100%");
+        southBox.setHeight("100%");
+
+        southBox.appendChild(confirmPanel);
+        southBox.appendChild(statusBar);
+
+        mainSouth.appendChild(southBox);
+
+        mainPanel.appendChild(mainSouth);
         //
         if (!isModal())
         {
@@ -1727,11 +1732,24 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
     
     private void onOk() 
     {
-		if (!p_table.getChildren().isEmpty() && p_table.getSelectedRowKey()!=null)
-		{
-		    dispose(p_saveResults);
-		}
-	}
+        if (!p_table.getChildren().isEmpty() && p_table.getSelectedRowKey()!=null)
+        {
+            Integer selected = p_table.getSelectedRowKey();
+
+            if (listeners != null && listeners.size() > 0)
+            {
+                ValueChangeEvent event = new ValueChangeEvent(
+                    this,
+                    p_keyColumn,
+                    null,
+                    selected
+                );
+                fireValueChange(event);
+            }
+
+            dispose(p_saveResults);
+        }
+    }
     
     private void onDoubleClick()
 	{
