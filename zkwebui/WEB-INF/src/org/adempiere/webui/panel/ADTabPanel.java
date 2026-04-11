@@ -520,7 +520,11 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
                     WEditorPopupMenu popupMenu = editor.getPopupMenu();
                     if (popupMenu != null)
                     {
-                    	popupMenu.addMenuListener((ContextMenuListener)editor);
+                    	//popupMenu.addMenuListener((ContextMenuListener)editor);
+                    	 if (editor instanceof ContextMenuListener) {
+                    	        popupMenu.addMenuListener((ContextMenuListener) editor);
+                    	    }
+
                         this.appendChild(popupMenu);
                         if (!field.isFieldOnly())
                         {

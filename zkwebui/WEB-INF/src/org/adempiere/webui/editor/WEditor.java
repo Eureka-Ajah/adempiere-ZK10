@@ -16,11 +16,14 @@
  *****************************************************************************/
 
 package org.adempiere.webui.editor;
+import org.adempiere.webui.event.ContextMenuEvent;
+import org.adempiere.webui.event.ContextMenuListener;
 
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.VetoableChangeListener;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import org.adempiere.exceptions.ValueChangeEvent;
@@ -90,6 +93,8 @@ public abstract class WEditor implements CEditor, EventListener, PropertyChangeL
 	private IADTabPanel tabPanel;
 
     private Object m_oldValue = null;
+    
+    private WEditorPopupMenu popupMenu;
 	
 	public void setADTabPanel(IADTabPanel panel)
 	{
@@ -275,6 +280,32 @@ public abstract class WEditor implements CEditor, EventListener, PropertyChangeL
 
         });
         
+        component.addEventListener(Events.ON_RIGHT_CLICK, new EventListener() {
+            public void onEvent(Event event) {
+
+                WEditorPopupMenu popup = getPopupMenu();
+
+                if (popup == null)
+                    return;
+
+                if (popup.getParent() == null) {
+                    Component parent = component.getParent();
+
+                    while (parent != null && !(parent instanceof org.zkoss.zul.Window)) {
+                        parent = parent.getParent();
+                    }
+
+                    if (parent != null) {
+                        parent.appendChild(popup);
+                    } else {
+                        popup.setPage(component.getPage());
+                    }
+                }
+
+                popup.open(component);
+            }
+        });
+        
         repaintComponent();
     }
 
@@ -427,7 +458,7 @@ public abstract class WEditor implements CEditor, EventListener, PropertyChangeL
      */
     public WEditorPopupMenu getPopupMenu()
     {
-        return null;
+        return popupMenu;
     }
 
     /**
@@ -748,5 +779,5 @@ public abstract class WEditor implements CEditor, EventListener, PropertyChangeL
 	public void addVetoableChangeListener(VetoableChangeListener listener) {
 		// Not used in ZK		
 	}
-
+	
 }
