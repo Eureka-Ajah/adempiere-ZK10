@@ -200,6 +200,7 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
 	private Row pnlValue;
 	private Row pnlName;
 	private boolean m_createNew = false;
+	private boolean m_callbackFired = false;
 
 	/** Indexes for fields in the user query - compatible with but not the same as Find.java
 	/** Index ColumnName = 0		*/
@@ -397,8 +398,11 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
     
     @Override
     public void onClose() {
-    	m_isCancel = true;
-    	super.onClose();
+        if (!m_callbackFired) {
+            m_isCancel = true;
+            fireFindWindowClose();
+        }
+        super.onClose();
     }
 
     /**
@@ -1130,58 +1134,53 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
                 if ("btnOkSimple".equals(btn.getName()))
                 {
                     cmd_ok_Simple();
-                    dispose();
                 }
                 else if ("btnOkAdv".equals(btn.getName()))
                 {
                     cmd_ok_Advanced();
-                    dispose();
                 }
                 else if("btnCancel".equals(btn.getName()))
                 {
-                	m_isCancel = true;
+                    m_isCancel = true;
+                    fireFindWindowClose();
                     dispose();
                 }
                 else if ("btnNew".equals(btn.getName()))
                 {
                     m_query = MQuery.getNoRecordQuery(m_tableName, true);
                     m_total = 0;
-                    m_createNew  = true;
+                    m_createNew = true;
+                    fireFindWindowClose();
                     dispose();
                 }
             }
         }
         else if (Events.ON_OK.equals(event.getName()))
         {
-            if (winLookupRecord.equals(event.getTarget()))
-            {
-                cmd_ok_Simple();
-                dispose();
-            }
-            else if (winAdvanced.equals(event.getTarget()))
-            {
-                cmd_ok_Advanced();
-                dispose();
-            }
-            // Check simple panel fields
-            for (WEditor editor : m_sEditors)
-            {
-            	if (editor.getComponent() == event.getTarget())
-            	{
-                    cmd_ok_Simple();
-                    dispose();
-            	}
-            }
+        	if (winLookupRecord.equals(event.getTarget()))
+        	{
+        	    cmd_ok_Simple();
+        	}
+        	else if (winAdvanced.equals(event.getTarget()))
+        	{
+        	    cmd_ok_Advanced();
+        	}
 
-			// Check simple panel fields
-			for (WEditor editor : m_sEditors2)
-			{
-				if (editor != null && editor.getComponent() == event.getTarget())
-				{
-					cmd_ok_Simple();
-					dispose();
-				}
-			}
+        	for (WEditor editor : m_sEditors)
+        	{
+        	    if (editor.getComponent() == event.getTarget())
+        	    {
+        	        cmd_ok_Simple();
+        	    }
+        	}
+
+        	for (WEditor editor : m_sEditors2)
+        	{
+        	    if (editor != null && editor.getComponent() == event.getTarget())
+        	    {
+        	        cmd_ok_Simple();
+        	    }
+        	}
 		}
         else if (Events.ON_FOCUS.equals(event.getName()))
         {
@@ -1738,35 +1737,32 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
     **/
     private void cmd_ok_Simple()
     {
-        //  Create Query String
         m_query = new MQuery(m_tableName);
+
         if (hasValue && !fieldValue.getText().equals("%") && fieldValue.getText().length() != 0)
         {
             String value = fieldValue.getText().toUpperCase();
-
             if (!value.endsWith("%"))
                 value += "%";
             m_query.addRestriction("UPPER(Value)", MQuery.LIKE, value, lblValue.getValue(), value);
         }
-        //
+
         if (hasDocNo && !fieldDocumentNo.getText().equals("%") && fieldDocumentNo.getText().length() != 0)
         {
             String value = fieldDocumentNo.getText().toUpperCase();
-
             if (!value.endsWith("%"))
                 value += "%";
-            m_query.addRestriction("UPPER(DocumentNo)", MQuery.LIKE, value, lblDocumentNo.getValue(),value);
+            m_query.addRestriction("UPPER(DocumentNo)", MQuery.LIKE, value, lblDocumentNo.getValue(), value);
         }
-        //
-        if ((hasName) && !fieldName.getText().equals("%") && fieldName.getText().length() != 0)
+
+        if (hasName && !fieldName.getText().equals("%") && fieldName.getText().length() != 0)
         {
             String value = fieldName.getText().toUpperCase();
-
             if (!value.endsWith("%"))
                 value += "%";
             m_query.addRestriction("UPPER(Name)", MQuery.LIKE, value, lblName.getValue(), value);
         }
-        //
+
         if (hasDescription && !fieldDescription.getText().equals("%") && fieldDescription.getText().length() != 0)
         {
             String value = fieldDescription.getText().toUpperCase();
@@ -1774,113 +1770,93 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
                 value += "%";
             m_query.addRestriction("UPPER(Description)", MQuery.LIKE, value, lblDescription.getValue(), value);
         }
-		//
 
-
-        //  Special Editors
         for (int i = 0; i < m_sEditors.size(); i++)
         {
             WEditor wed = (WEditor)m_sEditors.get(i);
             Object value = wed.getValue();
-			Object modifiedvalue = null;
-			String ColumnSQL = null;
-			String ColumnName = wed.getColumnName();
-			GridField field = getTargetMField(ColumnName);
+            Object modifiedvalue = null;
+            String ColumnSQL = null;
+            String ColumnName = wed.getColumnName();
+            GridField field = getTargetMField(ColumnName);
+
+            if (field == null) {
+                continue;
+            }
+
             if (value != null && value.toString().length() > 0)
             {
-
-                log.fine(ColumnName + "=" + value);
-
-                // globalqss - Carlos Ruiz - 20060711
-                // fix a bug with virtualColumn + isSelectionColumn not yielding results
-				field = getTargetMField(ColumnName);
-                // add encryption here if the field is encrypted.
                 if (field.isEncryptedColumn()) {
-                	value = SecureEngine.encrypt(value);
+                    value = SecureEngine.encrypt(value);
                 }
-                
+
                 boolean isProductCategoryField = isProductCategoryField(field.getAD_Column_ID());
-				ColumnSQL = field.getColumnSQL(false);
-                //
-                // Be more permissive for String columns
+                ColumnSQL = field.getColumnSQL(false);
+
                 if (isSearchLike(field))
                 {
                     String valueStr = value.toString().toUpperCase();
                     if (!valueStr.endsWith("%"))
                         valueStr += "%";
-                    //
-                    ColumnSQL = "UPPER("+ColumnSQL+")";
-					modifiedvalue = valueStr;
+                    ColumnSQL = "UPPER(" + ColumnSQL + ")";
+                    modifiedvalue = valueStr;
                 }
-				else
-					modifiedvalue = value;
-                //
-				if ( modifiedvalue.toString().indexOf('%') != -1 && !field.isRangeLookup() )
-					m_query.addRestriction(ColumnSQL, MQuery.LIKE, modifiedvalue, ColumnName, wed.getDisplay());
+                else
+                    modifiedvalue = value;
+
+                if (modifiedvalue.toString().indexOf('%') != -1 && !field.isRangeLookup())
+                    m_query.addRestriction(ColumnSQL, MQuery.LIKE, modifiedvalue, ColumnName, wed.getDisplay());
                 else if (isProductCategoryField && value instanceof Integer)
                     m_query.addRestriction(getSubCategoryWhereClause(((Integer) value).intValue()));
-				else if ( ! field.isRangeLookup()  )																//20121115
+                else if (!field.isRangeLookup())
                     m_query.addRestriction(ColumnSQL, MQuery.EQUAL, value, ColumnName, wed.getDisplay());
-                /*
-                if (value.toString().indexOf('%') != -1)
-                    m_query.addRestriction(ColumnName, MQuery.LIKE, value, ColumnName, ved.getDisplay());
-                else
-                    m_query.addRestriction(ColumnName, MQuery.EQUAL, value, ColumnName, ved.getDisplay());
-                */
-                // end globalqss patch
             }
 
-			if (field.isRangeLookup() ){
+            if (field.isRangeLookup()) {
+                WEditor toRangeEditor = (WEditor)m_sEditors2.get(i);
+                Object value2 = null;
+                Object parsedValue = null;
+                Object parsedValue2 = null;
+                String infoDisplay_to = null;
+                String infoDisplay = null;
 
-				WEditor toRangeEditor = (WEditor)m_sEditors2.get(i);
-				Object value2 = null;
-				Object parsedValue = null;
-				Object parsedValue2 = null;
-				String infoDisplay_to = null;
-				String infoDisplay = null;
-				if (toRangeEditor != null)
-					value2 = toRangeEditor.getValue();
-				if ( ( value != null && !value.toString().isEmpty()) && ( value2 != null && !value2.toString().isEmpty() ) && value2.toString().length() > 0)
-				{
-					ColumnName = toRangeEditor.getColumnName();
-					log.fine(ColumnName + "=" + value2);
-					field = getTargetMField(ColumnName);
-					infoDisplay = value.toString();
-					parsedValue = parseValue(field, value);
-					parsedValue2 = parseValue(field, value2);
-					infoDisplay_to = value2.toString();
-					if (parsedValue2 == null)
-						continue;
-					m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2,ColumnSQL, infoDisplay, infoDisplay_to );
+                if (toRangeEditor != null)
+                    value2 = toRangeEditor.getValue();
 
-				}
-				// Case2 : If in given range filed First value as given and 2nd value is null
-				//		   then get all the records after the First value
-				else if( value!= null && ! value.toString().isEmpty() && ( value2 == null || value2.toString().isEmpty() ) ){
+                if ((value != null && !value.toString().isEmpty()) && (value2 != null && !value2.toString().isEmpty()))
+                {
+                    ColumnName = toRangeEditor.getColumnName();
+                    field = getTargetMField(ColumnName);
+                    infoDisplay = value.toString();
+                    parsedValue = parseValue(field, value);
+                    parsedValue2 = parseValue(field, value2);
+                    infoDisplay_to = value2.toString();
+                    if (parsedValue2 == null)
+                        continue;
+                    m_query.addRangeRestriction(ColumnSQL, parsedValue, parsedValue2, ColumnSQL, infoDisplay, infoDisplay_to);
+                }
+                else if (value != null && !value.toString().isEmpty() && (value2 == null || value2.toString().isEmpty()))
+                {
+                    ColumnName = wed.getColumnName();
+                    m_query.addRestriction(ColumnSQL, MQuery.GREATER_EQUAL, value, ColumnName, wed.getDisplay());
+                }
+                else if ((value == null || value.toString().isEmpty()) && value2 != null && !value2.toString().isEmpty())
+                {
+                    ColumnName = toRangeEditor.getColumnName();
+                    field = getTargetMField(ColumnName);
+                    ColumnSQL = field.getColumnSQL(false);
+                    m_query.addRestriction(ColumnSQL, MQuery.LESS_EQUAL, value2, ColumnName, toRangeEditor.getDisplay());
+                }
+            }
+        }
 
-					ColumnName = wed.getColumnName();
-					m_query.addRestriction(ColumnSQL, MQuery.GREATER_EQUAL, value, ColumnName, wed.getDisplay());
-				}
-				// Case3 : If in given range filed First value is given as null and 2nd value is given
-				//   	   then get all the records before the second value
-				else if( ( value == null || value.toString().isEmpty() ) && value2 != null && ! value2.toString().isEmpty() ){
+        m_isCancel = false;
 
-					ColumnName = toRangeEditor.getColumnName();
-					field = getTargetMField(ColumnName);
-					ColumnSQL = field.getColumnSQL(false);
-					m_query.addRestriction(ColumnSQL, MQuery.LESS_EQUAL, value2, ColumnName, toRangeEditor.getDisplay());
-				}
-			}
-        }   //  editors
-
-
-
-        m_isCancel = false; // teo_sarca [ 1708717 ]
-        //  Test for no records
-        if (getNoOfRecords(m_query, true) != 0)
-          dispose();
-
-    }   //  cmd_ok_Simple
+        if (getNoOfRecords(m_query, true) != 0) {
+            fireFindWindowClose();
+            dispose();
+        }
+    }  //  cmd_ok_Simple
 
     public void dispose()
     {
@@ -1909,12 +1885,14 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
      */
     private void cmd_ok_Advanced()
     {
-        m_isCancel = false; // teo_sarca [ 1708717 ]
-        //  save pending
-        cmd_save(true); // Always save and update the last query run
-        if (getNoOfRecords(m_query, true) != 0)
-          dispose();
-    }   //  cmd_ok_Advanced
+        m_isCancel = false;
+        cmd_save(true);
+
+        if (getNoOfRecords(m_query, true) != 0) {
+            fireFindWindowClose();
+            dispose();
+        }
+    } //  cmd_ok_Advanced
 
     /**
      *  Get the number of records of target tab
@@ -2230,5 +2208,25 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
 		return DisplayType.isText(field.getDisplayType())
 		&& MColumn.isSuggestSelectionColumn(field.getColumnName(), true);
 	}
+	
+	public interface FindWindowListener {
+		void onClose(MQuery query, boolean isCancel, boolean isCreateNew);
+	}
 
+	private FindWindowListener findWindowListener;
+
+	public void setFindWindowListener(FindWindowListener findWindowListener) {
+		this.findWindowListener = findWindowListener;
+	}
+
+	private void fireFindWindowClose() {
+	    if (m_callbackFired) {
+	        return;
+	    }
+	    m_callbackFired = true;
+
+	    if (findWindowListener != null) {
+	        findWindowListener.onClose(m_query, m_isCancel, m_createNew);
+	    }
+	}
 }   //  FindPanel

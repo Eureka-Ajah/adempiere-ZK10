@@ -43,16 +43,20 @@ public class FDialog
 {
 	/**	Logger			*/
     private static final CLogger logger = CLogger.getCLogger(FDialog.class);
-    
+
+    public interface AskCallback
+    {
+    	void onAnswer(boolean ok);
+    }
+
     /**
-     * Construct a message from the AD_Message and the additional message replacing carriage 
+     * Construct a message from the AD_Message and the additional message replacing carriage
      * returns with html line breaks
      *
      * @param adMessage	AD_Message string
      * @param message	additional message
      * @return The translated AD_Message appended with the additional message
      */
-
     private static String constructMessage(String adMessage, String message)
 	{
 		StringBuffer out = new StringBuffer();
@@ -70,7 +74,6 @@ public class FDialog
 		return out.toString().replace("\n", "<br>");
 	}
 
-
 	/**
 	 *	Display warning with warning icon
 	 *
@@ -82,7 +85,6 @@ public class FDialog
 	 * @see #warn(int, Component, String, String, String)
 	 * @see #warn(int, Component, String, String)
 	 */
-    
     public static void warn(int windowNo, String adMessage, String title)
     {
         warn(windowNo, null, adMessage, null, title);
@@ -99,7 +101,6 @@ public class FDialog
 	 * @see #warn(int, String, String)
 	 * @see #warn(int, Component, String, String, String)
 	 */
-    
     public static void warn(int windowNo, Component comp, String adMessage, String message)
     {
     	warn(windowNo, comp, adMessage, message, null);
@@ -116,7 +117,6 @@ public class FDialog
 	 * @see #warn(int, String, String)
 	 * @see #warn(int, Component, String, String)
 	 */
-    
     public static void warn(int windowNo, Component comp, String adMessage, String message, String title)
     {
     	Properties ctx = Env.getCtx();
@@ -133,17 +133,16 @@ public class FDialog
     	{
     		newTitle = title;
     	}
-    	
+
     	String out = constructMessage(adMessage, message);
-    	
+
 		try
 		{
 			Messagebox.showDialog(out, newTitle, Messagebox.OK, Messagebox.EXCLAMATION);
 		}
 		catch (InterruptedException exception)
 		{
-			// Restore the interrupted status
-            Thread.currentThread().interrupt();
+			Thread.currentThread().interrupt();
 		}
 
 		return;
@@ -158,7 +157,6 @@ public class FDialog
 	 *	@see #warn(int, Component, String, String, String)
 	 * @see #warn(int, Component, String, String)
 	 */
-    
     public static void warn(int windowNo, String adMessage)
     {
         warn(windowNo, null, adMessage, null, null);
@@ -170,7 +168,6 @@ public class FDialog
 	 *  @param	comp		Component (unused)
 	 *	@param	adMessage	Message to be translated
 	 */
-    
     public static void error(int windowNo, Component comp, String adMessage)
     {
         error(windowNo, comp, adMessage, null);
@@ -185,10 +182,9 @@ public class FDialog
 	 *  @see #error(int, Component, String)
 	 *  @see #error(int, Component, String, String)
 	 */
-    
-	public static void error (int windowNo, String adMessage)
+	public static void error(int windowNo, String adMessage)
 	{
-		error (windowNo, null, adMessage, null);
+		error(windowNo, null, adMessage, null);
 	}	//	error (int, String)
 
 	/**
@@ -201,7 +197,6 @@ public class FDialog
 	 *  @see #error(int, Component, String)
 	 *  @see #error(int, Component, String, String)
 	 */
-	
     public static void error(int windowNo, String adMessage, String msg)
     {
         error(windowNo, null, adMessage, msg);
@@ -219,7 +214,6 @@ public class FDialog
 	 *  @see #error(int, Component, String)
 	 *  @see #error(int, String, String)
 	 */
-    
     public static void error(int windowNo, Component comp, String adMessage, String message)
     {
     	Properties ctx = Env.getCtx();
@@ -232,66 +226,93 @@ public class FDialog
 		}
 
 		String out = constructMessage(adMessage, message);
-		
+
 		try
 		{
 			Messagebox.showDialog(out, AEnv.getDialogHeader(ctx, windowNo), Messagebox.OK, Messagebox.ERROR);
 		}
 		catch (InterruptedException exception)
 		{
-			// Restore the interrupted status
             Thread.currentThread().interrupt();
 		}
-		
+
 		return;
     }
 
     /**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *	@param	msg			Additional clear text message
 	 *
 	 *	@return true, if OK
-	 */    
+	 */
     public static boolean ask(int windowNo, Component comp, String adMessage, String msg)
     {
     	String out = constructMessage(adMessage, msg);
-		
+
         try
         {
-            int response = Messagebox.showDialog(out, AEnv.getDialogHeader(Env.getCtx(), windowNo), Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            int response = Messagebox.showDialog(
+            	out,
+            	AEnv.getDialogHeader(Env.getCtx(), windowNo),
+            	Messagebox.OK | Messagebox.CANCEL,
+            	Messagebox.QUESTION
+            );
 
             return (response == Messagebox.OK);
         }
         catch (InterruptedException ex)
         {
-			// Restore the interrupted status
             Thread.currentThread().interrupt();
         }
-		
+
 		return true;
     }
-    
+
+    public static void ask(int windowNo, Component comp, String adMessage, String msg, final AskCallback callback)
+    {
+    	String out = constructMessage(adMessage, msg);
+
+    	Messagebox.showDialog(
+    		out,
+    		AEnv.getDialogHeader(Env.getCtx(), windowNo),
+    		Messagebox.OK | Messagebox.CANCEL,
+    		Messagebox.QUESTION,
+    		new Messagebox.ResultListener() {
+				@Override
+				public void onResult(int result)
+				{
+					if (callback != null)
+					{
+						callback.onAnswer(result == Messagebox.OK);
+					}
+				}
+			}
+    	);
+    }
+
 	/**************************************************************************
 	 *	Ask Question with question icon and (OK) (Cancel) buttons
 	 *
-	 *	@param	WindowNo	Number of Window
-	 *  @param  c           Container (owner)
-	 *	@param	AD_Message	Message to be translated
+	 *	@param	windowNo	Number of Window
+	 *  @param  comp        Container (owner)
+	 *	@param	adMessage	Message to be translated
 	 *
 	 *	@return true, if OK
 	 */
-    
     public static boolean ask(int windowNo, Component comp, String adMessage)
     {
-    	// Display the message with no clear text component.
-    	//	Yamel Senih, Raúl Muñoz Add return instead true
-    	return ask(windowNo, comp, adMessage, null);
+        return ask(windowNo, comp, adMessage, (String) null);
     }
-    
+
+    public static void ask(int windowNo, Component comp, String adMessage, final AskCallback callback)
+    {
+        ask(windowNo, comp, adMessage, (String) null, callback);
+    }
+
     /**
      *  Display information with information icon.
      *
@@ -301,14 +322,12 @@ public class FDialog
      *
      *  @see #info(int, Component, String, String)
      */
-    
     public static void info(int windowNo, Component comp, String adMessage)
     {
         info(windowNo, comp, adMessage, null);
 
         return;
     }
-
 
     /**
      *  Display information with information icon.
@@ -320,11 +339,10 @@ public class FDialog
      *
      *  @see #info(int, Component, String)
      */
-    
     public static void info(int windowNo, Component comp, String adMessage, String message)
     {
         Properties ctx = Env.getCtx();
-        
+
         logger.info(adMessage + " - " + message);
 
         if (CLogMgt.isLevelFinest())
@@ -340,10 +358,9 @@ public class FDialog
         }
         catch (InterruptedException exception)
         {
-            // Restore the interrupted status
             Thread.currentThread().interrupt();
         }
-        
+
         return;
     }
 }

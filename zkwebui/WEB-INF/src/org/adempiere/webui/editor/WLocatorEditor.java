@@ -59,14 +59,14 @@ import org.zkoss.zk.ui.event.Events;
 public class WLocatorEditor extends WEditor implements EventListener, PropertyChangeListener, ContextMenuListener, IZoomableEditor
 {
 	private static final String[] LISTENER_EVENTS = {Events.ON_CLICK};
-    
+
 	private MLocatorLookup m_mLocator;
 	private Object m_value;
 	private Object oldValue;
 	private int m_WindowNo;
-	
+
 	private WEditorPopupMenu popupMenu;
-	
+
 	private static CLogger log = CLogger.getCLogger(WLocatorEditor.class);
 	/**
 	 *  IDE Constructor
@@ -88,11 +88,12 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
 	 * 	@param WindowNo window no
 	 */
 	
-	public WLocatorEditor(	String columnName, boolean mandatory, boolean isReadOnly, 
-							boolean isUpdateable, MLocatorLookup mLocator, int windowNo)
+
+	public WLocatorEditor(String columnName, boolean mandatory, boolean isReadOnly,
+			boolean isUpdateable, MLocatorLookup mLocator, int windowNo)
 	{
 		super(new EditorBox(), "Locator", "", mandatory, isReadOnly, isUpdateable);
-		
+
 		setColumnName(columnName);
 		m_mLocator = mLocator;
 		getComponent().setButtonImage("/images/Locator10.png");
@@ -102,107 +103,111 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
 		
 	}
 	
+	
 	/**
 	 * @param gridField
 	 */
-	public WLocatorEditor(GridField gridField) {
-		super(new EditorBox(), gridField);
-		m_mLocator = (MLocatorLookup)gridField.getLookup();
-		
-		getComponent().setButtonImage("/images/Locator10.png");
-		
-		setDefault_Locator_ID(); // set default locator, teo_sarca [ 1661546 ]
-		
-		m_WindowNo = gridField.getWindowNo();
-		
-		if (gridField != null) 
-        {
-        	popupMenu = new WEditorPopupMenu(true, true, false);
-        	if (gridField != null && gridField.getGridTab() != null)
-    		{
-    			WRecordInfo.addMenu(popupMenu);
-    		}
-        	getComponent().setContext(popupMenu.getId());
-        }			
-	}
 
-	public void setValue(Object value)
+	public WLocatorEditor(GridField gridField)
 	{
-		setValue (value, false);
-	}
+		super(new EditorBox(), gridField);
+		m_mLocator = (MLocatorLookup) gridField.getLookup();
 
+		getComponent().setButtonImage("/images/Locator10.png");
+
+		m_WindowNo = gridField.getWindowNo();
+		setDefault_Locator_ID(); // set default locator, teo_sarca [ 1661546 ]
+
+		if (gridField != null)
+		{
+			popupMenu = new WEditorPopupMenu(true, true, false);
+			if (gridField.getGridTab() != null)
+			{
+				WRecordInfo.addMenu(popupMenu);
+			}
+			getComponent().setContext(popupMenu.getId());
+		}
+	}
 	/**
 	 * 	Set Value
 	 *	@param value value
 	 *	@param fire data binding
 	 */
 	
-	private void setValue (Object value, boolean fire)
+	public void setValue(Object value)
+	{
+		setValue(value, false);
+	}
+
+	private void setValue(Object value, boolean fire)
 	{
 		if (value != null)
 		{
-			m_mLocator.setOnly_Warehouse_ID (getOnly_Warehouse_ID ());
+			m_mLocator.setOnly_Warehouse_ID(getOnly_Warehouse_ID());
 			m_mLocator.setOnly_Product_ID(getOnly_Product_ID());
-			
-			if (!m_mLocator.isValid(value)) {
+
+			if (!m_mLocator.isValid(value))
+			{
 				value = null;
-				gridField.setValue(null, false);
+				if (gridField != null)
+					gridField.setValue(null, false);
 			}
 		}
+
 		oldValue = m_value;
 		m_value = value;
-		getComponent().setText(m_mLocator.getDisplay(value));	//	loads value
-		
-		//	Data Binding
-		if (fire) {
+		getComponent().setText(m_mLocator.getDisplay(value));
+
+		if (fire)
+		{
 			ValueChangeEvent val = new ValueChangeEvent(this, getColumnName(), oldValue, value);
 			fireValueChange(val);
 		}
-
-	}	
+	}
 	
 	/**
 	 *	Return Editor value
 	 *  @return value
 	 */
-	
+
 	public Object getValue()
 	{
 		if (getM_Locator_ID() == 0)
 			return null;
-		
+
 		return m_value;
-	} // getValue
-	
+	}
+
 	@Override
-	public EditorBox getComponent() {
+	public EditorBox getComponent()
+	{
 		return (EditorBox) component;
 	}
 
 	@Override
-	public boolean isReadWrite() {
-		return getComponent().isEnabled();		
+	public boolean isReadWrite()
+	{
+		return getComponent().isEnabled();
 	}
 
 	@Override
-	public void setReadWrite(boolean readWrite) {
+	public void setReadWrite(boolean readWrite)
+	{
 		getComponent().setEnabled(readWrite);
 	}
-
+	
 	/**
 	 * 	Get M_Locator_ID
 	 *	@return id
 	 */
-	
 	public int getM_Locator_ID()
 	{
-		if (m_value != null 
-				&& m_value instanceof Integer)
-				return ((Integer)m_value).intValue();
-		
-		return 0;
-	} // getM_Locator_ID
+		if (m_value != null && m_value instanceof Integer)
+			return ((Integer) m_value).intValue();
 
+		return 0;
+	}//getM_Locator_ID()
+	
 	/**
 	 *  Return Display Value
 	 *  @return display value
@@ -211,88 +216,93 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
 	public String getDisplay()
 	{
 		return getComponent().getText();
-	} // getDisplay
+	}
 
 	public void onEvent(Event event) throws Exception
 	{
-		if (Events.ON_CLICK.equalsIgnoreCase(event.getName()))
+		if (!Events.ON_CLICK.equalsIgnoreCase(event.getName()))
+			return;
+
+		int only_Warehouse_ID = getOnly_Warehouse_ID();
+		int only_Product_ID = getOnly_Product_ID();
+
+		log.config("Only Warehouse_ID=" + only_Warehouse_ID + ", Product_ID=" + only_Product_ID);
+
+		if (event.getTarget() == getComponent() && actionText(only_Warehouse_ID, only_Product_ID))
+			return;
+
+		int M_Locator_ID = 0;
+		if (m_value instanceof Integer)
+			M_Locator_ID = ((Integer) m_value).intValue();
+
+		m_mLocator.setOnly_Warehouse_ID(only_Warehouse_ID);
+		m_mLocator.setOnly_Product_ID(only_Product_ID);
+
+		final WLocatorDialog ld = new WLocatorDialog(
+				Msg.translate(Env.getCtx(), getColumnName()),
+				m_mLocator,
+				M_Locator_ID,
+				isMandatory(),
+				only_Warehouse_ID,
+				this.m_WindowNo);
+
+		ld.setLocatorDialogListener(new WLocatorDialog.LocatorDialogListener()
 		{
-			//	Warehouse/Product		
-			int only_Warehouse_ID = getOnly_Warehouse_ID();
-			int only_Product_ID = getOnly_Product_ID();
-			
-			log.config("Only Warehouse_ID=" + only_Warehouse_ID	+ ", Product_ID=" + only_Product_ID);
-	
-			//	Text Entry ok
-			
-			if (event.getTarget() == getComponent() && actionText(only_Warehouse_ID, only_Product_ID))
-				return;
-	
-			//	 Button - Start Dialog
-			
-			int M_Locator_ID = 0;
-			
-			if (m_value instanceof Integer)
-				M_Locator_ID = ((Integer)m_value).intValue();
-	
-			m_mLocator.setOnly_Warehouse_ID(only_Warehouse_ID);
-			m_mLocator.setOnly_Product_ID(getOnly_Product_ID());
-			
-			WLocatorDialog ld = new WLocatorDialog(Msg.translate(Env.getCtx(), getColumnName()),
-				m_mLocator, M_Locator_ID, isMandatory(), only_Warehouse_ID, this.m_WindowNo);
-			
-			//	display
-			ld.setVisible(true);
-			AEnv.showWindow(ld);
-			
-			m_mLocator.setOnly_Warehouse_ID(0);
-	
-			//	redisplay
-			
-			if (!ld.isChanged()) {
-				setValue(null , true);
-				return;
+			@Override
+			public void onClose(Integer locatorId, boolean isChanged, boolean isCancel)
+			{
+				log.warning("WLocatorEditor.onClose - locatorId=" + locatorId
+						+ ", isChanged=" + isChanged
+						+ ", isCancel=" + isCancel);
+
+				m_mLocator.setOnly_Warehouse_ID(0);
+
+				if (isCancel || !isChanged)
+					return;
+
+				setValue(locatorId, true);
 			}
-			setValue (ld.getValue(), true);
-		}
+		});
+
+		ld.setVisible(true);
+		AEnv.showWindow(ld);
 	}
-	
+
 	public WEditorPopupMenu getPopupMenu()
-    {
-    	return popupMenu;
-    }
-	
+	{
+		return popupMenu;
+	}
+
 	public void actionRefresh()
-    {    	
+	{
 		if (m_mLocator != null)
-        {
+		{
 			Object curValue = getValue();
-			
+
 			if (isReadWrite())
 				m_mLocator.refresh();
-            if (curValue != null)
-            {
-            	setValue(curValue);
-            }
-        }
-    }
-	
+
+			if (curValue != null)
+				setValue(curValue);
+		}
+	}
+
 	public void actionZoom()
 	{
 		int AD_Window_ID = MTable.get(Env.getCtx(), MLocator.Table_ID).getAD_Window_ID();
 		if (AD_Window_ID <= 0)
-			AD_Window_ID = 139;	//	hardcoded window Warehouse & Locators
+			AD_Window_ID = 139;
+
 		log.info("");
-		//
-		
+
 		MQuery zoomQuery = new MQuery();
 		zoomQuery.addRestriction(MLocator.COLUMNNAME_M_Locator_ID, MQuery.EQUAL, getValue());
-		zoomQuery.setRecordCount(1);	//	guess
-		
-    	AEnv.zoom(AD_Window_ID, zoomQuery);
+		zoomQuery.setRecordCount(1);
+
+		AEnv.zoom(AD_Window_ID, zoomQuery);
 	}
-	
-	public void onMenu(ContextMenuEvent evt) 
+
+	public void onMenu(ContextMenuEvent evt)
 	{
 		if (WEditorPopupMenu.REQUERY_EVENT.equals(evt.getContextEvent()))
 		{
@@ -307,81 +317,67 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
 			WRecordInfo.start(gridField);
 		}
 	}
-	
-	/**
-	 * 	Hit Enter in Text Field
-	 * 	@param only_Warehouse_ID if not 0 restrict warehouse
-	 * 	@param only_Product_ID of not 0 restricted product
-	 * 	@return true if found
-	 */
-	
+
 	private boolean actionText(int only_Warehouse_ID, int only_Product_ID)
 	{
 		String text = getComponent().getText();
 		log.fine(text);
-		
-		//	Null
-		
+
 		if (text == null || text.length() == 0)
 		{
 			if (isMandatory())
 				return false;
-			else
-			{
-				setValue (null, true);
-				return true;
-			}
+
+			setValue(null, true);
+			return true;
 		}
-		
+
 		if (text.endsWith("%"))
 			text = text.toUpperCase();
 		else
 			text = text.toUpperCase() + "%";
-		
-		//	Look up - see MLocatorLookup.run
-		
+
 		StringBuffer sql = new StringBuffer("SELECT M_Locator_ID FROM M_Locator ")
-			.append(" WHERE IsActive='Y' AND UPPER(Value) LIKE ")
-			.append(DB.TO_STRING(text));
-		
+				.append(" WHERE IsActive='Y' AND UPPER(Value) LIKE ")
+				.append(DB.TO_STRING(text));
+
 		if (getOnly_Warehouse_ID() != 0)
 			sql.append(" AND M_Warehouse_ID=?");
-		
+
 		if (getOnly_Product_ID() != 0)
-			sql.append(" AND (IsDefault='Y' ")						//	Default Locator
-				.append("OR EXISTS (SELECT * FROM M_Product p ")	//	Product Locator
-				.append("WHERE p.M_Locator_ID=M_Locator.M_Locator_ID AND p.M_Product_ID=?)")
-				.append("OR EXISTS (SELECT * FROM M_Storage s ")	//	Storage Locator
-				.append("WHERE s.M_Locator_ID=M_Locator.M_Locator_ID AND s.M_Product_ID=?))");
-		
+			sql.append(" AND (IsDefault='Y' ")
+			   .append("OR EXISTS (SELECT * FROM M_Product p ")
+			   .append("WHERE p.M_Locator_ID=M_Locator.M_Locator_ID AND p.M_Product_ID=?)")
+			   .append("OR EXISTS (SELECT * FROM M_Storage s ")
+			   .append("WHERE s.M_Locator_ID=M_Locator.M_Locator_ID AND s.M_Product_ID=?))");
+
 		String finalSql = MRole.getDefault(Env.getCtx(), false).addAccessSQL(
-			sql.toString(), "M_Locator", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
+				sql.toString(), "M_Locator", MRole.SQL_NOTQUALIFIED, MRole.SQL_RO);
 
 		int M_Locator_ID = 0;
 		PreparedStatement pstmt = null;
-		
+
 		try
 		{
 			pstmt = DB.prepareStatement(finalSql, null);
 			int index = 1;
-		
+
 			if (only_Warehouse_ID != 0)
 				pstmt.setInt(index++, only_Warehouse_ID);
-			
+
 			if (only_Product_ID != 0)
 			{
 				pstmt.setInt(index++, only_Product_ID);
 				pstmt.setInt(index++, only_Product_ID);
 			}
-			
+
 			ResultSet rs = pstmt.executeQuery();
-			
+
 			if (rs.next())
 			{
 				M_Locator_ID = rs.getInt(1);
-			
 				if (rs.next())
-					M_Locator_ID = 0;	//	more than one
+					M_Locator_ID = 0;
 			}
 			rs.close();
 			pstmt.close();
@@ -391,117 +387,82 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
 		{
 			log.log(Level.SEVERE, finalSql, ex);
 		}
-		
-		try
+		finally
 		{
-			if (pstmt != null)
-				pstmt.close();
+			try
+			{
+				if (pstmt != null)
+					pstmt.close();
+			}
+			catch (SQLException ex1)
+			{
+			}
 		}
-		catch (SQLException ex1)
-		{
-		}
-		
-		pstmt = null;
-		
+
 		if (M_Locator_ID == 0)
 			return false;
 
 		setValue(Integer.valueOf(M_Locator_ID), true);
 		return true;
-	} // actionText
-	
-	/**
-	 *  Set Field/WindowNo for ValuePreference (NOP)
-	 *  @param mField Model Field
-	 */
-	
-	public void setField (org.compiere.model.GridField mField)
+	}
+
+	public void setField(org.compiere.model.GridField mField)
 	{
-	} // setField
-	
-	/**
-	 * 	Get Warehouse restriction if any.
-	 *	@return	M_Warehouse_ID or 0
-	 */
-	
+	}
+
 	private int getOnly_Warehouse_ID()
 	{
 		String only_Warehouse = Env.getContext(Env.getCtx(), m_WindowNo, "M_Warehouse_ID", true);
 		int only_Warehouse_ID = 0;
-	
+
 		try
 		{
-			if (only_Warehouse != null && only_Warehouse.length () > 0)
-				only_Warehouse_ID = Integer.parseInt (only_Warehouse);
+			if (only_Warehouse != null && only_Warehouse.length() > 0)
+				only_Warehouse_ID = Integer.parseInt(only_Warehouse);
 		}
 		catch (Exception ex)
 		{
 		}
-		
+
 		return only_Warehouse_ID;
-	} // getOnly_Warehouse_ID
-	
-	/**
-	 * 	Get Product restriction if any.
-	 *	@return	M_Product_ID or 0
-	 */
-	
+	}
+
 	private int getOnly_Product_ID()
 	{
 		if (!Env.isSOTrx(Env.getCtx(), m_WindowNo))
-			return 0; // No product restrictions for PO
+			return 0;
 
 		String only_Product = Env.getContext(Env.getCtx(), m_WindowNo, "M_Product_ID", true);
 		int only_Product_ID = 0;
-		
+
 		try
 		{
-			if (only_Product != null && only_Product.length () > 0)
-				only_Product_ID = Integer.parseInt (only_Product);
+			if (only_Product != null && only_Product.length() > 0)
+				only_Product_ID = Integer.parseInt(only_Product);
 		}
 		catch (Exception ex)
 		{
 		}
 		return only_Product_ID;
-	} // getOnly_Product_ID
-	
-	/**
-	 * Set the default locator if this field is mandatory 
-	 * and we have a warehouse restriction.
-	 * 
-	 * @since 3.1.4
-	 */
-	
+	}
+
 	private void setDefault_Locator_ID()
 	{
-		// teo_sarca, FR [ 1661546 ] Mandatory locator fields should use defaults
-		
-		if (!isMandatory() || m_mLocator == null) 
-		{
+		if (!isMandatory() || m_mLocator == null)
 			return;
-		}
-		
+
 		int M_Warehouse_ID = getOnly_Warehouse_ID();
-		
-		if (M_Warehouse_ID <= 0) 
-		{
+		if (M_Warehouse_ID <= 0)
 			return;
-		}
-		
+
 		MWarehouse wh = MWarehouse.get(Env.getCtx(), M_Warehouse_ID);
-		
-		if (wh == null || wh.get_ID() <= 0) 
-		{
+		if (wh == null || wh.get_ID() <= 0)
 			return;
-		}
-		
+
 		MLocator loc = wh.getDefaultLocator();
-		
-		if (loc == null || loc.get_ID() <= 0) 
-		{
+		if (loc == null || loc.get_ID() <= 0)
 			return;
-		}
-		
+
 		setValue(Integer.valueOf(loc.get_ID()));
 	}
 	
@@ -510,17 +471,14 @@ public class WLocatorEditor extends WEditor implements EventListener, PropertyCh
      *  @param evt PropertyChangeEvent
      */
 	
-    public void propertyChange (PropertyChangeEvent evt)
-    {
-        if (evt.getPropertyName().equals(org.compiere.model.GridField.PROPERTY))
-            setValue(evt.getNewValue());
-    }
+	public void propertyChange(PropertyChangeEvent evt)
+	{
+		if (evt.getPropertyName().equals(org.compiere.model.GridField.PROPERTY))
+			setValue(evt.getNewValue());
+	}
 
-    /**
-     * return listener events to be associated with editor component
-     */
-    public String[] getEvents()
-    {
-        return LISTENER_EVENTS;
-    }
+	public String[] getEvents()
+	{
+		return LISTENER_EVENTS;
+	}
 }

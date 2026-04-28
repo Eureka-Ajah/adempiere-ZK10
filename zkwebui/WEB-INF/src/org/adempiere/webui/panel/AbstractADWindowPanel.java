@@ -1704,22 +1704,28 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     /**
      * @see ToolbarListener#onDelete()
      */
-    public void onDelete()
-    {
-    	GridTab currentTab = toolbar.getCurrentPanel().getGridTab();
-        if (currentTab.isReadOnly())
-        {
-            return;
-        }
+	public void onDelete()
+	{
+		GridTab currentTab = toolbar.getCurrentPanel().getGridTab();
+		if (currentTab == null || currentTab.isReadOnly())
+			return;
 
-        if (FDialog.ask(curWindowNo, null, "DeleteRecord?"))
-        {
-        	//error will be catch in the dataStatusChanged event
-            currentTab.dataDelete();
-        }
-        curTabPanel.dynamicDisplay(0);
-        focusToActivePanel();
-    }
+		FDialog.ask(curWindowNo, null, "DeleteRecord?", null, new FDialog.AskCallback() {
+			@Override
+			public void onAnswer(boolean ok)
+			{
+				if (ok)
+				{
+					currentTab.dataDelete();
+				}
+
+				if (curTabPanel != null)
+					curTabPanel.dynamicDisplay(0);
+
+				focusToActivePanel();
+			}
+		});
+	}
 
     // Elaine 2008/12/01
 	/**

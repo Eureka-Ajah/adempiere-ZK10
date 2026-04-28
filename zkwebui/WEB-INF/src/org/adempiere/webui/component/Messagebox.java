@@ -41,16 +41,23 @@ import org.zkoss.zul.Separator;
  * 		@see FR [ 609 ] Confirm dialog for ZK don't have a Standard ADempiere Buttons</a>
 */
 public class Messagebox extends Window implements EventListener
-{	
+{
 	/**
 	 * generated serial version ID
 	 */
 	private static final long serialVersionUID = -4957498533838144942L;
-	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 230pt; max-width: 450pt;";	
+	private static final String MESSAGE_PANEL_STYLE = "text-align:left; word-break: break-all; overflow: auto; max-height: 350pt; min-width: 230pt; max-width: 450pt;";
 	private String msg = new String("");
 	private String imgSrc = new String("");
 	/**	Logger			*/
 	public static CLogger log = CLogger.getCLogger(Messagebox.class);
+
+	public interface ResultListener
+	{
+		void onResult(int result);
+	}
+
+	private ResultListener resultListener;
 
 	private Text lblMsg = new Text();
 
@@ -101,12 +108,12 @@ public class Messagebox extends Window implements EventListener
 
 	/** Contains no symbols. */
 	public static final String NONE = null;
-	
+
 	/**	 */
 	private Keylistener keyListener;
-	
+
 	private static final int KEYBOARD_KEY_RETURN = 13;
-	
+
 	public Messagebox()
 	{
 		super();
@@ -115,45 +122,51 @@ public class Messagebox extends Window implements EventListener
 	private void init()
 	{
 		lblMsg.setValue(msg);
-		
+
 		WAppsAction action;
 		try {
 			//	For Cancel
-			action = new WAppsAction (ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
+			action = new WAppsAction(ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
 			btnCancel = action.getButton();
 			btnCancel.addEventListener(Events.ON_CLICK, this);
+
 			//	For Ok
-			action = new WAppsAction (ConfirmPanel.A_OK, null, ConfirmPanel.A_OK);
+			action = new WAppsAction(ConfirmPanel.A_OK, null, ConfirmPanel.A_OK);
 			btnOk = action.getButton();
 			btnOk.addEventListener(Events.ON_CLICK, this);
+
 			//	For Yes
-			action = new WAppsAction (ConfirmPanel.A_OK, null, ConfirmPanel.A_OK);
+			action = new WAppsAction(ConfirmPanel.A_OK, null, ConfirmPanel.A_OK);
 			btnYes = action.getButton();
 			btnYes.addEventListener(Events.ON_CLICK, this);
 			btnYes.setName("btnYes");
 			btnYes.setId("btnYes");
+
 			//	For No
-			action = new WAppsAction (ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
+			action = new WAppsAction(ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
 			btnNo = action.getButton();
 			btnNo.addEventListener(Events.ON_CLICK, this);
-			btnYes.setName("btnNo");
-			btnYes.setId("btnNo");
+			btnNo.setName("btnNo");
+			btnNo.setId("btnNo");
+
 			//	For Abort
-			action = new WAppsAction (ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
+			action = new WAppsAction(ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
 			btnAbort = action.getButton();
 			btnAbort.addEventListener(Events.ON_CLICK, this);
 			btnAbort.setLabel("Abort");
 			btnAbort.setName("btnAbort");
 			btnAbort.setId("btnAbort");
+
 			//	For Retry
-			action = new WAppsAction (ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
+			action = new WAppsAction(ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
 			btnRetry = action.getButton();
 			btnRetry.addEventListener(Events.ON_CLICK, this);
 			btnRetry.setLabel("Retry");
 			btnRetry.setName("btnRetry");
 			btnRetry.setId("btnRetry");
+
 			//	For Ignore
-			action = new WAppsAction (ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
+			action = new WAppsAction(ConfirmPanel.A_CANCEL, null, ConfirmPanel.A_CANCEL);
 			btnIgnore = action.getButton();
 			btnIgnore.addEventListener(Events.ON_CLICK, this);
 			btnIgnore.setLabel("Ignore");
@@ -168,11 +181,12 @@ public class Messagebox extends Window implements EventListener
 		pnlMessage.appendChild(lblMsg);
 
 		keyListener = new Keylistener();
-		
+
 		keyListener.setCtrlKeys("#enter");
 		keyListener.addEventListener(Events.ON_CTRL_KEY, this);
 		addEventListener(Events.ON_CANCEL, this);
 		appendChild(keyListener);
+
 		Hbox pnlImage = new Hbox();
 
 		img.setSrc(imgSrc);
@@ -181,11 +195,11 @@ public class Messagebox extends Window implements EventListener
 		pnlImage.setAlign("center");
 		pnlImage.setPack("center");
 		pnlImage.appendChild(img);
-				
+
 		Hbox north = new Hbox();
 		north.setAlign("center");
 		north.setStyle("margin: 20pt 10pt 20pt 10pt;"); //trbl
-		this.appendChild(north);		
+		this.appendChild(north);
 		north.appendChild(pnlImage);
 		north.appendChild(pnlMessage);
 
@@ -193,7 +207,7 @@ public class Messagebox extends Window implements EventListener
 		pnlButtons.setHeight("52px");
 		pnlButtons.setAlign("center");
 		pnlButtons.setPack("end");
-		pnlButtons.appendChild(btnCancel);		
+		pnlButtons.appendChild(btnCancel);
 		pnlButtons.appendChild(btnOk);
 		pnlButtons.appendChild(btnYes);
 		pnlButtons.appendChild(btnNo);
@@ -205,13 +219,13 @@ public class Messagebox extends Window implements EventListener
 		separator.setWidth("100%");
 		separator.setBar(true);
 		this.appendChild(separator);
-		
+
 		Hbox south = new Hbox();
 		south.setPack("end");
 		south.setWidth("100%");
-		this.appendChild(south);		
+		this.appendChild(south);
 		south.appendChild(pnlButtons);
-		
+
 		this.setBorder("normal");
 		this.setContentStyle("background-color:#ffffff;");
 		this.setPosition("left, top");
@@ -219,11 +233,17 @@ public class Messagebox extends Window implements EventListener
 
 	public int show(String message, String title, int buttons, String icon)
 	{
+		return show(message, title, buttons, icon, null);
+	}
+
+	public int show(String message, String title, int buttons, String icon, ResultListener listener)
+	{
 		this.msg = message;
 		this.imgSrc = icon;
-		
+		this.resultListener = listener;
+
 		init();
-		
+
 		btnOk.setVisible(false);
 		btnCancel.setVisible(false);
 		btnYes.setVisible(false);
@@ -271,23 +291,30 @@ public class Messagebox extends Window implements EventListener
 	public static int showDialog(String message, String title, int buttons, String icon) throws InterruptedException
 	{
 		Messagebox msg = new Messagebox();
-
 		return msg.show(message, title, buttons, icon);
+	}
+
+	public static void showDialog(String message, String title, int buttons, String icon, ResultListener listener)
+	{
+		Messagebox msg = new Messagebox();
+		msg.show(message, title, buttons, icon, listener);
 	}
 
 	public void onEvent(Event event) throws Exception
 	{
 		if (event == null)
 			return;
-		
-		if (event.getName().equals(Events.ON_CTRL_KEY) && event.getTarget() == keyListener) {
-				
-				KeyEvent keyEvent = (KeyEvent) event;
-				int code = keyEvent.getKeyCode();
-				if (code == KEYBOARD_KEY_RETURN) {
-					returnValue = OK; 
-				}
-		 }
+
+		if (event.getName().equals(Events.ON_CTRL_KEY) && event.getTarget() == keyListener)
+		{
+			KeyEvent keyEvent = (KeyEvent) event;
+			int code = keyEvent.getKeyCode();
+			if (code == KEYBOARD_KEY_RETURN)
+			{
+				returnValue = OK;
+			}
+		}
+
 		if (event.getTarget() == btnOk || event.getName().equals(Events.ON_OK))
 		{
 			returnValue = OK;
@@ -315,6 +342,11 @@ public class Messagebox extends Window implements EventListener
 		else if (event.getTarget() == btnIgnore)
 		{
 			returnValue = IGNORE;
+		}
+
+		if (resultListener != null)
+		{
+			resultListener.onResult(returnValue);
 		}
 
 		this.detach();

@@ -335,25 +335,29 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		});
 		
 		p_table.addActionListener(new EventListener() {
-			public void onEvent(Event event) throws Exception {
+		    public void onEvent(Event event) throws Exception {
 
-				if (p_table.getRowCount() == 0)
-				{
-					enableButtons();		
-					return;
-				}
-				//
-				
-				if (event.getName().equals("onSelect"))
-				{
-					SelectEvent se = ((SelectEvent) event);
-					setNumRecordsSelected(se.getSelectedItems().size());
-					recordSelected(p_table.getLeadRowKey());
-					p_selectedRecordKey = p_table.getLeadRowKey();
-				}
+		        if (p_table.getRowCount() == 0)
+		        {
+		            enableButtons();
+		            return;
+		        }
 
-				enableButtons();		
-			}
+		        if (event.getName().equals("onSelect"))
+		        {
+		            SelectEvent se = (SelectEvent) event;
+		            setNumRecordsSelected(se.getSelectedItems().size());
+
+		            Integer leadKey = getSelectedRowKey();
+		            if (leadKey != null && leadKey.intValue() > 0)
+		            {
+		                recordSelected(leadKey.intValue());
+		                p_selectedRecordKey = leadKey.intValue();
+		            }
+		        }
+
+		        enableButtons();
+		    }
 		});
 		
 		p_table.getModel().addTableModelListener(this);
@@ -1115,11 +1119,25 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	 */
 	protected Integer getSelectedRowKey()
 	{
-		Integer key = p_table.getSelectedRowKey();
-		
-		return key;        
-	}   //  getSelectedRowKey
-	
+	    if (p_table == null)
+	        return null;
+
+	    try
+	    {
+	        if (p_table.getRowCount() <= 0)
+	            return null;
+
+	        if (p_table.getSelectedRow() < 0)
+	            return null;
+
+	        return p_table.getSelectedRowKey();
+	    }
+	    catch (UnsupportedOperationException ex)
+	    {
+	        log.warning("InfoPanel.getSelectedRowKey: layout aun no definido");
+	        return null;
+	    }
+	}
 	/**
      *  Get the keys of selected row/s based on layout defined in prepareTable
      *  @return IDs if selection present
@@ -1776,19 +1794,37 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
      */
     public void reselectRecord()
     {
-		//  Try to reselect the record
-		if(!setSelectedRow(p_selectedRecordKey))		
-		{
-			//  Nothing was selected, or the query is empty
-			noRecordSelected();
-			setNumRecordsSelected(0);
-		}
-		else  //  Found and selected the same record or selected the first record
-		{
-			recordSelected(p_table.getLeadRowKey());
-			setNumRecordsSelected(1);
-		}
-		p_selectedRecordKey = p_table.getLeadRowKey();
+        try
+        {
+            if (!setSelectedRow(p_selectedRecordKey))
+            {
+                noRecordSelected();
+                setNumRecordsSelected(0);
+                p_selectedRecordKey = 0;
+            }
+            else
+            {
+                Integer leadKey = getSelectedRowKey();
+                if (leadKey != null && leadKey.intValue() > 0)
+                {
+                    recordSelected(leadKey.intValue());
+                    setNumRecordsSelected(1);
+                    p_selectedRecordKey = leadKey.intValue();
+                }
+                else
+                {
+                    setNumRecordsSelected(0);
+                    p_selectedRecordKey = 0;
+                }
+            }
+        }
+        catch (UnsupportedOperationException ex)
+        {
+            log.warning("InfoPanel.reselectRecord: layout aun no definido");
+            noRecordSelected();
+            setNumRecordsSelected(0);
+            p_selectedRecordKey = 0;
+        }
     }
     
 	/**
