@@ -104,10 +104,10 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener
         return (ListItem)super.getSelectedItem();
     }
     
-    @SuppressWarnings("unchecked")
-    public List<ListItem> getItems()
+    @Override
+    public List<Listitem> getItems()
     {
-        return (List<ListItem>)super.getItems();
+        return super.getItems();
     }
     
     /** 
@@ -119,31 +119,34 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener
     public void setValue(Object value)
     {
         setSelectedItem(null);
-        
+
         if (value == null)
         {
-            return ;
+            return;
         }
-        
-        List<ListItem> items = getItems();
-        for (ListItem item : items)
+
+        List<Listitem> items = getItems();
+
+        for (Listitem listitem : items)
         {
-        	if (value.getClass() != item.getValue().getClass()) {
-        		// if the classes of value and item are different convert both to String
-        		String stringValue = value.toString();
-        		String stringItem = item.getValue().toString();
+            ListItem item = (ListItem) listitem;
+
+            if (value.getClass() != item.getValue().getClass()) {
+                String stringValue = value.toString();
+                String stringItem = item.getValue().toString();
+
                 if (stringValue.equals(stringItem))
                 {
                     setSelectedItem(item);
                     break;
                 }
-        	} else {
+            } else {
                 if (value.equals(item.getValue()))
                 {
                     setSelectedItem(item);
                     break;
                 }
-        	}
+            }
         }
     }
 
@@ -348,14 +351,19 @@ public class Listbox extends org.zkoss.zul.Listbox implements EventListener
 	
 	@Override
 	public String toString() {
-		StringBuffer items = new StringBuffer("[");
-		for (ListItem item : getItems()) {
-			if (items.length() > 1)
-				items.append(", ");
-			items.append(item.toString());
-		}
-		items.append("]");
-		return items.toString();
+	    StringBuffer items = new StringBuffer("[");
+
+	    for (Listitem listitem : getItems()) {
+	        ListItem item = (ListItem) listitem;
+
+	        if (items.length() > 1)
+	            items.append(", ");
+
+	        items.append(item.toString());
+	    }
+
+	    items.append("]");
+	    return items.toString();
 	}
 	
 	/**

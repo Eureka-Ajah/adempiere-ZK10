@@ -32,10 +32,10 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Box;
+import org.zkoss.zul.DefaultTreeModel;
+import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
-import org.zkoss.zul.SimpleTreeModel;
-import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Tree;
@@ -56,7 +56,8 @@ import org.zkoss.zul.Vbox;
  * 		<li> <a href="https://github.com/adempiere/adempiere/pull/2390">Pull Request #2390</a> Add a specific icon for smart browse
  * 			Also changed the look and feel to match the menu tree - replacing tool bar buttons with a flat tree.
  */
-public class DPRecentItems extends DashboardPanel implements EventListener, TreeitemRenderer {
+@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
+public class DPRecentItems extends DashboardPanel implements EventListener, TreeitemRenderer<DefaultTreeNode<MRecentItem>>  {
 
 	/**
 	 * 
@@ -72,8 +73,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener, Tree
 	private static final String MSG_RefreshTooltip = "@DPRecentItems_RefreshToolTip@";
 
 	public Tree				tree = null;
-	private SimpleTreeModel	tModel;
-	private SimpleTreeNode	mroot = null;
+	private DefaultTreeModel<MRecentItem> tModel;
+	private DefaultTreeNode<MRecentItem> mroot = null;
 
 	private Box				bxRecentItems;
 
@@ -150,8 +151,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener, Tree
 		if (tree.getChildren().size() > 0)
 			tree.removeChild((Component) tree.getChildren().get(0));
 		
-		mroot = new SimpleTreeNode(null, new ArrayList<SimpleTreeNode>());
-		tModel = new SimpleTreeModel(mroot);
+		mroot = new DefaultTreeNode<MRecentItem>(null, new ArrayList<DefaultTreeNode<MRecentItem>>());
+		tModel = new DefaultTreeModel<MRecentItem>(mroot);
 		tree.setModel(tModel);
 		
 	}
@@ -178,8 +179,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener, Tree
 					recentItem.deleteEx(true);
 					continue; // record could have been deleted
 				}
-				SimpleTreeNode treeNode = new SimpleTreeNode(recentItem, new ArrayList<SimpleTreeNode>());
-				((List<SimpleTreeNode>) mroot.getChildren()).add(treeNode);
+				DefaultTreeNode<MRecentItem> treeNode = new DefaultTreeNode<MRecentItem>(recentItem);
+				mroot.getChildren().add(treeNode);
 			}
 		}
 		
@@ -206,8 +207,8 @@ public class DPRecentItems extends DashboardPanel implements EventListener, Tree
 				Treeitem treeitem = (Treeitem) treerow.getParent();
 				Object value = treeitem.getValue();
 
-				SimpleTreeNode stn = (SimpleTreeNode) value;
-				MRecentItem recentItem = (MRecentItem) stn.getData(); 
+				DefaultTreeNode<MRecentItem> stn = (DefaultTreeNode<MRecentItem>) value;
+				MRecentItem recentItem = stn.getData(); 
             	//	Open
             	if (recentItem != null) {
             		//	Is a window change
@@ -240,23 +241,25 @@ public class DPRecentItems extends DashboardPanel implements EventListener, Tree
         	if(comp.equals(trashCan))
         	{
         		
-    			SimpleTreeNode sourceNode = (SimpleTreeNode) src.getValue();
-    			
-				int path[] = tModel.getPath(getRoot(), sourceNode);
+        		DefaultTreeNode<MRecentItem> sourceNode = (DefaultTreeNode<MRecentItem>) src.getValue();
 
-				if (path != null && path.length > 0)
-				{
-					SimpleTreeNode parentNode = (SimpleTreeNode) tModel.getRoot();
-					int index = path.length - 1;
-					for (int i = 0; i < index; i++)
-					{
-						parentNode = (SimpleTreeNode) tModel.getChild(parentNode, path[i]);
-					}
-					parentNode.getChildren().remove(path[index]);
-				}
+        		int path[] = tModel.getPath(sourceNode);
 
-				MRecentItem recentItem = (MRecentItem) sourceNode.getData();
-				recentItem.deleteEx(false);
+        		if (path != null && path.length > 0)
+        		{
+        		    DefaultTreeNode<MRecentItem> parentNode = mroot;
+        		    int index = path.length - 1;
+
+        		    for (int i = 0; i < index; i++)
+        		    {
+        		        parentNode = (DefaultTreeNode<MRecentItem>) tModel.getChild(parentNode, path[i]);
+        		    }
+
+        		    parentNode.getChildren().remove(path[index]);
+        		}
+
+        		MRecentItem recentItem = sourceNode.getData();
+        		recentItem.deleteEx(false);
         		
 				refresh();
         	}
@@ -281,37 +284,45 @@ public class DPRecentItems extends DashboardPanel implements EventListener, Tree
 	 * @see org.zkoss.zul.TreeitemRenderer#render(org.zkoss.zul.Treeitem, java.lang.Object)
 	 */
 	@Override
-	public void render(Treeitem ti, Object node) throws Exception
+	public void render(Treeitem ti, DefaultTreeNode<MRecentItem> node, int index) throws Exception
 	{
-		SimpleTreeNode stn = (SimpleTreeNode) node;
-		MRecentItem recentItem = (MRecentItem) stn.getData();
-		String label = recentItem.getLabel();
-		String action = "";
-		if(recentItem.getAD_Menu_ID() != 0) {
-			MMenu menu = MMenu.getFromId(Env.getCtx(), recentItem.getAD_Menu_ID());
-			action = menu.getAction();
-		}
-		String image = AEnv.getMenuIconFile(action);
-		Treecell tc = new Treecell(label, image);
-		
-		Treerow tr = null;
-		if (ti.getTreerow() == null)
-		{
-			tr = new Treerow();
-			tr.setParent(ti);
-			tr.addEventListener(Events.ON_CLICK, this);
-			tr.addEventListener(Events.ON_DOUBLE_CLICK, this);
-		}
-		else
-		{
-			tr = ti.getTreerow();
-			tr.getChildren().clear();
-		}
-		tr.setDraggable(DELETE_RECENTITEMS_DROPPABLE);
-		tc.setParent(tr);
-		ti.setTooltiptext(Msg.parseTranslation(Env.getCtx(), label + "\n\n" + MSG_ItemTooltip));
-		ti.setValue(node);
+	    MRecentItem recentItem = node.getData();
 
+	    if (recentItem == null) {
+	        return;
+	    }
+
+	    String label = recentItem.getLabel();
+	    String action = "";
+
+	    if (recentItem.getAD_Menu_ID() != 0) {
+	        MMenu menu = MMenu.getFromId(Env.getCtx(), recentItem.getAD_Menu_ID());
+	        action = menu.getAction();
+	    }
+
+	    String image = AEnv.getMenuIconFile(action);
+	    Treecell tc = new Treecell(label, image);
+
+	    Treerow tr = null;
+
+	    if (ti.getTreerow() == null)
+	    {
+	        tr = new Treerow();
+	        tr.setParent(ti);
+	        tr.addEventListener(Events.ON_CLICK, this);
+	        tr.addEventListener(Events.ON_DOUBLE_CLICK, this);
+	    }
+	    else
+	    {
+	        tr = ti.getTreerow();
+	        tr.getChildren().clear();
+	    }
+
+	    tr.setDraggable(DELETE_RECENTITEMS_DROPPABLE);
+	    tc.setParent(tr);
+
+	    ti.setTooltiptext(Msg.parseTranslation(Env.getCtx(), label + "\n\n" + MSG_ItemTooltip));
+	    ti.setValue(node);
 	}
 
 }

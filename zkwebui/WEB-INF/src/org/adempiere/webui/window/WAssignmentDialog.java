@@ -55,6 +55,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Timebox;
 
 /**
@@ -221,12 +222,14 @@ public class WAssignmentDialog extends Window implements EventListener
 
 		//	Set Resource
 		int S_Resource_ID = m_mAssignment.getS_Resource_ID();
-		
-		for (ListItem item : fResource.getItems()) {
-			if ( (Integer)item.getValue() == S_Resource_ID) {
-				fResource.setSelectedItem(item);
-				break;
-			}
+
+		for (Listitem listitem : fResource.getItems()) {
+		    ListItem item = (ListItem) listitem;
+
+		    if (((Integer) item.getValue()).intValue() == S_Resource_ID) {
+		        fResource.setSelectedItem(item);
+		        break;
+		    }
 		}
 		
 		ListItem listItem = fResource.getSelectedItem();

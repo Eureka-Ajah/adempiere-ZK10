@@ -932,61 +932,63 @@ public class ZkReportViewer extends Window implements EventListener {
 	 * Load Data Command
 	 */
 	private void cmd_load() {
-		log.config("");
-		if (!m_IsCanLoad) {
-			FDialog.error(m_WindowNo, this, "AccessCannotLoad", getTitle());
-			return;
-		}
-		//  Show File Open Dialog
-		Media file = null;
+	    log.config("");
 
-		try {
-			file = Fileupload.get(true);
-			if (file == null)
-				return;
-		}
-		catch (InterruptedException e)
-		{
-			log.warning(e.getLocalizedMessage());
-			return;
-		}
+	    if (!m_IsCanLoad) {
+	        FDialog.error(m_WindowNo, this, "AccessCannotLoad", getTitle());
+	        return;
+	    }
 
-		FileOutputStream fos = null;
-		try {
+	    // Show File Open Dialog
+	    Media file = null;
 
-			File tempFile = File.createTempFile("adempiere_", "_"+file.getName());
+	    file = Fileupload.get(true);
 
-			fos = new FileOutputStream(tempFile);
-			byte[] bytes = null;
-			if (file.inMemory()) {
-				bytes = file.getByteData();
-			} else {
-				InputStream is = file.getStreamData();
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				byte[] buf = new byte[ 1000 ];
-				int byteread = 0;
-				while (( byteread=is.read(buf) )!=-1)
-					baos.write(buf,0,byteread);
-				bytes = baos.toByteArray();
-			}
+	    if (file == null)
+	        return;
 
-			fos.write(bytes);
-			fos.flush();
-			fos.close();
-			if (ImpExpUtil.importPrintFormat(tempFile)) {
-				FDialog.info(m_WindowNo, this, "Report Definition Loaded", getTitle());
-				fillComboReport(m_reportEngine.getPrintFormat().get_ID());
-			}
-		} catch (IOException e) {
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			return;
-		} finally {
-			if (fos != null)
-				try {
-					fos.close();
-				} catch (IOException e) {}
-		}
-		
+	    FileOutputStream fos = null;
+
+	    try {
+	        File tempFile = File.createTempFile("adempiere_", "_" + file.getName());
+
+	        fos = new FileOutputStream(tempFile);
+
+	        byte[] bytes = null;
+
+	        if (file.inMemory()) {
+	            bytes = file.getByteData();
+	        } else {
+	            InputStream is = file.getStreamData();
+	            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	            byte[] buf = new byte[1000];
+	            int byteread = 0;
+
+	            while ((byteread = is.read(buf)) != -1)
+	                baos.write(buf, 0, byteread);
+
+	            bytes = baos.toByteArray();
+	        }
+
+	        fos.write(bytes);
+	        fos.flush();
+	        fos.close();
+
+	        if (ImpExpUtil.importPrintFormat(tempFile)) {
+	            FDialog.info(m_WindowNo, this, "Report Definition Loaded", getTitle());
+	            fillComboReport(m_reportEngine.getPrintFormat().get_ID());
+	        }
+	    } catch (IOException e) {
+	        log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+	        return;
+	    } finally {
+	        if (fos != null) {
+	            try {
+	                fos.close();
+	            } catch (IOException e) {
+	            }
+	        }
+	    }
 	}
 	
 	/**
@@ -1270,41 +1272,36 @@ public class ZkReportViewer extends Window implements EventListener {
 	 * @return isOk
 	 */
 	private boolean launchProcessPara() {
-		//	Create new Instance
-		ProcessInfo pi = new ProcessInfo(m_reportEngine.getProcessInfo().getTitle(), 
-				m_reportEngine.getProcessInfo().getAD_Process_ID(), 
-				m_reportEngine.getProcessInfo().getTable_ID(), 
-				m_reportEngine.getProcessInfo().getRecord_ID());
-		//	Launch dialog
-		ProcessModalDialog processModalDialog = new ProcessModalDialog(null, m_WindowNo, pi);
-		if (processModalDialog.isValidDialog()) {
-			try {
-				processModalDialog.setPage(this.getPage());
-				processModalDialog.doModal();
-				//	Valid
-				if(processModalDialog.isOK()) {
-					//	execute
-					//ProcessCtl worker = new ProcessCtl(null, m_WindowNo, pi, true, null);
-					//synchrous
-					//worker.run();
-					processModalDialog.runProcess();
-					//	
-					ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
-					//	
-					if(re != null) {
-						m_reportEngine.setQuery(re.getQuery());
-					}
-					//	
-					return true;
-				}
-			} catch (InterruptedException e) {
-				log.severe(e.getLocalizedMessage());
-			}
-		}
-		else
-			processModalDialog.runProcess();
-		//	Default
-		return false;
+	    ProcessInfo pi = new ProcessInfo(
+	            m_reportEngine.getProcessInfo().getTitle(),
+	            m_reportEngine.getProcessInfo().getAD_Process_ID(),
+	            m_reportEngine.getProcessInfo().getTable_ID(),
+	            m_reportEngine.getProcessInfo().getRecord_ID()
+	    );
+
+	    ProcessModalDialog processModalDialog = new ProcessModalDialog(null, m_WindowNo, pi);
+
+	    if (processModalDialog.isValidDialog()) {
+	        processModalDialog.setPage(this.getPage());
+	        processModalDialog.doModal();
+
+	        if (processModalDialog.isOK()) {
+	            processModalDialog.runProcess();
+
+	            ReportEngine re = ReportEngine.get(Env.getCtx(), pi);
+
+	            if (re != null) {
+	                m_reportEngine.setQuery(re.getQuery());
+	            }
+
+	            return true;
+	        }
+	    }
+	    else {
+	        processModalDialog.runProcess();
+	    }
+
+	    return false;
 	}
 
 	/**

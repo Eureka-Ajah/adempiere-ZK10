@@ -29,143 +29,156 @@ import org.zkoss.zul.event.ListDataEvent;
  * 
  * @author Low Heng Sin
  * @author Yamel Senih, ysenih@erpcya.com, ERPCyA http://www.erpcya.com
- *		<a href="https://github.com/adempiere/adempiere/issues/990">
- * 		@see FR [ 990 ] Sort Tab is not MVC</a>
+ *      <a href="https://github.com/adempiere/adempiere/issues/990">
+ *      @see FR [ 990 ] Sort Tab is not MVC</a>
  *
  */
-public class SimpleListModel extends AbstractListModel implements ListitemRenderer, ListitemRendererExt {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -572148106182756840L;
+public class SimpleListModel extends AbstractListModel<Object>
+        implements ListitemRenderer<Object>, ListitemRendererExt {
 
-	protected List list;
-	
-	private int[] maxLength;
+    private static final long serialVersionUID = -572148106182756840L;
 
-	public SimpleListModel() {
-		this(new ArrayList());
-	}
-	
-	public SimpleListModel(List list) {
-		this.list = list;
-	}
-	
-	public Object getElementAt(int index) {
-		if (index >= 0 && index < list.size())
-			return list.get(index);
-		else
-			return null;
-	}
+    protected List<Object> list;
 
-	public int getSize() {
-		return list.size();
-	}
+    private int[] maxLength;
 
-	protected StringBuffer truncate(String src, int maxLength) {
-		int j = maxLength;
-		while (j > 0 && Character.isWhitespace(src.charAt(j - 1)))
-			--j;
-		return new StringBuffer(j + 3)
-			.append(src.substring(0, j)).append("...");
-	}
-	
-	public void render(Listitem item, Object data) throws Exception {
-		if (data instanceof Object[]) {
-			renderArray(item, (Object[])data);
-		} else if (data instanceof Collection) {
-			renderCollection(item, (Collection)data);
-		} else {
-			String value = data != null ? data.toString() : "";
-			renderCell(0, item, value);
-		}		
-	}
-	
-	protected void renderCell(int col, Listitem item, String value) {
-		String tooltip = null;
-		if (maxLength != null && maxLength.length > col && maxLength[col] > 0 && value.length() > maxLength[col]) {
-			tooltip = value;
-			value = truncate(value, maxLength[col]).toString();
-		}
-		ListCell listCell = new ListCell(value);
-		listCell.setParent(item);			
-		if (tooltip != null)
-			listCell.setTooltiptext(tooltip);
-	}
+    public SimpleListModel() {
+        this(new ArrayList<Object>());
+    }
 
-	private void renderCollection(Listitem item, Collection data) {
-		int i = 0;
-		for (Object col : data) {
-			String value = (col != null ? col.toString() : "");
-			renderCell(i, item, value);
-			i++;
-		}
-	}
+    public SimpleListModel(List list) {
+        this.list = list;
+    }
 
-	private void renderArray(Listitem item, Object[] data) {
-		int i = 0;
-		for (Object col : data) {			
-			String value = (col != null ? col.toString() : "");
-			renderCell(i, item, value);
-			i++;
-		}
-	}
+    @Override
+    public Object getElementAt(int index) {
+        if (index >= 0 && index < list.size()) {
+            return list.get(index);
+        }
+        return null;
+    }
 
-	public int getControls() {
-		return DETACH_ON_RENDER;
-	}
+    @Override
+    public int getSize() {
+        return list.size();
+    }
 
-	public Listcell newListcell(Listitem item) {
-		return null;
-	}
+    protected StringBuffer truncate(String src, int maxLength) {
+        int j = maxLength;
+        while (j > 0 && Character.isWhitespace(src.charAt(j - 1))) {
+            --j;
+        }
+        return new StringBuffer(j + 3)
+                .append(src.substring(0, j))
+                .append("...");
+    }
 
-	public Listitem newListitem(Listbox listbox) {
-		ListItem item = new ListItem();
-		item.applyProperties();
-		return item;
-	}
-	
-	public void setMaxLength(int[] maxLength) {
-		this.maxLength = maxLength;
-	}
-	
-	public void addElement(Object obj) {
-		list.add(obj);
-		int index = list.size() - 1;
-		fireEvent(ListDataEvent.INTERVAL_ADDED, index, index);
-	}
-	
-	public void add(int index, Object obj) {
-		list.add(index, obj);
-		fireEvent(ListDataEvent.INTERVAL_ADDED, index, index);
-	}
+    @Override
+    public void render(Listitem item, Object data, int index) throws Exception {
+        if (data instanceof Object[]) {
+            renderArray(item, (Object[]) data);
+        } else if (data instanceof Collection) {
+            renderCollection(item, (Collection) data);
+        } else {
+            String value = data != null ? data.toString() : "";
+            renderCell(0, item, value);
+        }
+    }
 
-	public void removeAllElements() {
-		list.clear();
-		fireEvent(ListDataEvent.CONTENTS_CHANGED, -1, -1);
-	}
+    protected void renderCell(int col, Listitem item, String value) {
+        String tooltip = null;
 
-	public void removeElement(Object element) {
-		int index = list.indexOf(element);
-		list.remove(element);
-		fireEvent(ListDataEvent.INTERVAL_REMOVED, index, index); 
-	}
+        if (maxLength != null
+                && maxLength.length > col
+                && maxLength[col] > 0
+                && value.length() > maxLength[col]) {
+            tooltip = value;
+            value = truncate(value, maxLength[col]).toString();
+        }
 
-	public void setElementAt(Object element, int index) {
-		list.set(index, element);
-		fireEvent(ListDataEvent.CONTENTS_CHANGED, index, index);
-	}
+        ListCell listCell = new ListCell(value);
+        listCell.setParent(item);
 
-	public int indexOf(Object value) {
-		return list.indexOf(value);
-	}
-	
-	/**
-	 * Get List of elements
-	 * @return
-	 */
-	public List getElements() {
-		return list;
-	}
+        if (tooltip != null) {
+            listCell.setTooltiptext(tooltip);
+        }
+    }
+
+    private void renderCollection(Listitem item, Collection data) {
+        int i = 0;
+        for (Object col : data) {
+            String value = col != null ? col.toString() : "";
+            renderCell(i, item, value);
+            i++;
+        }
+    }
+
+    private void renderArray(Listitem item, Object[] data) {
+        int i = 0;
+        for (Object col : data) {
+            String value = col != null ? col.toString() : "";
+            renderCell(i, item, value);
+            i++;
+        }
+    }
+
+    @Override
+    public int getControls() {
+        return DETACH_ON_RENDER;
+    }
+
+    @Override
+    public Listcell newListcell(Listitem item) {
+        return null;
+    }
+
+    @Override
+    public Listitem newListitem(Listbox listbox) {
+        ListItem item = new ListItem();
+        item.applyProperties();
+        return item;
+    }
+
+    public void setMaxLength(int[] maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public void addElement(Object obj) {
+        list.add(obj);
+        int index = list.size() - 1;
+        fireEvent(ListDataEvent.INTERVAL_ADDED, index, index);
+    }
+
+    public void add(int index, Object obj) {
+        list.add(index, obj);
+        fireEvent(ListDataEvent.INTERVAL_ADDED, index, index);
+    }
+
+    public void removeAllElements() {
+        list.clear();
+        fireEvent(ListDataEvent.CONTENTS_CHANGED, -1, -1);
+    }
+
+    public void removeElement(Object element) {
+        int index = list.indexOf(element);
+
+        if (index >= 0) {
+            list.remove(index);
+            fireEvent(ListDataEvent.INTERVAL_REMOVED, index, index);
+        }
+    }
+
+    public void setElementAt(Object element, int index) {
+        list.set(index, element);
+        fireEvent(ListDataEvent.CONTENTS_CHANGED, index, index);
+    }
+
+    public int indexOf(Object value) {
+        return list.indexOf(value);
+    }
+
+    public List<Object> getElements() {
+        return list;
+    }
 }

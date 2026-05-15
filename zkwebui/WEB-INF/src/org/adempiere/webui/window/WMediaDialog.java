@@ -319,18 +319,13 @@ public class WMediaDialog extends Window implements EventListener
 		
 		Media media = null;
 		
-		try 
-		{
-			media = Fileupload.get(); 
-			
-			if (media == null)
-				return;
-		}
-		catch (InterruptedException e) 
-		{
-			e.printStackTrace();
-		}
+		 
 	
+		media = Fileupload.get(); 
+			
+		if (media == null)
+			return;
+		
 		String fileName = media.getName(); 
 		log.config(fileName);
 		//update		

@@ -170,8 +170,8 @@ public class WBrowserListItemRenderer implements ListitemRenderer, EventListener
 
 
 	@Override
-	public void render(Listitem item, Object data) throws Exception {
-		render((ListItem)item, data);
+	public void render(Listitem item, Object data, int index) throws Exception {
+	    render((ListItem) item, data);
 	}
 
 	/**

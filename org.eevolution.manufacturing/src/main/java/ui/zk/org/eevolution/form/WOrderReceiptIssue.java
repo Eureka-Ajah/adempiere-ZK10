@@ -444,107 +444,103 @@ ValueChangeListener,Serializable,WTableModelListener
 	@Override
 	public void onEvent(Event e) throws Exception 
 	{
-		if (e.getName().equals(Events.ON_CANCEL))
-		{
-			dispose();
-			return;
-		}
+	    if (e.getName().equals(Events.ON_CANCEL))
+	    {
+	        dispose();
+	        return;
+	    }
 
-		if (e.getTarget().equals(Process))
-		{
-			if (getMovementDate() == null)
-			{
-					try
-					{
-					Messagebox.show( Msg.parseTranslation(Env.getCtx(), "@MovementDate@ @NotFound@"), "Info",Messagebox.OK, Messagebox.INFORMATION);
-					}
-					catch (InterruptedException ex)
-					{
-						throw new AdempiereException (ex);
-					}
-				return;
-			}
+	    if (e.getTarget().equals(Process))
+	    {
+	        if (getMovementDate() == null)
+	        {
+	            Messagebox.show(
+	                    Msg.parseTranslation(Env.getCtx(), "@MovementDate@ @NotFound@"),
+	                    "Info",
+	                    Messagebox.OK,
+	                    Messagebox.INFORMATION
+	            );
+	            return;
+	        }
 
-			if ((isOnlyReceipt() || isBackflush()) && getM_Locator_ID() <= 0) 
-			{
-				try
-				{
-				Messagebox.show(Msg.parseTranslation(Env.getCtx(), "@MLocator_ID@ @NotFound@"),"Info", Messagebox.OK, Messagebox.INFORMATION);
-				}
-				catch (InterruptedException ex)
-				{
-					throw new AdempiereException (ex);
-				}
-				return;
-			}
+	        if ((isOnlyReceipt() || isBackflush()) && getM_Locator_ID() <= 0) 
+	        {
+	            Messagebox.show(
+	                    Msg.parseTranslation(Env.getCtx(), "@MLocator_ID@ @NotFound@"),
+	                    "Info",
+	                    Messagebox.OK,
+	                    Messagebox.INFORMATION
+	            );
+	            return;
+	        }
 
-			//  Switch Tabs
-			TabsReceiptsIssue.setSelectedIndex(1);
-			
-			generateSummaryTable();
-			int result = -1;
-			try
-			{
-			result = Messagebox.show(Msg.getMsg(Env.getCtx(), "Update"),"",Messagebox.OK|Messagebox.CANCEL,Messagebox.QUESTION);
-			}
-			catch (InterruptedException ex)
-			{
-				throw new AdempiereException(ex);
-			}
-			if ( result == Messagebox.OK)
-			{				
-				try
-				{
-				final boolean isCloseDocument = (Messagebox.show(Msg.parseTranslation(Env.getCtx(),"@IsCloseDocument@ : "+  getPP_Order().getDocumentNo()),"",Messagebox.OK|Messagebox.CANCEL,Messagebox.QUESTION) == Messagebox.OK);
+	        // Switch Tabs
+	        TabsReceiptsIssue.setSelectedIndex(1);
 
-				if (cmd_process(isCloseDocument, issue))
-				{
-					dispose();
-					return;
-				}
-				}
-				catch (InterruptedException ex)
-				{
-					throw new AdempiereException(ex);
-				}
-                Clients.showBusy(null, false);
-			}
-			TabsReceiptsIssue.setSelectedIndex(0);
-		}	
+	        generateSummaryTable();
 
-		if (e.getTarget().equals(pickcombo))
-		{
-			if (isOnlyReceipt())
-			{
-				enableToDeliver();
-				locatorLabel.setVisible(true);
-				locatorField.setVisible(true);
-				attribute.setVisible(true);
-				attributeLabel.setVisible(true);
-				issue.setVisible(false);
-			}
-			else if (isOnlyIssue())
-			{
-				disableToDeliver();
-				locatorLabel.setVisible(false);
-				locatorField.setVisible(false);
-				attribute.setVisible(false);
-				attributeLabel.setVisible(false);
-				issue.setVisible(true);
-				executeQuery();
-			}
-			else if (isBackflush())
-			{
-				enableToDeliver();
-				locatorLabel.setVisible(true);
-				locatorField.setVisible(true);
-				attribute.setVisible(true);
-				attributeLabel.setVisible(true);
-				issue.setVisible(true);
-				executeQuery();
-			}
-			setToDeliverQty(getOpenQty()); //reset toDeliverQty to openQty
-		}
+	        int result = Messagebox.show(
+	                Msg.getMsg(Env.getCtx(), "Update"),
+	                "",
+	                Messagebox.OK | Messagebox.CANCEL,
+	                Messagebox.QUESTION
+	        );
+
+	        if (result == Messagebox.OK)
+	        {
+	            final boolean isCloseDocument = Messagebox.show(
+	                    Msg.parseTranslation(Env.getCtx(), "@IsCloseDocument@ : " + getPP_Order().getDocumentNo()),
+	                    "",
+	                    Messagebox.OK | Messagebox.CANCEL,
+	                    Messagebox.QUESTION
+	            ) == Messagebox.OK;
+
+	            if (cmd_process(isCloseDocument, issue))
+	            {
+	                dispose();
+	                return;
+	            }
+
+	            Clients.clearBusy();
+	        }
+
+	        TabsReceiptsIssue.setSelectedIndex(0);
+	    }
+
+	    if (e.getTarget().equals(pickcombo))
+	    {
+	        if (isOnlyReceipt())
+	        {
+	            enableToDeliver();
+	            locatorLabel.setVisible(true);
+	            locatorField.setVisible(true);
+	            attribute.setVisible(true);
+	            attributeLabel.setVisible(true);
+	            issue.setVisible(false);
+	        }
+	        else if (isOnlyIssue())
+	        {
+	            disableToDeliver();
+	            locatorLabel.setVisible(false);
+	            locatorField.setVisible(false);
+	            attribute.setVisible(false);
+	            attributeLabel.setVisible(false);
+	            issue.setVisible(true);
+	            executeQuery();
+	        }
+	        else if (isBackflush())
+	        {
+	            enableToDeliver();
+	            locatorLabel.setVisible(true);
+	            locatorField.setVisible(true);
+	            attribute.setVisible(true);
+	            attributeLabel.setVisible(true);
+	            issue.setVisible(true);
+	            executeQuery();
+	        }
+
+	        setToDeliverQty(getOpenQty());
+	    }
 	}
 	
 	public void enableToDeliver()

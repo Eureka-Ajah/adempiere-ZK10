@@ -525,21 +525,28 @@ public class WPaySelect extends PaySelect
 		int procesId = 155;	//	C_PaySelection_CreatePayment
 
 		//	Execute Process
-		ProcessModalDialog processModalDialog = new ProcessModalDialog(this, m_WindowNo, procesId, X_C_PaySelection.Table_ID, m_ps.getC_PaySelection_ID(), false);
+		ProcessModalDialog processModalDialog = new ProcessModalDialog(
+		        this,
+		        m_WindowNo,
+		        procesId,
+		        X_C_PaySelection.Table_ID,
+		        m_ps.getC_PaySelection_ID(),
+		        false
+		);
+
 		if (processModalDialog.isValidDialog()) {
-			try {
-				processModalDialog.setWidth("500px");
-				processModalDialog.setVisible(true);
-				processModalDialog.setPage(form.getPage());
-				processModalDialog.doModal();
-			} catch (SuspendNotAllowedException e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			} catch (InterruptedException e) {
-				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			}
+		    try {
+		        processModalDialog.setWidth("500px");
+		        processModalDialog.setVisible(true);
+		        processModalDialog.setPage(form.getPage());
+		        processModalDialog.doModal();
+		    } catch (SuspendNotAllowedException e) {
+		        log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+		    }
 		}
-		else
-			processModalDialog.runProcess();
+		else {
+		    processModalDialog.runProcess();
+		}
 	}   //  generatePaySelect
 	
 	/**
@@ -550,7 +557,7 @@ public class WPaySelect extends PaySelect
 	{
 		if (m_isLock) return;
 		m_isLock = true;
-		Clients.showBusy(null, true);
+		Clients.showBusy(null);
 	}   //  lockUI
 
 	/**
@@ -562,7 +569,7 @@ public class WPaySelect extends PaySelect
 		if (!m_isLock) return;
 		m_isLock = false;
 		m_pi = pi;
-		Clients.showBusy(null, false);	
+		Clients.showBusy(null);	
 		
 		//TODO: The response returned is always Cancel
 //		if (!FDialog.ask(0, form, "VPaySelectPrint?", "(" + m_pi.getSummary() + ")"))

@@ -34,13 +34,18 @@ public class ListboxFactory {
 	 * @return WListbox
 	 */
 	public static WListbox newDataTable() {
-		WListbox dataTable = new WListbox();
-		dataTable.setWidth("100%");
-		dataTable.setHeight("100%");
-		dataTable.setFixedLayout(true);
-		dataTable.setVflex(true);
-		
-		return dataTable;
+	    WListbox dataTable = new WListbox();
+
+	    dataTable.setWidth("100%");
+	    dataTable.setFixedLayout(true);
+
+	    /*
+	     * ZK 8.6.0:
+	     * No usar setHeight("100%") junto con setVflex(true).
+	     */
+	    dataTable.setVflex(true);
+
+	    return dataTable;
 	}
 
 	public static Listbox newDropdownListbox(String[] items) {

@@ -428,40 +428,46 @@ public class WBankStatementMatch extends BankStatementMatchController
 	 *  Save Data
 	 */
 	public void saveData() {
-		try {
-			Trx.run(new TrxRunnable() {
-				public void run(String trxName) {
-					statusBar.setStatusLine(saveData(getWindowNo(), trxName));
-				}
-			});
-			//	If Ok
-			refresh();
-		} catch (Exception e) {
-			FDialog.error(getWindowNo(), "Error", e.getLocalizedMessage());
-			Clients.showBusy(null, false);
-		} finally {
-			if(isFromStatement()) {
-				dispose();
-			}
-		}
-	}   //  saveData
+	    try {
+	        Trx.run(new TrxRunnable() {
+	            public void run(String trxName) {
+	                statusBar.setStatusLine(saveData(getWindowNo(), trxName));
+	            }
+	        });
+
+	        refresh();
+	    } catch (Exception e) {
+	        FDialog.error(getWindowNo(), "Error", e.getLocalizedMessage());
+	        Clients.clearBusy();
+	    } finally {
+	        if (isFromStatement()) {
+	            dispose();
+	        }
+	    }
+	}  //  saveData
 	
 	/**
 	 * Refresh Data
 	 */
 	private void refresh() {
-		clear();
-		getParameters();
-		String message = validateParameters();
-		if(Util.isEmpty(message)) {
-			Clients.showBusy(null, true);
-			loadPayments();
-			loadImportedPayments();
-			loadMatchedPayments();
-			Clients.showBusy(null, false);
-		} else {
-			FDialog.error(getWindowNo(), getForm(), "ValidationError", Msg.parseTranslation(Env.getCtx(), message));
-		}
+	    clear();
+	    getParameters();
+
+	    String message = validateParameters();
+
+	    if (Util.isEmpty(message)) {
+	        Clients.showBusy("Procesando...");
+
+	        try {
+	            loadPayments();
+	            loadImportedPayments();
+	            loadMatchedPayments();
+	        } finally {
+	            Clients.clearBusy();
+	        }
+	    } else {
+	        FDialog.error(getWindowNo(), getForm(), "ValidationError", Msg.parseTranslation(Env.getCtx(), message));
+	    }
 	}
 	
 	/**

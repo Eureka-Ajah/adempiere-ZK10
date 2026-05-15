@@ -192,18 +192,23 @@ public class InOutGen extends GenForm
 			//
 			while (rs.next())
 			{
-				//  extend table
-				miniTable.setRowCount(row+1);
-				//  set values
-				miniTable.setValueAt(new IDColumn(rs.getInt(1)), row, 0);   //  C_Order_ID
-				miniTable.setValueAt(rs.getString(2), row, 1);              //  Org
-				miniTable.setValueAt(rs.getString(3), row, 2);              //  DocType
-				miniTable.setValueAt(rs.getString(4), row, 3);              //  Doc No
-				miniTable.setValueAt(rs.getString(5), row, 4);              //  BPartner
-				miniTable.setValueAt(rs.getTimestamp(6), row, 5);           //  DateOrdered
-				miniTable.setValueAt(rs.getBigDecimal(7), row, 6);          //  TotalLines
-				//  prepare next
-				row++;
+			    miniTable.setRowCount(row + 1);
+
+			    if (miniTable.getRowCount() <= row) {
+			        log.warning("MiniTable row was not created. row=" + row 
+			            + ", rowCount=" + miniTable.getRowCount());
+			        break;
+			    }
+
+			    miniTable.setValueAt(new IDColumn(rs.getInt(1)), row, 0);   // C_Order_ID / M_RMA_ID
+			    miniTable.setValueAt(rs.getString(2), row, 1);              // Org
+			    miniTable.setValueAt(rs.getString(3), row, 2);              // DocType
+			    miniTable.setValueAt(rs.getString(4), row, 3);              // Doc No
+			    miniTable.setValueAt(rs.getString(5), row, 4);              // BPartner
+			    miniTable.setValueAt(rs.getTimestamp(6), row, 5);           // DateOrdered / Created
+			    miniTable.setValueAt(rs.getBigDecimal(7), row, 6);          // TotalLines / Amt
+
+			    row++;
 			}
 			rs.close();
 			pstmt.close();

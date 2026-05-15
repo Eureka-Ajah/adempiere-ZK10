@@ -174,18 +174,21 @@ public class WStringEditor extends WEditor implements ContextMenuListener
 	        getComponent().setContext(popupMenu.getId());
 
 	        if (gridField.isAutocomplete()) {
-	        	Combobox combo = (Combobox)getComponent();
-	        	combo.setAutodrop(true);
-	        	combo.setAutocomplete(true);
-	        	combo.setButtonVisible(false);
-	        	List<String> items = gridField.getEntries();
-	        	for(String s : items) {
-	        		combo.appendItem(s);
-	        	}
+	            Combobox combo = (Combobox) getComponent();
+	            combo.setAutodrop(true);
+	            combo.setAutocomplete(true);
+	            combo.setButtonVisible(false);
+
+	            List<String> items = gridField.getEntries();
+
+	            for (String s : items) {
+	                combo.appendItem(s);
+	            }
 	        }
-	        //	BR [ 640 ]
-	        else  if (getComponent() instanceof org.zkoss.zul.api.Textbox)
-	        	((StringBox)component).setObscureType(obscureType);
+	        // BR [ 640 ]
+	        else if (component instanceof StringBox) {
+	            ((StringBox) component).setObscureType(obscureType);
+	        }  	((StringBox)component).setObscureType(obscureType);
 		}
     }
 

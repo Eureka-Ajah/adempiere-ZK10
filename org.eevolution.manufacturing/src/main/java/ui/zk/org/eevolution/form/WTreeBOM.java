@@ -52,10 +52,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.West;
-import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecol;
@@ -282,7 +282,10 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener,
 		if (M_Product_ID == 0)
 			return;
 		MProduct product = MProduct.get(getCtx(), M_Product_ID);
-        SimpleTreeNode parent = new SimpleTreeNode(productSummary(product, false), new ArrayList());
+		DefaultTreeNode parent = new DefaultTreeNode(
+		        productSummary(product, false),
+		        new ArrayList<DefaultTreeNode>()
+		);
 
 		dataBOM.clear();
 
@@ -349,13 +352,16 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener,
 		loadTableBOM();
 	}
 
-    public SimpleTreeNode parent(MPPProductBOMLine bomline)
+    public DefaultTreeNode parent(MPPProductBOMLine bomline)
 	{
 
 		
 		MProduct M_Product = MProduct.get(getCtx(), bomline.getM_Product_ID());
 		MPPProductBOM bomproduct = new MPPProductBOM(getCtx(), bomline.getPP_Product_BOM_ID(), null);
-        SimpleTreeNode parent = new SimpleTreeNode(productSummary(M_Product, false), new ArrayList());
+		DefaultTreeNode parent = new DefaultTreeNode(
+		        productSummary(M_Product, false),
+		        new ArrayList<DefaultTreeNode>()
+		);
 
 		Vector<Object> line = new Vector<Object>(17);
 		line.add(Boolean.FALSE);  //  0 Select
@@ -387,9 +393,12 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener,
 		return parent;
 	}
 
-	public SimpleTreeNode parent(MPPProductBOM bom)
+	public DefaultTreeNode parent(MPPProductBOM bom)
     {
-		SimpleTreeNode parent = new SimpleTreeNode(productSummary(bom), new ArrayList());
+		DefaultTreeNode parent = new DefaultTreeNode(
+		        productSummary(bom),
+		        new ArrayList<DefaultTreeNode>()
+		);
 
 		for (MPPProductBOMLine bomline : bom.getLines())
 		{
@@ -421,12 +430,15 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener,
 		return parent;
 	}
 
-    public SimpleTreeNode component(MProduct product)
+    public DefaultTreeNode component(MProduct product)
     {
 
 		if (isImplosion())
 		{
-            SimpleTreeNode parent = new SimpleTreeNode(productSummary(product, false), new ArrayList());
+			DefaultTreeNode parent = new DefaultTreeNode(
+			        productSummary(product, false),
+			        new ArrayList<DefaultTreeNode>()
+			);
 			for (MPPProductBOMLine bomline : MPPProductBOMLine.getByProduct(product))
 			{
 				parent.getChildren().add(parent(bomline));
@@ -439,7 +451,10 @@ public class WTreeBOM extends TreeBOM implements IFormController, EventListener,
 			{
 				return parent(bom);
 			}
-            return new SimpleTreeNode(productSummary(product, true), new ArrayList());
+			return new DefaultTreeNode(
+			        productSummary(product, true),
+			        new ArrayList<DefaultTreeNode>()
+			);
         }
 	}
 

@@ -1176,6 +1176,7 @@ public class MOrder extends X_C_Order implements DocAction
 	{
 		m_processMsg = null;
 		DocumentEngine engine = new DocumentEngine (this, getDocStatus());
+		log.warning("processAction=" + processAction + " | DocAction=" + getDocAction());
 		return engine.processIt (processAction, getDocAction());
 	}	//	processIt
 	

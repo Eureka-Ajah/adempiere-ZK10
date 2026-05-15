@@ -174,12 +174,17 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
     private void initComponents()
     {
-    	LayoutUtils.addSclass("adtab-content", this);
+        LayoutUtils.addSclass("adtab-content", this);
+
         grid = new Grid();
-        //have problem moving the following out as css class
-        grid.setWidth("100%");
-        grid.setHeight("100%");
-        grid.setVflex(true);
+
+        /*
+         * ZK 8.6.0:
+         * No se permite combinar setWidth("100%") con setHflex("1")
+         * en el mismo componente.
+         */
+        grid.setHflex("1");
+        grid.setVflex("1");
         grid.setStyle("margin:0; padding:0; position: absolute");
         grid.makeNoStrip();
 
@@ -187,6 +192,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         listPanel.setADTabPanel(this);
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
         listPanel.addEventListener(Events.ON_FOCUS, this);
+
         this.addEventListener(Events.ON_CLICK, this);
         this.addEventListener(Events.ON_FOCUS, this);
     }
@@ -234,7 +240,6 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 			layout.appendChild(west);
 
 			Center center = new Center();
-			center.setFlex(true);
 			center.appendChild(grid);
 			layout.appendChild(center);
 
@@ -840,18 +845,18 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
     {
 
     	if (getGrid() != null && activate)
-		{
-			Grid gridCurrent = getGrid();
-			((HtmlBasedComponent)gridCurrent).setStyle("border-left: 3px solid #009bde; "); //border-top: 1px solid #fa962f; border-bottom: 1px solid #fa962f; border-right: 1px solid #fa962f;");
-	    	gridCurrent.setWidth("99.1%");
-
-		}
+    	{
+    	    Grid gridCurrent = getGrid();
+    	    ((HtmlBasedComponent) gridCurrent).setStyle(
+    	        "margin:0; padding:0; position: absolute; border-left: 3px solid #009bde;"
+    	    );
+    	}
     	else if (getGrid() != null && !activate)
     	{
-    		Grid gridtPrevious = getGrid();
-			((HtmlBasedComponent)gridtPrevious).setStyle("border:none;");
-			gridtPrevious.setWidth("100%");
-			gridtPrevious.setHeight("100%");
+    	    Grid gridPrevious = getGrid();
+    	    ((HtmlBasedComponent) gridPrevious).setStyle(
+    	        "margin:0; padding:0; position: absolute; border:none;"
+    	    );
     	}
 		if (getListPanel() != null && activate)
 		{
@@ -994,7 +999,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
     	else if (event.getTarget() == treePanel.getTree()) {
     		Treeitem item =  treePanel.getTree().getSelectedItem();
-    		navigateTo((SimpleTreeNode)item.getValue());
+    		navigateTo((DefaultTreeNode)item.getValue());
     	}
     }
 
@@ -1082,7 +1087,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
     		editor.repaintComponent(isRow);
     }
 
-    private void navigateTo(SimpleTreeNode value) {
+    private void navigateTo(DefaultTreeNode value) {
     	MTreeNode treeNode = (MTreeNode) value.getData();
     	//  We Have a TreeNode
 		int nodeID = treeNode.getNode_ID();
@@ -1197,64 +1202,84 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         }
     }
 
-    private void deleteNode(int recordId) {
-		if (recordId <= 0) return;
+	private void deleteNode(int recordId) {
+	    if (recordId <= 0) return;
 
-		SimpleTreeModel model = (SimpleTreeModel) treePanel.getTree().getModel();
+	    Object treeModel = treePanel.getTree().getModel();
+	    SimpleTreeModel model = (SimpleTreeModel) treeModel;
 
-		if (treePanel.getTree().getSelectedItem() != null) {
-			SimpleTreeNode treeNode = (SimpleTreeNode) treePanel.getTree().getSelectedItem().getValue();
-			MTreeNode data = (MTreeNode) treeNode.getData();
-			if (data.getNode_ID() == recordId) {
-				model.removeNode(treeNode);
-				return;
-			}
-		}
+	    if (treePanel.getTree().getSelectedItem() != null) {
+	        DefaultTreeNode treeNode = (DefaultTreeNode) treePanel.getTree().getSelectedItem().getValue();
+	        MTreeNode data = (MTreeNode) treeNode.getData();
 
-		SimpleTreeNode treeNode = model.find(null, recordId);
-		if (treeNode != null) {
-			model.removeNode(treeNode);
-		}
+	        if (data.getNode_ID() == recordId) {
+	            model.removeNode(treeNode);
+	            return;
+	        }
+	    }
+
+	    DefaultTreeNode treeNode = model.find(null, recordId);
+	    if (treeNode != null) {
+	        model.removeNode(treeNode);
+	    }
 	}
 
 	private void addNewNode() {
-    	if (gridTab.getRecord_ID() > 0) {
-	    	String name = (String)gridTab.getValue("Name");
-			String description = (String)gridTab.getValue("Description");
-			boolean summary = gridTab.getValueAsBoolean("IsSummary");
-			String imageIndicator = (String)gridTab.getValue("Action");  //  Menu - Action
-			//
-			SimpleTreeModel model = (SimpleTreeModel) treePanel.getTree().getModel();
-			SimpleTreeNode treeNode = model.getRoot();
-			MTreeNode root = (MTreeNode) treeNode.getData();
-			MTreeNode node = new MTreeNode (gridTab.getRecord_ID(), 0, name, description,
-					root.getNode_ID(), summary, imageIndicator, false, null);
-			SimpleTreeNode newNode = new SimpleTreeNode(node, new ArrayList<Object>());
-			model.addNode(newNode);
-			int[] path = model.getPath(model.getRoot(), newNode);
-			Treeitem ti = treePanel.getTree().renderItemByPath(path);
-			treePanel.getTree().setSelectedItem(ti);
-    	}
+	    if (gridTab.getRecord_ID() > 0) {
+	        String name = (String) gridTab.getValue("Name");
+	        String description = (String) gridTab.getValue("Description");
+	        boolean summary = gridTab.getValueAsBoolean("IsSummary");
+	        String imageIndicator = (String) gridTab.getValue("Action");  // Menu - Action
+
+	        Object treeModel = treePanel.getTree().getModel();
+	        SimpleTreeModel model = (SimpleTreeModel) treeModel;
+
+	        DefaultTreeNode treeNode = model.getRoot();
+	        MTreeNode root = (MTreeNode) treeNode.getData();
+
+	        MTreeNode node = new MTreeNode(
+	                gridTab.getRecord_ID(),
+	                0,
+	                name,
+	                description,
+	                root.getNode_ID(),
+	                summary,
+	                imageIndicator,
+	                false,
+	                null
+	        );
+
+	        DefaultTreeNode newNode = new DefaultTreeNode(node);
+
+	        model.addNode(newNode);
+
+	        int[] path = model.getPath(newNode);
+	        Treeitem ti = treePanel.getTree().renderItemByPath(path);
+	        treePanel.getTree().setSelectedItem(ti);
+	    }
 	}
 
 	private void setSelectedNode(int recordId) {
-		if (recordId <= 0) return;
+	    if (recordId <= 0) return;
 
-		if (treePanel.getTree().getSelectedItem() != null) {
-			SimpleTreeNode treeNode = (SimpleTreeNode) treePanel.getTree().getSelectedItem().getValue();
-			MTreeNode data = (MTreeNode) treeNode.getData();
-			if (data.getNode_ID() == recordId) return;
-		}
+	    if (treePanel.getTree().getSelectedItem() != null) {
+	        DefaultTreeNode treeNode = (DefaultTreeNode) treePanel.getTree().getSelectedItem().getValue();
+	        MTreeNode data = (MTreeNode) treeNode.getData();
 
-		SimpleTreeModel model = (SimpleTreeModel) treePanel.getTree().getModel();
-		SimpleTreeNode treeNode = model.find(null, recordId);
-		if (treeNode != null) {
-			int[] path = model.getPath(model.getRoot(), treeNode);
-			Treeitem ti = treePanel.getTree().renderItemByPath(path);
-			treePanel.getTree().setSelectedItem(ti);
-		} else {
-			addNewNode();
-		}
+	        if (data.getNode_ID() == recordId) return;
+	    }
+
+	    Object treeModel = treePanel.getTree().getModel();
+	    SimpleTreeModel model = (SimpleTreeModel) treeModel;
+
+	    DefaultTreeNode treeNode = model.find(null, recordId);
+	    if (treeNode != null) {
+	        int[] path = model.getPath(treeNode);
+	        Treeitem ti = treePanel.getTree().renderItemByPath(path);
+	        treePanel.getTree().setSelectedItem(ti);
+	    } else {
+	        addNewNode();
+	    }
 	}
 	
 	/**
@@ -1878,11 +1903,10 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         ep.panelChildren = new Panelchildren();
         // Creating a Object to Grid And Apply Properties
         Grid newGrid = new Grid();
-        newGrid.setVflex(true);
+        newGrid.setHflex("1");
+        newGrid.setVflex("1");
         newGrid.setStyle("margin:0; padding:0; position: absolute; border: none;");
         newGrid.makeNoStrip();
-        newGrid.setWidth("100%");
-        newGrid.setHeight("100%");
         // Grid append to Panel Children
         ep.panelChildren.appendChild( newGrid );
         // Panel Children Append to Panel
@@ -1894,7 +1918,6 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         ep.embeddedGrid = newGrid;
         //Creating Rows based on the Grid
         Rows newRows = newGrid.newRows();
-        newRows.setWidth("100%");
         newRows.setHeight("100%");
         org.zkoss.zul.Row newRow = new Group();
         // Create a Row For ToolBar

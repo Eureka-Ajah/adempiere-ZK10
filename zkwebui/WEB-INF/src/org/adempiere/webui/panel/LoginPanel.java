@@ -70,7 +70,6 @@ import org.zkoss.zhtml.Td;
 import org.zkoss.zhtml.Tr;
 import org.zkoss.zk.au.out.AuFocus;
 import org.zkoss.zk.au.out.AuScript;
-import org.zkoss.zk.fn.ZkFns;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Session;

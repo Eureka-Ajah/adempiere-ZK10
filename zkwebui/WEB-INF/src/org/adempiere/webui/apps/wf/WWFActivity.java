@@ -277,7 +277,7 @@ public class WWFActivity extends ADForm implements EventListener
     			cmd_zoom();
     		else if (comp == bOK)
     		{
-    			Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"), true);
+    			Clients.showBusy("Procesando...");
     			Events.echoEvent("onOK", this, null);
     		}
     		else if (comp == fAnswerButton)
@@ -606,7 +606,7 @@ public class WWFActivity extends ADForm implements EventListener
 		log.config("Activity=" + m_activity);
 		if (m_activity == null)
 		{
-			Clients.showBusy(null, false);
+			Clients.showBusy("Procesando...");
 			return;
 		}
 		int AD_User_ID = Env.getAD_User_ID(Env.getCtx());
@@ -701,7 +701,7 @@ public class WWFActivity extends ADForm implements EventListener
 		}
 		finally
 		{
-			Clients.showBusy(null, false);
+			Clients.showBusy("Procesando...");
 			if (trx != null)
 				trx.close();
 			if(Util.isEmpty(errorMessage)) {

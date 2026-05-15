@@ -379,7 +379,8 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
 	 * @param data
 	 * @see RowRenderer#render(Row, Object)
 	 */
-	public void render(Row row, Object data) throws Exception {
+	@Override
+	public void render(Row row, Object data, int index) throws Exception {
 		
 		//don't render if not visible
 		if (gridPanel != null && !gridPanel.isVisible()) {
@@ -537,29 +538,32 @@ public class GridTabRowRenderer implements RowRenderer, RowRendererExt, Renderer
 				
 
 				String componentUuId = currentDiv.getComponent().getUuid();
-				Clients.evalJavaScript("$('#"+currentDiv.getAnchorInput().getUuid()+"')."
+				Clients.evalJavaScript("$('#" + currentDiv.getAnchorInput().getUuid() + "')."
 						+ "keyup(function(event) {"
-						+ "$('#"+componentUuId+" :input').each(function(){"
-						+" if (event.keyCode >= 48 && event.keyCode <= 90 || event.keyCode >= 96 && event.keyCode <= 105) {" 
-						+ "$(this).val(event.key);"
-						+ "}"
-						+"$(this).focus();"
-						+ "}});");
+						+ "$('#" + componentUuId + " :input').each(function(){"
+						+ " if ((event.keyCode >= 48 && event.keyCode <= 90) || (event.keyCode >= 96 && event.keyCode <= 105)) {"
+						+ "   $(this).val(event.key);"
+						+ " }"
+						+ " $(this).focus();"
+						+ "});"
+						+ "});");
 				
 				if (currentDiv.getComponent() instanceof NumberBox) {
 					componentUuId = ((Component)((Component)((Component)((Component)currentDiv.getComponent().getChildren().get(0)).getChildren().get(0)).getChildren().get(0)).getChildren().get(0)).getUuid();
 				}
 				
-				Clients.evalJavaScript("$('#"+currentDiv.getAnchorInput().getUuid()+"')."
+				Clients.evalJavaScript("$('#" + currentDiv.getAnchorInput().getUuid() + "')."
 						+ "keyup(function(event) {"
-						+"if (event.keyCode == 13) {"
-						+ "$('#"+componentUuId+"').show();"
-						+ "}"
-						+ "$('#"+componentUuId+"').focus();"
-						+ "$('#"+componentUuId+"').find('input').focus();"
-						+" if (event.keyCode >= 48 && event.keyCode <= 90 || event.keyCode >= 96 && event.keyCode <= 105) {" 
-						+ "$('#"+componentUuId+"').val(event.key);"
-						+ "$('#"+componentUuId+"').find('input').val(event.key);						}});");
+						+ " if (event.keyCode == 13) {"
+						+ "   $('#" + componentUuId + "').show();"
+						+ " }"
+						+ " $('#" + componentUuId + "').focus();"
+						+ " $('#" + componentUuId + "').find('input').focus();"
+						+ " if ((event.keyCode >= 48 && event.keyCode <= 90) || (event.keyCode >= 96 && event.keyCode <= 105)) {"
+						+ "   $('#" + componentUuId + "').val(event.key);"
+						+ "   $('#" + componentUuId + "').find('input').val(event.key);"
+						+ " }"
+						+ "});");
 				
 				editing = gridField.isEditable(true);
 			}  

@@ -265,7 +265,7 @@ public class WMerge extends Merge implements IFormController, EventListener
 				m_success = merge (columnName, from_ID, to_ID);
 				postMerge(columnName, to_ID);
 			} finally{
-				Clients.showBusy(null, false);
+				Clients.showBusy(null);
 				Clients.response(new AuEcho(form, "onAfterProcess", null));
 			}
 		}		

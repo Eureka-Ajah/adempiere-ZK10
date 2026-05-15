@@ -24,9 +24,9 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
-import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Toolbar;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
@@ -191,9 +191,10 @@ public class ADTreePanel extends Panel implements EventListener
 			return;	
 
 		//  try to find the node
-		SimpleTreeModel model = (SimpleTreeModel) tree.getModel();
-		SimpleTreeNode root = model.getRoot();
-		SimpleTreeNode node = model.find(null, keyID);
+		Object treeModel = tree.getModel();
+		SimpleTreeModel model = (SimpleTreeModel) treeModel;
+		DefaultTreeNode root = model.getRoot();
+		DefaultTreeNode node = model.find(null, keyID);
 		
 		//  Node not found and saved -> new
 		if (node == null && save)
@@ -201,9 +202,9 @@ public class ADTreePanel extends Panel implements EventListener
 			MTreeNode rootData = (MTreeNode) root.getData();
 			MTreeNode mTreeNode = new MTreeNode (keyID, 0, name, description,
 				rootData.getNode_ID(), isSummary, imageIndicator, false, null);
-			SimpleTreeNode newNode = new SimpleTreeNode(mTreeNode, null); 
+			DefaultTreeNode newNode = new DefaultTreeNode(mTreeNode);
 			model.addNode(root, newNode, 0);
-			int[] path = model.getPath(model.getRoot(), newNode);
+			int[] path = model.getPath(newNode);
 			Treeitem ti = tree.renderItemByPath(path);
 			tree.setSelectedItem(ti);
 		}
@@ -214,7 +215,7 @@ public class ADTreePanel extends Panel implements EventListener
 			MTreeNode mTreeNode = (MTreeNode) node.getData();
 			mTreeNode.setName (name);
 			mTreeNode.setAllowsChildren(isSummary);
-			int[] path = model.getPath(model.getRoot(), node);
+			int[] path = model.getPath(node);
 			Treeitem ti = tree.renderItemByPath(path);
 			tree.setSelectedItem(ti);
 		}

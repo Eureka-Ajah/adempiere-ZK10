@@ -32,7 +32,8 @@ import org.zkoss.zul.event.ListDataEvent;
  * @author Low Heng Sin
  *
  */
-public class GridTableListModel extends AbstractListModel implements TableModelListener, ListModelExt {
+@SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
+public class GridTableListModel extends AbstractListModel<Object> implements TableModelListener, ListModelExt<Object>  {
 	
 	/**
 	 * 
@@ -166,8 +167,8 @@ public class GridTableListModel extends AbstractListModel implements TableModelL
 	 * @param ascending
 	 * @see ListModelExt#sort(Comparator, boolean) 
 	 */
-	@SuppressWarnings("unchecked")
-	public void sort(Comparator cmpr, boolean ascending) {
+	@Override
+	public void sort(Comparator<Object> cmpr, boolean ascending) {
 		//use default zk comparator
 		if (cmpr instanceof ListitemComparator) {			
 			ListitemComparator lic = (ListitemComparator) cmpr;
@@ -222,6 +223,11 @@ public class GridTableListModel extends AbstractListModel implements TableModelL
 	 */
 	public void setEditing(boolean b) {
 		editing = b;
+	}
+	
+	@Override
+	public String getSortDirection(Comparator<Object> cmpr) {
+	    return "natural";
 	}
 
 }

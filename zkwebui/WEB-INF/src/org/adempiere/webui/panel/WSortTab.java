@@ -429,22 +429,29 @@ public class WSortTab extends Panel implements IADTabPanel {
 	 */
 	public void saveData()
 	{
-		//	BR [ 1027 ]
-		if(adWindowPanel != null) {
-			if (!adWindowPanel.getToolbar().isSaveEnable())
-				return;
-		} else {
-			return;
-		}
-			
-		log.fine("");
-		String info = sortTabController.saveData(noModel.getElements(), yesModel.getElements());
-		//
-		if (info == null) {
-			setIsChanged(false);
-		} else {
-			FDialog.error(windowNo, null, "SaveError", info.toString());
-		}
+	    // BR [ 1027 ]
+	    if (adWindowPanel != null) {
+	        if (!adWindowPanel.getToolbar().isSaveEnable())
+	            return;
+	    } else {
+	        return;
+	    }
+
+	    log.fine("");
+
+	    @SuppressWarnings("unchecked")
+	    List<ListElement> noElements = (List<ListElement>) (List<?>) noModel.getElements();
+
+	    @SuppressWarnings("unchecked")
+	    List<ListElement> yesElements = (List<ListElement>) (List<?>) yesModel.getElements();
+
+	    String info = sortTabController.saveData(noElements, yesElements);
+
+	    if (info == null) {
+	        setIsChanged(false);
+	    } else {
+	        FDialog.error(windowNo, null, "SaveError", info.toString());
+	    }
 	}	//	saveData
 
 	/**

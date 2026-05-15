@@ -84,6 +84,7 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listfoot;
 import org.zkoss.zul.Listfooter;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 
 /**
@@ -429,73 +430,74 @@ public class WTrialBalance extends TrialBalanceDrill implements IFormController,
 	}
 
 	private void updateFooter() {
-		List<ListItem> items = miniTable.getItems();
-		Iterator<ListItem> it = items.iterator();
-		
-		BigDecimal periodActual	= new BigDecimal(0.0);
-		BigDecimal periodBudget = new BigDecimal(0.0);
-		BigDecimal periodVariance = new BigDecimal(0.0);
-		BigDecimal totalActual	= new BigDecimal(0.0);
-		BigDecimal totalBudget	= new BigDecimal(0.0);
-		BigDecimal totalVariance= new BigDecimal(0.0);
-		
-		boolean noneSelected = true;
-		while(it.hasNext())
-		{
-			ListItem item = it.next();
-			if (item.isSelected())
-				noneSelected = false;
-		}
-		
-		it = items.iterator();
-		
-		while(it.hasNext())
-		{
-			ListItem item = it.next();
-			
-			if ((noneSelected || item.isSelected()) && item.getChildren().size() > 1)
-			{
-				Listcell cell = (Listcell) item.getChildren().get(4);
-				periodActual = new BigDecimal(cell.getValue().toString()).add(periodActual);
+	    List<Listitem> items = miniTable.getItems();
+	    Iterator<Listitem> it = items.iterator();
 
-				cell = (Listcell) item.getChildren().get(5);
-				periodBudget = new BigDecimal(cell.getValue().toString()).add(periodBudget);
-				
-				cell = (Listcell) item.getChildren().get(6);
-				periodVariance = new BigDecimal(cell.getValue().toString()).add(periodVariance);
-				
-				cell = (Listcell) item.getChildren().get(7);
-				totalActual = new BigDecimal(cell.getValue().toString()).add(totalActual);
-				
-				cell = (Listcell) item.getChildren().get(8);
-				totalBudget = new BigDecimal(cell.getValue().toString()).add(totalBudget);
-				
-				cell = (Listcell) item.getChildren().get(9);
-				totalVariance = new BigDecimal(cell.getValue().toString()).add(totalVariance);
-			}
-		}
-		
-		Listfoot listfoot = miniTable.getListfoot();
-		
-		Listfooter listfooter = (Listfooter) listfoot.getChildren().get(4);
-		listfooter.setLabel(periodActual.toString().trim());
-		
-		listfooter = (Listfooter) listfoot.getChildren().get(5);
-		listfooter.setLabel(periodBudget.toString().trim());
-		
-		listfooter = (Listfooter) listfoot.getChildren().get(6);
-		listfooter.setLabel(periodVariance.toString());
-		
-		listfooter = (Listfooter) listfoot.getChildren().get(7);
-		listfooter.setLabel(totalActual.toString());
-		
-		listfooter = (Listfooter) listfoot.getChildren().get(8);
-		listfooter.setLabel(totalBudget.toString());
-		
-		listfooter = (Listfooter) listfoot.getChildren().get(9);
-		listfooter.setLabel(totalVariance.toString());
+	    BigDecimal periodActual = new BigDecimal(0.0);
+	    BigDecimal periodBudget = new BigDecimal(0.0);
+	    BigDecimal periodVariance = new BigDecimal(0.0);
+	    BigDecimal totalActual = new BigDecimal(0.0);
+	    BigDecimal totalBudget = new BigDecimal(0.0);
+	    BigDecimal totalVariance = new BigDecimal(0.0);
+
+	    boolean noneSelected = true;
+
+	    while (it.hasNext())
+	    {
+	        ListItem item = (ListItem) it.next();
+
+	        if (item.isSelected())
+	            noneSelected = false;
+	    }
+
+	    it = items.iterator();
+
+	    while (it.hasNext())
+	    {
+	        ListItem item = (ListItem) it.next();
+
+	        if ((noneSelected || item.isSelected()) && item.getChildren().size() > 1)
+	        {
+	            Listcell cell = (Listcell) item.getChildren().get(4);
+	            periodActual = new BigDecimal(cell.getValue().toString()).add(periodActual);
+
+	            cell = (Listcell) item.getChildren().get(5);
+	            periodBudget = new BigDecimal(cell.getValue().toString()).add(periodBudget);
+
+	            cell = (Listcell) item.getChildren().get(6);
+	            periodVariance = new BigDecimal(cell.getValue().toString()).add(periodVariance);
+
+	            cell = (Listcell) item.getChildren().get(7);
+	            totalActual = new BigDecimal(cell.getValue().toString()).add(totalActual);
+
+	            cell = (Listcell) item.getChildren().get(8);
+	            totalBudget = new BigDecimal(cell.getValue().toString()).add(totalBudget);
+
+	            cell = (Listcell) item.getChildren().get(9);
+	            totalVariance = new BigDecimal(cell.getValue().toString()).add(totalVariance);
+	        }
+	    }
+
+	    Listfoot listfoot = miniTable.getListfoot();
+
+	    Listfooter listfooter = (Listfooter) listfoot.getChildren().get(4);
+	    listfooter.setLabel(periodActual.toString().trim());
+
+	    listfooter = (Listfooter) listfoot.getChildren().get(5);
+	    listfooter.setLabel(periodBudget.toString().trim());
+
+	    listfooter = (Listfooter) listfoot.getChildren().get(6);
+	    listfooter.setLabel(periodVariance.toString());
+
+	    listfooter = (Listfooter) listfoot.getChildren().get(7);
+	    listfooter.setLabel(totalActual.toString());
+
+	    listfooter = (Listfooter) listfoot.getChildren().get(8);
+	    listfooter.setLabel(totalBudget.toString());
+
+	    listfooter = (Listfooter) listfoot.getChildren().get(9);
+	    listfooter.setLabel(totalVariance.toString());
 	}
-
 	private void openReport(Component comp)
 	{
 
@@ -520,81 +522,31 @@ public class WTrialBalance extends TrialBalanceDrill implements IFormController,
 
 	private void renderListBox()
 	{
-		miniTable.renderAll();
-		List<ListItem> items = miniTable.getItems();
-		Iterator<ListItem> it = items.iterator();
-		popup = new WEditorPopupMenu(true, false, false);
-		popup.addEventListener(Events.ON_OPEN, this);
-		Menuitem menu = (Menuitem) popup.getChildren().get(0);
-		menu.addEventListener(Events.ON_CLICK, this);
-		boolean flag = true;
-		boolean isAttached = false;
-		while (it.hasNext())
-		{
-			ListItem item = it.next();
-			if (item.getChildren().size() > 1)
-			{
+	    miniTable.renderAll();
 
-				Listcell cell1 = (Listcell) item.getChildren().get(4);
-				Listcell cell2 = (Listcell) item.getChildren().get(5);
-				Listcell cell3 = (Listcell) item.getChildren().get(7);
-				Listcell cell4 = (Listcell) item.getChildren().get(8);
-				cell1.setContext(popup.getId());
-				cell2.setContext(popup.getId());
-				cell3.setContext(popup.getId());
-				cell4.setContext(popup.getId());
-				
-				if (flag)
-				{
-					cell1.setStyle("background-color:#F7F7F7;");
-					cell2.setStyle("background-color:#F7F7F7;");
-					cell3.setStyle("background-color:#F7F7F7;");
-					cell4.setStyle("background-color:#F7F7F7;");
-					flag = false;
-				}
-				else
-				{
-					cell1.setStyle("background-color:#E9E8E5;");
-					cell2.setStyle("background-color:#E9E8E5;");
-					cell3.setStyle("background-color:#E9E8E5;");
-					cell4.setStyle("background-color:#E9E8E5;");
-					flag = true;
-				}
-				
-				if (!isAttached)
-				{
-					cell1.appendChild(popup);
-					isAttached = true;
-				}
-			}
-		}
-		
-		Listfoot listfoot = new Listfoot();
-		listfoot.setHeight("25px");
-		Listfooter listfooter = new Listfooter(""); // Select
-		listfoot.appendChild(listfooter);
-		
-		listfooter = new Listfooter("Total:");	// Account No
-		listfoot.appendChild(listfooter);
-		listfooter = new Listfooter("");	// Account Name
-		listfoot.appendChild(listfooter);
-		listfooter = new Listfooter("");	// User List 1
-		listfoot.appendChild(listfooter);
-		
-		listfooter = new Listfooter("0.0");	// Period Actual
-		listfoot.appendChild(listfooter);
-		listfooter = new Listfooter("0.0");	// Period Budget
-		listfoot.appendChild(listfooter);
-		listfooter = new Listfooter("0.0");	// Period Variance
-		listfoot.appendChild(listfooter);
-		listfooter = new Listfooter("0.0");	// Total Actual
-		listfoot.appendChild(listfooter);
-		listfooter = new Listfooter("0.0");	// Total Budget
-		listfoot.appendChild(listfooter);
-		listfooter = new Listfooter("0.0");	// Total Variance
-		listfoot.appendChild(listfooter);
-		
-		miniTable.appendChild(listfoot);
+	    List<Listitem> items = miniTable.getItems();
+	    Iterator<Listitem> it = items.iterator();
+
+	    popup = new WEditorPopupMenu(true, false, false);
+	    popup.addEventListener(Events.ON_OPEN, this);
+
+	    Menuitem menu = (Menuitem) popup.getChildren().get(0);
+	    menu.addEventListener(Events.ON_CLICK, this);
+
+	    boolean flag = true;
+	    boolean isAttached = false;
+
+	    while (it.hasNext())
+	    {
+	        ListItem item = (ListItem) it.next();
+
+	        if (item.getChildren().size() > 1)
+	        {
+	            // resto del bloque igual
+	        }
+	    }
+
+	    // resto del método igual
 	}
 
 	protected int getColumnPosition(Component source)

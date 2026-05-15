@@ -1077,6 +1077,7 @@ public class MInOut extends X_M_InOut implements DocAction , DocumentReversalEna
 	{
 		processMsg = null;
 		DocumentEngine engine = new DocumentEngine (this, getDocStatus());
+		log.warning("processAction=" + processAction + " | DocAction=" + getDocAction());
 		return engine.processIt (processAction, getDocAction());
 	}	//	process
 

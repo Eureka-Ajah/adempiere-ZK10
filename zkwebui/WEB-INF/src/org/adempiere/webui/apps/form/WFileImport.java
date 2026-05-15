@@ -285,36 +285,33 @@ public class WFileImport extends FileImportController implements IFormController
 	 */
 	
 	private void cmd_loadFile() {
-		Media media = null;
-		InputStream file = null;
-		try {
-			media = Fileupload.get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		//	
-		if (media == null) {
-			return;
-		}
-		//	
-		if (media.isBinary()) {
-			file = media.getStreamData();
-		} else {
-			ListItem listitem = fCharset.getSelectedItem();
-			if (listitem == null) {
-				file = new ReaderInputStream(media.getReaderData());
-			} else {
-				Charset charset = (Charset)listitem.getValue();
-				file = new ReaderInputStream(media.getReaderData(), charset.name());
-			}
-		}
-		//	
-		log.config(media.getName());
-		bFile.setLabel(media.getName());
-		//	
-		cmd_reloadFile(file);
-	}
+	    Media media = null;
+	    InputStream file = null;
 
+	    media = Fileupload.get();
+
+	    if (media == null) {
+	        return;
+	    }
+
+	    if (media.isBinary()) {
+	        file = media.getStreamData();
+	    } else {
+	        ListItem listitem = fCharset.getSelectedItem();
+
+	        if (listitem == null) {
+	            file = new ReaderInputStream(media.getReaderData());
+	        } else {
+	            Charset charset = (Charset) listitem.getValue();
+	            file = new ReaderInputStream(media.getReaderData(), charset.name());
+	        }
+	    }
+
+	    log.config(media.getName());
+	    bFile.setLabel(media.getName());
+
+	    cmd_reloadFile(file);
+	}
 	/**
 	 *	Load Format
 	 */

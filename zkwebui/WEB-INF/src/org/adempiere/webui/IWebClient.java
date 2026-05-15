@@ -17,8 +17,6 @@ import org.compiere.model.MUser;
 import org.zkforge.keylistener.Keylistener;
 import org.zkoss.zk.ui.Page;
 
-import java.util.List;
-
 /**
  * 
  * @author hengsin
@@ -26,34 +24,32 @@ import java.util.List;
  */
 public interface IWebClient {
 
-	/**
-	 * login completed
-	 */
-	public void loginCompleted();
+    /**
+     * login completed
+     */
+    public void loginCompleted();
 
-	/**
-	 * logout
-	 */
-	public void logout();
+    /**
+     * logout
+     */
+    public void logout();
 
-	/**
-	 * 
-	 * @return IDesktop
-	 */
-	public IDesktop getApplicationDesktop();
-	
-	/**
-	 * @param user
-	 */
-	public void changeRole(MUser user);
+    /**
+     * 
+     * @return IDesktop
+     */
+    public IDesktop getApplicationDesktop();
 
-	public Page getPage();
+    /**
+     * @param user
+     */
+    public void changeRole(MUser user);
 
-	public List getChildren();
+    public Page getPage();
 
-	public void detach();
+    public void detach();
 
-	public void clearDesktop();
+    public void clearDesktop();
 
-	public Keylistener getKeylistener();
+    public Keylistener getKeylistener();
 }

@@ -43,10 +43,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.East;
 import org.zkoss.zul.North;
 import org.zkoss.zul.ListModel;
-import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Space;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
@@ -275,28 +275,36 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void onListSelection(Event e)
 	{
-		ListItem selected = null;
-		try		
-		{	
-			SimpleListModel model = (SimpleListModel) centerList.getModel();
-			int i = centerList.getSelectedIndex();
-			selected = (ListItem)model.getElementAt(i);
-		}
-		catch (Exception ex)
-		{
-		}
-		log.info("Selected=" + selected);
-		if (selected != null)	//	allow add if not in tree
-		{
-			SimpleTreeModel tm = (SimpleTreeModel) centerTree.getModel();
-			SimpleTreeNode stn = tm.find(tm.getRoot(), selected.id);
-			if (stn != null) {
-				int[] path = tm.getPath(tm.getRoot(), stn);
-				Treeitem ti = centerTree.renderItemByPath(path);
-				ti.setSelected(true);
-			}
-			bAdd.setEnabled(stn == null);
-		}
+	    ListItem selected = null;
+	    try
+	    {
+	        SimpleListModel model = (SimpleListModel) centerList.getModel();
+	        int i = centerList.getSelectedIndex();
+	        selected = (ListItem) model.getElementAt(i);
+	    }
+	    catch (Exception ex)
+	    {
+	    }
+
+	    log.info("Selected=" + selected);
+
+	    if (selected != null)
+	    {
+	        SimpleTreeModel tm = getSimpleTreeModel();
+	        if (tm == null) {
+	            return;
+	        }
+
+	        DefaultTreeNode stn = tm.find(tm.getRoot(), selected.id);
+
+	        if (stn != null) {
+	            int[] path = tm.getPath(stn);
+	            Treeitem ti = centerTree.renderItemByPath(path);
+	            ti.setSelected(true);
+	        }
+
+	        bAdd.setEnabled(stn == null);
+	    }
 	}	//	valueChanged
 	
 	/**
@@ -306,7 +314,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	private void onTreeSelection (Event e)
 	{
 		Treeitem ti = centerTree.getSelectedItem();
-		SimpleTreeNode stn = (SimpleTreeNode) ti.getValue();
+		DefaultTreeNode stn = (DefaultTreeNode) ti.getValue();
 		MTreeNode tn = (MTreeNode)stn.getData();
 		if (tn == null)
 			return;
@@ -329,27 +337,34 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void action_treeAdd(ListItem item)
 	{
-		log.info("Item=" + item);
-		if (item != null)
-		{
-			SimpleTreeModel model = (SimpleTreeModel) centerTree.getModel();
-			SimpleTreeNode stn = model.find(model.getRoot(), item.id);
-			if (stn != null) {
-				MTreeNode tNode = (MTreeNode) stn.getData();
-				tNode.setName(item.name);
-				tNode.setAllowsChildren(item.isSummary);
-				tNode.setImageIndicator(item.imageIndicator);
-				model.nodeUpdated(stn);
-				Treeitem ti = centerTree.renderItemByPath(model.getPath(model.getRoot(), stn));
-				ti.setTooltiptext(item.description);
-			} else {
-				stn = new SimpleTreeNode(new MTreeNode(item.id, 0, item.name, item.description, 0, item.isSummary,
-						item.imageIndicator, false, null), new ArrayList<Object>());
-				model.addNode(stn);
-			}
-			//	May cause Error if in tree
-			addNode(item);
-		}
+	    log.info("Item=" + item);
+
+	    if (item != null)
+	    {
+	        SimpleTreeModel model = getSimpleTreeModel();
+	        if (model == null) {
+	            return;
+	        }
+
+	        DefaultTreeNode stn = model.find(model.getRoot(), item.id);
+
+	        if (stn != null) {
+	            MTreeNode tNode = (MTreeNode) stn.getData();
+	            tNode.setName(item.name);
+	            tNode.setAllowsChildren(item.isSummary);
+	            tNode.setImageIndicator(item.imageIndicator);
+	            model.nodeUpdated(stn);
+
+	            Treeitem ti = centerTree.renderItemByPath(model.getPath(stn));
+	            ti.setTooltiptext(item.description);
+	        } else {
+	            stn = new DefaultTreeNode(new MTreeNode(item.id, 0, item.name, item.description, 0, item.isSummary,
+	                    item.imageIndicator, false, null));
+	            model.addNode(stn);
+	        }
+
+	        addNode(item);
+	    }
 	}	//	action_treeAdd
 	
 	/**
@@ -358,17 +373,23 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void action_treeDelete(ListItem item)
 	{
-		log.info("Item=" + item);
-		if (item != null)
-		{
-			SimpleTreeModel model = (SimpleTreeModel) centerTree.getModel();
-			SimpleTreeNode stn = model.find(model.getRoot(), item.id);
-			if (stn != null)
-				model.removeNode(stn);
-			
-			//
-			deleteNode(item);
-		}
+	    log.info("Item=" + item);
+
+	    if (item != null)
+	    {
+	        SimpleTreeModel model = getSimpleTreeModel();
+	        if (model == null) {
+	            return;
+	        }
+
+	        DefaultTreeNode stn = model.find(model.getRoot(), item.id);
+
+	        if (stn != null) {
+	            model.removeNode(stn);
+	        }
+
+	        deleteNode(item);
+	    }
 	}	//	action_treeDelete
 
 	
@@ -410,6 +431,19 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	public ADForm getForm() 
 	{
 		return form;
+	}
+	
+	private SimpleTreeModel getSimpleTreeModel() {
+	    Object treeModel = centerTree.getModel();
+
+	    if (treeModel instanceof SimpleTreeModel) {
+	        return (SimpleTreeModel) treeModel;
+	    }
+
+	    log.warning("Tree model is not SimpleTreeModel: "
+	            + (treeModel != null ? treeModel.getClass().getName() : "null"));
+
+	    return null;
 	}
 
 }	//	VTreeMaintenance

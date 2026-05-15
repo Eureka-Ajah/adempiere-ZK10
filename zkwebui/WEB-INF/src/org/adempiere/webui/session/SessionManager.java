@@ -162,8 +162,9 @@ public class SessionManager {
             }
 
             // clear remove all children and root component
-            application.getChildren().clear();
-            application.getPage().removeComponents();
+            if (application.getPage() != null) {
+                application.getPage().removeComponents();
+            }
             application.detach();
             application.clearDesktop();
         });
@@ -223,7 +224,11 @@ public class SessionManager {
                                         // Then
                                         application -> {
                                             applicationCache.remove(sessionId);
-                                            application.getChildren().clear();
+                                            if (application.getPage() != null) {
+                                                application.getPage().removeComponents();
+                                            }
+
+                                            application.detach();
                                             application.clearDesktop();
                                             application = null;
                                         }

@@ -754,37 +754,53 @@ public class GridPanel extends Borderlayout implements EventListener
 		} else {
 			Component cmp = null;
 			List<?> childs = row.getChildren();
+
 			for (Object o : childs) {
 				Component c = (Component) o;
+
 				if (!c.isVisible())
 					continue;
+
 				c = c.getFirstChild();
+
 				if (c == null)
 					continue;
+
 				if (c.getNextSibling() != null) {
 					cmp = c.getNextSibling();
 					break;
 				}
 			}
-			if (cmp != null)
-				Clients.response(new AuScript(null, "scrollToRow('" + cmp.getUuid() + "');"));
+
+			if (cmp != null) {
+				Clients.scrollIntoView(cmp);
+				Clients.response(new AuFocus(cmp));
+			}
 
 			if (columnOnClick != null && columnOnClick.trim().length() > 0) {
 				List<?> list = row.getChildren();
-				for(Object element : list) {
+
+				for (Object element : list) {
 					if (element instanceof Col) {
 						Col div = (Col) element;
+
 						if (columnOnClick.equals(div.getAttribute("columnName"))) {
-							cmp = div.getFirstChild().getNextSibling();
-							Clients.response(new AuScript(null, "scrollToRow('" + cmp.getUuid() + "');"));
+							Component firstChild = div.getFirstChild();
+
+							if (firstChild != null && firstChild.getNextSibling() != null) {
+								cmp = firstChild.getNextSibling();
+								Clients.scrollIntoView(cmp);
+								Clients.response(new AuFocus(cmp));
+							}
+
 							break;
 						}
 					}
 				}
+
 				columnOnClick = null;
 			}
 		}
-
 	}
 
 	private boolean isRowRendered(org.zkoss.zul.Row row, int index) {

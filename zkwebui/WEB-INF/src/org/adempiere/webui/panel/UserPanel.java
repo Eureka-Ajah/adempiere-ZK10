@@ -76,19 +76,22 @@ public class UserPanel extends Vbox  implements EventListener
 
     private void init()
     {
-    	this.setStyle("text-align:right");
-
-    	// Elaine 2008/11/07 - fix the layout problem in IE7
     	this.setWidth("100%");
     	this.setAlign("right");
+    	this.setPack("center");
+    	this.setStyle("text-align:right; height:42px; min-height:42px; overflow:visible;");
     	//
 
     	lblUserNameValue.setValue(getUserName() + "@" + getClientName() + "." + getOrgName());
-    	lblUserNameValue.setStyle("text-align:right");
+    	lblUserNameValue.setStyle("text-align:right; color:#ffffff; font-size:11px; line-height:14px; height:14px; white-space:nowrap;");
     	LayoutUtils.addSclass("desktop-header-font", lblUserNameValue);
     	this.appendChild(lblUserNameValue);
 
     	Hbox hbox = new Hbox();
+    	hbox.setWidth("100%");
+    	hbox.setPack("end");
+    	hbox.setAlign("center");
+    	hbox.setStyle("height:22px; min-height:22px; overflow:visible; justify-content:flex-end;");
     	
     	// TODO - make configurable
     	context.setLabel(Msg.getMsg(Env.getCtx(), "Context"));

@@ -121,60 +121,55 @@ public class WFilenameEditor extends WEditor
 	 */
 	private void cmd_file()
 	{
-		//  Show File Open Dialog
-		Media file = null;
+	    // Show File Open Dialog
+	    Media file = null;
 
-		try
-		{
-			file = Fileupload.get(true);
+	    file = Fileupload.get(true);
 
-			if (file == null)
-				return;
-		}
-		catch (InterruptedException e)
-		{
-			log.warning(e.getLocalizedMessage());
-			return;
-		}
+	    if (file == null)
+	        return;
 
-		// String fileName = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + ;
-		// File tempFile = new File(fileName);
+	    FileOutputStream fos = null;
+	    String fileName = null;
 
-		FileOutputStream fos = null;
-		String fileName = null;
-		try {
+	    try {
+	        File tempFile = File.createTempFile("adempiere_", "_" + file.getName());
+	        fileName = tempFile.getAbsolutePath();
 
-			File tempFile = File.createTempFile("adempiere_", "_"+file.getName());
-			fileName = tempFile.getAbsolutePath();
+	        fos = new FileOutputStream(tempFile);
 
-			fos = new FileOutputStream(tempFile);
-			byte[] bytes = null;
-			if (file.inMemory()) {
-				bytes = file.getByteData();
-			} else {
-				InputStream is = file.getStreamData();
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				byte[] buf = new byte[ 1000 ];
-				int byteread = 0;
-				while (( byteread=is.read(buf) )!=-1)
-					baos.write(buf,0,byteread);
-				bytes = baos.toByteArray();
-			}
+	        byte[] bytes = null;
 
-			fos.write(bytes);
-			fos.flush();
-			fos.close();
-		} catch (IOException e) {
-			log.log(Level.SEVERE, e.getLocalizedMessage(), e);
-			return;
-		} finally {
-			if (fos != null)
-				try {
-					fos.close();
-				} catch (IOException e) {}
-		}
+	        if (file.inMemory()) {
+	            bytes = file.getByteData();
+	        } else {
+	            InputStream is = file.getStreamData();
+	            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	            byte[] buf = new byte[1000];
+	            int byteread = 0;
 
-		getComponent().setText(fileName);
+	            while ((byteread = is.read(buf)) != -1)
+	                baos.write(buf, 0, byteread);
+
+	            bytes = baos.toByteArray();
+	        }
+
+	        fos.write(bytes);
+	        fos.flush();
+	        fos.close();
+	    } catch (IOException e) {
+	        log.log(Level.SEVERE, e.getLocalizedMessage(), e);
+	        return;
+	    } finally {
+	        if (fos != null) {
+	            try {
+	                fos.close();
+	            } catch (IOException e) {
+	            }
+	        }
+	    }
+
+	    getComponent().setText(fileName);
 	}   //  cmd_file
 
 	public String[] getEvents()

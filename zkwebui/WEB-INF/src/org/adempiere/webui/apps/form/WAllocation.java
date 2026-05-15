@@ -451,7 +451,7 @@ public class WAllocation extends Allocation
 		if(m_isCalculating)
 			return;
 		m_isCalculating = true;
-		Clients.showBusy(null,true);
+		Clients.showBusy(null);
 		
 		int row = e.getFirstRow();
 		int col = e.getColumn();
@@ -464,7 +464,7 @@ public class WAllocation extends Allocation
 
 		calculate();
 		
-		Clients.showBusy(null,false);
+		Clients.showBusy(null);
 		m_isCalculating = false;
 	}   //  tableChanged
 
@@ -580,7 +580,7 @@ public class WAllocation extends Allocation
 	 */
 	private void loadBPartner()
 	{
-		Clients.showBusy(null,true);
+		Clients.showBusy(null);
 		
 		//checkBPartner();
 		Vector<Vector<Object>> data = getPaymentData(multiCurrency.isSelected(), dateField.getValue(), paymentTable);
@@ -619,7 +619,7 @@ public class WAllocation extends Allocation
 		
 		//  Calculate Totals
 		calculate();
-		Clients.showBusy(null,false);
+		Clients.showBusy(null);
 	}   //  loadBPartner
 	
 	public void calculate()

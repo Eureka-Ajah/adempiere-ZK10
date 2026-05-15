@@ -60,19 +60,24 @@ public class ADTabListModel extends AbstractListModel implements ListitemRendere
 		}
 	}
 
-	public void render(Listitem item, Object data) throws Exception {
-		ADTabLabel tabLabel = (ADTabLabel)data;
-		Listcell cell = new Listcell(tabLabel.label, null);
-		if (tabLabel.tabLevel > 0) {
-			cell.setStyle("padding-left:" + (tabLabel.tabLevel*15+5) + "px");
-		}
-		cell.setParent(item);
-		int i = listItems.indexOf(tabLabel);
-		int s = tabbox.getSelectedIndex();
-		if (!tabbox.canNavigateTo(s, i))
-			cell.setVisible(false);
+	@Override
+	public void render(Listitem item, Object data, int index) throws Exception {
+	    ADTabLabel tabLabel = (ADTabLabel) data;
+	    Listcell cell = new Listcell(tabLabel.label, null);
+
+	    if (tabLabel.tabLevel > 0) {
+	        cell.setStyle("padding-left:" + (tabLabel.tabLevel * 15 + 5) + "px");
+	    }
+
+	    cell.setParent(item);
+
+	    int i = listItems.indexOf(tabLabel);
+	    int s = tabbox.getSelectedIndex();
+
+	    if (!tabbox.canNavigateTo(s, i)) {
+	        cell.setVisible(false);
+	    }
 	}
-	
 	public int getControls() {
 		return DETACH_ON_RENDER;
 	}

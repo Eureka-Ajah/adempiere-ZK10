@@ -14,52 +14,58 @@
 
 package org.adempiere.webui;
 
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Page;
+import org.zkoss.zk.ui.metainfo.ComponentInfo;
 import org.zkoss.zk.ui.sys.IdGenerator;
 
 public class SahiIdGenerator_v1 implements IdGenerator {
 
-	@Override
-	public String nextComponentUuid(Desktop desktop, Component comp) {
+    @Override
+    public String nextComponentUuid(Desktop desktop, Component comp, ComponentInfo compInfo) {
 
-		int     i = Integer.parseInt(desktop.getAttribute("Id_Num").toString());
-		i++;// Start from 1
-		
-		String id = (String) comp.getAttribute("zk_component_ID");
-		// Have to check for uniqueness or software will hang
-		if (id != null && id.length() > 0)
-		{
-			if (desktop.getComponentByUuidIfAny(id) != null) // The component ID already exists add a suffix to it.
-			{
-				desktop.setAttribute("Id_Num", String.valueOf(i));
-				return id + "_" + i;
-			}
-			else
-				return id;
-		}
-		
-		String prefix = (String) comp.getAttribute("zk_component_prefix");
-		if (prefix == null || prefix.length() == 0)
-			prefix = "zk_comp_";
+        int i = Integer.parseInt(desktop.getAttribute("Id_Num").toString());
+        i++; // Start from 1
 
-		desktop.setAttribute("Id_Num", String.valueOf(i));
-		return prefix + i;
-	}
+        String id = (String) comp.getAttribute("zk_component_ID");
 
-	@Override
-	public String nextDesktopId(Desktop desktop) {
-		if (desktop.getAttribute("Id_Num") == null) {
-			String number = "0";
-			desktop.setAttribute("Id_Num", number);
-		}
-		return null;
-	}
+        // Have to check for uniqueness or software will hang
+        if (id != null && id.length() > 0)
+        {
+            if (desktop.getComponentByUuidIfAny(id) != null)
+            {
+                desktop.setAttribute("Id_Num", String.valueOf(i));
+                return id + "_" + i;
+            }
+            else
+            {
+                return id;
+            }
+        }
 
-	@Override
-	public String nextPageUuid(Page page) {
-		return null;
-	}
+        String prefix = (String) comp.getAttribute("zk_component_prefix");
 
+        if (prefix == null || prefix.length() == 0)
+            prefix = "zk_comp_";
+
+        desktop.setAttribute("Id_Num", String.valueOf(i));
+        return prefix + i;
+    }
+
+    @Override
+    public String nextDesktopId(Desktop desktop) {
+        if (desktop.getAttribute("Id_Num") == null) {
+            String number = "0";
+            desktop.setAttribute("Id_Num", number);
+        }
+
+        return null;
+    }
+
+    @Override
+    public String nextPageUuid(Page page) {
+        return null;
+    }
 }

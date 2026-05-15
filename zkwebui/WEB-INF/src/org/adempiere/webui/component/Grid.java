@@ -86,41 +86,50 @@ public class Grid extends org.zkoss.zul.Grid
 			oddRowSclass = scls;
 		super.setOddRowSclass(scls);
 	}
+	
+	@Override
 	public boolean addEventListener(String evtnm, EventListener listener)
 	{
-		return addEventListener((listener instanceof Express) ? 1000 : 0, evtnm, listener);
+	    return addEventListener((listener instanceof Express) ? 1000 : 0, evtnm, listener);
 	}
 	
+	@Override
 	public boolean addEventListener(int priority, String evtnm, EventListener listener)
 	{
-		boolean b = super.addEventListener(evtnm, listener);
-		if (b)
-		{
-			final EventListenerInfo listenerInfo = new EventListenerInfo(priority, listener);
-			List<EventListenerInfo> list = listeners.get(evtnm);
-			if (list != null)
-			{
-				for (Iterator<EventListenerInfo> it = list.iterator(); it.hasNext();)
-				{
-					final EventListenerInfo li = it.next();
-					if (li.listener.equals(listener))
-					{
-						if (li.priority == priority)
-							return false; // nothing to do
-						it.remove(); // re-added later
-						break;
-					}
-				}
+	    boolean b = super.addEventListener(priority, evtnm, listener);
 
-				list.add(listenerInfo);
-			}
-			else
-			{
-				listeners.put(evtnm, list = new LinkedList<EventListenerInfo>());
-				list.add(listenerInfo);
-			}
-		}
-		return b;
+	    if (b)
+	    {
+	        final EventListenerInfo listenerInfo = new EventListenerInfo(priority, listener);
+	        List<EventListenerInfo> list = listeners.get(evtnm);
+
+	        if (list != null)
+	        {
+	            for (Iterator<EventListenerInfo> it = list.iterator(); it.hasNext();)
+	            {
+	                final EventListenerInfo li = it.next();
+
+	                if (li.listener.equals(listener))
+	                {
+	                    if (li.priority == priority)
+	                        return false;
+
+	                    it.remove();
+	                    break;
+	                }
+	            }
+
+	            list.add(listenerInfo);
+	        }
+	        else
+	        {
+	            list = new LinkedList<EventListenerInfo>();
+	            list.add(listenerInfo);
+	            listeners.put(evtnm, list);
+	        }
+	    }
+
+	    return b;
 	}
 
 	public boolean removeEventListener(String evtnm, EventListener listener)

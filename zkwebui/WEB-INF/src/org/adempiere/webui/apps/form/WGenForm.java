@@ -107,13 +107,16 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 			dynInit();
 			Borderlayout contentPane = new Borderlayout();
 			this.appendChild(contentPane);
-			contentPane.setWidth("99%");
-			contentPane.setHeight("100%");
+			contentPane.setHflex("1");
+			contentPane.setVflex("1");
+
 			Center center = new Center();
 			center.setStyle("border: none");
 			contentPane.appendChild(center);
+
+			tabbedPane.setHflex("1");
+			tabbedPane.setVflex("1");
 			center.appendChild(tabbedPane);
-			center.setFlex(true);
 			South south = new South();
 			south.setStyle("border: none");
 			contentPane.appendChild(south);
@@ -140,52 +143,73 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 	 */
 	void zkInit() throws Exception
 	{
-		//
-		selPanel.setWidth("99%");
-		selPanel.setHeight("90%");
-		selPanel.setStyle("border: none; position: absolute");
-		DesktopTabpanel tabpanel = new DesktopTabpanel();
-		tabpanel.appendChild(selPanel);
-		Tabpanels tabPanels = new Tabpanels();
-		tabPanels.appendChild(tabpanel);
-		tabbedPane.appendChild(tabPanels);
-		Tabs tabs = new Tabs();
-		tabbedPane.appendChild(tabs);
-		Tab tab = new Tab(Msg.getMsg(Env.getCtx(), "Select"));
-		tabs.appendChild(tab);
-		
-		North north = new North();
-		selPanel.appendChild(north);
-		north.appendChild(selNorthPanel);
-		
-		South south = new South();
-		selPanel.appendChild(south);
-		south.appendChild(confirmPanelSel);
-		
-		Center center = new Center();
-		selPanel.appendChild(center);
-		center.appendChild(miniTable);
-		center.setFlex(true);
-		miniTable.setHeight("99%");
-		confirmPanelSel.addActionListener(this);
-		//
-		tabpanel = new DesktopTabpanel();
-		tabPanels.appendChild(tabpanel);
-		tabpanel.appendChild(genPanel);
-		tab = new Tab(Msg.getMsg(Env.getCtx(), "Generate"));
-		tabs.appendChild(tab);
-		genPanel.setWidth("99%");
-		genPanel.setHeight("90%");
-		genPanel.setStyle("border: none; position: absolute");
-		center = new Center();
-		genPanel.appendChild(center);
-		Div div = new Div();
-		div.appendChild(info);
-		center.appendChild(div);
-		south = new South();
-		genPanel.appendChild(south);
-		south.appendChild(confirmPanelGen);
-		confirmPanelGen.addActionListener(this);		
+	    selPanel.setHflex("1");
+	    selPanel.setVflex("1");
+	    selPanel.setStyle("border: none;");
+
+	    DesktopTabpanel tabpanel = new DesktopTabpanel();
+	    tabpanel.setHflex("1");
+	    tabpanel.setVflex("1");
+	    tabpanel.appendChild(selPanel);
+
+	    Tabpanels tabPanels = new Tabpanels();
+	    tabPanels.setHflex("1");
+	    tabPanels.setVflex("1");
+	    tabPanels.appendChild(tabpanel);
+
+	    tabbedPane.setHflex("1");
+	    tabbedPane.setVflex("1");
+	    tabbedPane.appendChild(tabPanels);
+
+	    Tabs tabs = new Tabs();
+	    tabbedPane.appendChild(tabs);
+
+	    Tab tab = new Tab(Msg.getMsg(Env.getCtx(), "Select"));
+	    tabs.appendChild(tab);
+
+	    North north = new North();
+	    selPanel.appendChild(north);
+	    north.appendChild(selNorthPanel);
+
+	    South south = new South();
+	    selPanel.appendChild(south);
+	    south.appendChild(confirmPanelSel);
+
+	    Center center = new Center();
+	    selPanel.appendChild(center);
+	    center.appendChild(miniTable);
+
+	    // miniTable ya tiene vflex desde ListboxFactory.newDataTable().
+	    // No usar miniTable.setHeight("99%").
+	    confirmPanelSel.addActionListener(this);
+
+	    tabpanel = new DesktopTabpanel();
+	    tabpanel.setHflex("1");
+	    tabpanel.setVflex("1");
+	    tabPanels.appendChild(tabpanel);
+
+	    genPanel.setHflex("1");
+	    genPanel.setVflex("1");
+	    genPanel.setStyle("border: none;");
+	    tabpanel.appendChild(genPanel);
+
+	    tab = new Tab(Msg.getMsg(Env.getCtx(), "Generate"));
+	    tabs.appendChild(tab);
+
+	    center = new Center();
+	    genPanel.appendChild(center);
+
+	    Div div = new Div();
+	    div.setHflex("1");
+	    div.setVflex("1");
+	    div.appendChild(info);
+	    center.appendChild(div);
+
+	    south = new South();
+	    genPanel.appendChild(south);
+	    south.appendChild(confirmPanelGen);
+
+	    confirmPanelGen.addActionListener(this);
 	}	//	jbInit
 
 	/**
@@ -204,25 +228,22 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 	}	//	dynInit
 
 	public void postQueryEvent() 
-    {
-		Clients.showBusy(Msg.getMsg(Env.getCtx(), "Processing"), true);
-    	Events.echoEvent("onExecuteQuery", this, null);
-    }
-    
-    /**
-     * Dont call this directly, use internally to handle execute query event 
-     */
-    public void onExecuteQuery()
-    {
-    	try
-    	{
-    		genForm.executeQuery();
-    	}
-    	finally
-    	{
-    		Clients.showBusy(null, false);
-    	}
-    }
+	{
+	    Clients.showBusy("Procesando...");
+	    Events.echoEvent("onExecuteQuery", this, null);
+	}
+
+	public void onExecuteQuery()
+	{
+	    try
+	    {
+	        genForm.executeQuery();
+	    }
+	    finally
+	    {
+	        Clients.clearBusy();
+	    }
+	}
     
 	/**
 	 *	Action Listener
@@ -340,7 +361,7 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 		//	OK to print
 		if (FDialog.ask(getWindowNo(), this, genForm.getAskPrintMsg()))
 		{
-			Clients.showBusy("Processing...", true);
+			Clients.showBusy("Procesando...");
 			Clients.response(new AuEcho(this, "onPrint", null));			
 		}	//	OK to print
 	}
@@ -377,14 +398,14 @@ public class WGenForm extends ADForm implements EventListener, WTableModelListen
 				File outFile = File.createTempFile(genForm.getClass().getName(), ".pdf");					
 				AEnv.mergePdf(pdfList, outFile);
 
-				Clients.showBusy(null, false);
+				 Clients.clearBusy();
 				Window win = new SimplePDFViewer(getFormName(), new FileInputStream(outFile));
 				SessionManager.getAppDesktop().showWindow(win, "center");
 			} catch (Exception e) {
 				log.log(Level.SEVERE, e.getLocalizedMessage(), e);
 			}
 		} else if (pdfList.size() > 0) {
-			Clients.showBusy(null, false);
+			 Clients.clearBusy();
 			try {
 				Window win = new SimplePDFViewer(getFormName(), new FileInputStream(pdfList.get(0)));
 				SessionManager.getAppDesktop().showWindow(win, "center");

@@ -16,190 +16,99 @@
  *****************************************************************************/
 package org.adempiere.webui.panel;
 
-import java.text.DateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.logging.Level;
 
+import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Panel;
-import org.adempiere.webui.component.ToolBarButton;
 import org.adempiere.webui.window.InfoSchedule;
-import org.adempiere.webui.window.WAssignmentDialog;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.util.CLogger;
-import org.compiere.util.Env;
-import org.zkforge.timeline.Bandinfo;
-import org.zkforge.timeline.Timeline;
-import org.zkforge.timeline.event.BandScrollEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.MouseEvent;
 
 /**
- *	Visual and Control Part of Schedule.
- *  Contains Time and Schedule Panels
+ * Visual and Control Part of Schedule.
  *
- * 	@author 	Jorg Janke
- * 	@version 	$Id: VSchedule.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
- * 
- *  Zk Port
- *  @author Low Heng Sin
+ * Implementacion temporal compatible con ZK 8.6.0.
+ *
+ * La implementacion original dependia de org.zkforge.timeline:
+ * - org.zkforge.timeline.Timeline
+ * - org.zkforge.timeline.Bandinfo
+ * - org.zkforge.timeline.event.BandScrollEvent
+ *
+ * Esa libreria no esta disponible en el classpath actual de Eureka durante
+ * la migracion ZK 5 a ZK 8.6.0.
+ *
+ * Esta clase permite compilar y mantener operativo el flujo general.
+ * La vista grafica de agenda queda pendiente de reimplementacion.
  */
 public class WSchedule extends Panel implements EventListener
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7714179510197450419L;
+    private static final long serialVersionUID = 7714179510197450419L;
 
-	private InfoSchedule infoSchedule;
+    private static final CLogger log = CLogger.getCLogger(WSchedule.class);
 
-	/**
-	 *	Constructor
-	 *  @param is InfoSchedule for call back
-	 *  @param type Type of schedule TYPE_...
-	 */
-	public WSchedule (InfoSchedule is)
-	{		
-		infoSchedule = is;
-		
-		try
-		{
-			init();
-		}
-		catch(Exception e)
-		{
-			log.log(Level.SEVERE, "VSchedule", e);
-		}		
-	}	//	WSchedule
+    private InfoSchedule infoSchedule;
 
-	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(WSchedule.class);
+    private MResourceAssignment assignmentDialogResult;
 
-	Timeline timeLine;
-	private Bandinfo hourBand;
-	private Bandinfo dayBand;
+    /**
+     * Constructor.
+     *
+     * @param is InfoSchedule for callback
+     */
+    public WSchedule(InfoSchedule is)
+    {
+        infoSchedule = is;
 
-	private ToolBarButton button;
+        try
+        {
+            init();
+        }
+        catch (Exception e)
+        {
+            log.log(Level.SEVERE, "WSchedule", e);
+        }
+    }
 
-	private Bandinfo mthBand;
+    private void init() throws Exception
+    {
+        this.getChildren().clear();
 
-	private Date m_center;
+        Label label = new Label("Agenda no disponible temporalmente durante la migracion a ZK 8.6.0.");
+        label.setStyle("display:block; padding:10px; color:#666;");
 
-	private MResourceAssignment _assignmentDialogResult;
+        this.appendChild(label);
+    }
 
-	/**
-	 * 	Static init
-	 *  <pre>
-	 * 	timePanel (West)
-	 *  schedlePanel (in schedulePane - Center)
-	 *  </pre>
-	 * 	@throws Exception
-	 */
-	private void init() throws Exception
-	{
-		this.getChildren().clear();
-				
-		timeLine = new Timeline();
-		timeLine.setHeight("400px");
-		timeLine.setWidth("100%");
-		timeLine.setId("resoureSchedule");
-		
-		this.appendChild(timeLine);		
-		
-		initBandInfo();
-		
-		button = new ToolBarButton();
-		button.setLabel("Edit");
-		button.setStyle("visibility: hidden; height: 0px; width: 0px");
-		button.addEventListener(Events.ON_CLICK, this);
-		this.appendChild(button);
-	}	//	jbInit
+    /**
+     * Recreate View.
+     *
+     * @param S_Resource_ID Resource
+     * @param date Date
+     */
+    public void recreate(int S_Resource_ID, Date date)
+    {
+        if (infoSchedule != null && date != null)
+        {
+            infoSchedule.dateCallback(date);
+        }
+    }
 
-	private void initBandInfo() {
-		if (hourBand != null)
-			hourBand.detach();		
-		hourBand = new Bandinfo();
-		timeLine.appendChild(hourBand);
-		hourBand.setIntervalUnit("hour");
-		hourBand.setWidth("40%");
-		hourBand.setIntervalPixels(40);
-		hourBand.setTimeZone(TimeZone.getDefault());
-		
-		if (dayBand != null)
-			dayBand.detach();
-		dayBand = new Bandinfo();
-		timeLine.appendChild(dayBand);
-		dayBand.setIntervalUnit("day");
-		dayBand.setWidth("35%");
-		dayBand.setIntervalPixels(100);
-		dayBand.setSyncWith(hourBand.getId());		
-		dayBand.setTimeZone(TimeZone.getDefault());
-		dayBand.setShowEventText(false);
-		// listening band scroll event
-		dayBand.addEventListener("onBandScroll", this);
-		
-		if (mthBand != null)
-			mthBand.detach();
-		mthBand = new Bandinfo();
-		timeLine.appendChild(mthBand);
-		mthBand.setIntervalUnit("month");
-		mthBand.setWidth("25%");
-		mthBand.setIntervalPixels(150);
-		mthBand.setSyncWith(dayBand.getId());		
-		mthBand.setTimeZone(TimeZone.getDefault());
-		mthBand.setShowEventText(false);		
-	}
+    public void onAssignmentCallback()
+    {
+        if (assignmentDialogResult != null && infoSchedule != null)
+        {
+            infoSchedule.mAssignmentCallback(assignmentDialogResult);
+        }
 
-	/**
-	 * 	Recreate View
-	 * 	@param S_Resource_ID Resource
-	 * 	@param date Date
-	 */
-	public void recreate (int S_Resource_ID, Date date)
-	{
-		hourBand.setDate(date);
-		// Elaine 2008/12/12
-		dayBand.setDate(date);
-		mthBand.setDate(date);
-//		if (m_center == null || date.getTime() != m_center.getTime())
-//			hourBand.scrollToCenter(date);
-		//
-		
-		String feedUrl = "timeline?S_Resource_ID=" + S_Resource_ID + "&date=" + DateFormat.getInstance().format(date)
-			+ "&uuid=" + button.getUuid() + "&tlid=" + timeLine.getUuid();
-		hourBand.setEventSourceUrl(feedUrl);
-		dayBand.setEventSourceUrl(feedUrl);
-	}	//	recreate
+        assignmentDialogResult = null;
+    }
 
-	public void onAssignmentCallback() {
-		if (_assignmentDialogResult != null)
-			infoSchedule.mAssignmentCallback(_assignmentDialogResult);
-		_assignmentDialogResult = null;
-	}
-	
-	public void onEvent(Event event) throws Exception {
-		if (event instanceof MouseEvent) {
-			MouseEvent me = (MouseEvent) event;
-			if (me.getX() > 0) {
-				MResourceAssignment assignment = new MResourceAssignment(Env.getCtx(), me.getX(), null);
-				WAssignmentDialog wad = new WAssignmentDialog(assignment, false, infoSchedule.isCreateNew());
-				if (!wad.isCancelled()) {
-					_assignmentDialogResult =  wad.getMResourceAssignment();
-					Events.echoEvent("onAssignmentCallback", this, null);				
-				}
-			}
-		} else if (event instanceof BandScrollEvent){
-			BandScrollEvent e = (BandScrollEvent) event;
-			Date end = e.getMax();
-			Date start = e.getMin();
-			Date mid = e.getCenter();
-			if (mid != null) {
-				m_center = mid;
-				infoSchedule.dateCallback(mid);
-			}
-		}
-	}
-
+    @Override
+    public void onEvent(Event event) throws Exception
+    {
+        // Timeline deshabilitado temporalmente durante la migracion ZK 8.6.0.
+    }
 }	//	WSchedule

@@ -194,18 +194,10 @@ public class WImageDialog extends Window implements EventListener
 		//  Show File Open Dialog
 		Media imageFile = null;
 		
-		try 
-		{
-			imageFile = Fileupload.get(); 
+		imageFile = Fileupload.get(); 
 			
-			if (imageFile == null)
-				return;
-		}
-		catch (InterruptedException e) 
-		{
-			log.warning(e.getLocalizedMessage());
+		if (imageFile == null)
 			return;
-		}
 
 		String fileName = imageFile.getName();
 		

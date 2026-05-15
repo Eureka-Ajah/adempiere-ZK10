@@ -53,13 +53,13 @@ import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Center;
+import org.zkoss.zul.DefaultTreeNode;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.West;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecol;
 import org.zkoss.zul.Treecols;
@@ -209,27 +209,34 @@ public class WCRPDetail extends CRPDetail implements IFormController,
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Tree getTree() {
-		Tree tree = new Tree();
+	    Tree tree = new Tree();
 
-		List<String> nodes = model.getDataset().getColumnKeys();
-        SimpleTreeNode root = new SimpleTreeNode(getResource(resource.getValue()).getName(),
-                new ArrayList());
-		for (String node : nodes) {
-            root.getChildren().add(new SimpleTreeNode(node, new ArrayList()));
-        }
+	    List<String> nodes = model.getDataset().getColumnKeys();
 
-		Treecols treeCols = new Treecols();
-		tree.appendChild(treeCols);
-		Treecol treeCol = new Treecol();
-		treeCols.appendChild(treeCol);
+	    DefaultTreeNode root = new DefaultTreeNode(
+	            getResource(resource.getValue()).getName(),
+	            new ArrayList<DefaultTreeNode>()
+	    );
 
-		SimpleTreeModel model = new SimpleTreeModel(root);
-		tree.setPageSize(-1);
-		tree.setTreeitemRenderer(model);
-		tree.setModel(model);
+	    for (String node : nodes) {
+	        root.getChildren().add(new DefaultTreeNode(node));
+	    }
 
-		return tree;
+	    Treecols treeCols = new Treecols();
+	    tree.appendChild(treeCols);
+
+	    Treecol treeCol = new Treecol();
+	    treeCols.appendChild(treeCol);
+
+	    SimpleTreeModel treeModel = new SimpleTreeModel(root);
+
+	    tree.setPageSize(-1);
+	    tree.setTreeitemRenderer(treeModel);
+	    tree.setModel(treeModel);
+
+	    return tree;
 	}
 
 	private String getChartTitle() {

@@ -49,7 +49,6 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -58,7 +57,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
@@ -144,7 +142,7 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
         leftRegion.setCollapsible(true);
         leftRegion.setSplittable(true);
         leftRegion.setTitle("Navigation");
-        leftRegion.setFlex(true);
+
         leftRegion.addEventListener(Events.ON_OPEN, new EventListener() {			
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -190,7 +188,6 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 
         windowArea = new Center();
         windowArea.setParent(layout);
-        windowArea.setFlex(true);
 
         windowContainer.createPart(windowArea);
 
@@ -463,18 +460,16 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 	}
 	
 	private void autoHideMenu() {
-		if (layout.getWest().isCollapsible() && !layout.getWest().isOpen())
-		{
-			//using undocumented js api, need to be retested after every version upgrade
-			String id = layout.getWest().getUuid() + "!real";
-			String btn = layout.getWest().getUuid() + "!btn";
-			String script = "zk.show('" + id + "', false);";
-			script += "$e('"+id+"')._isSlide = false;";
-			script += "$e('"+id+"')._lastSize = null;";
-			script += "$e('"+btn+"').style.display = '';";
-			AuScript aus = new AuScript(layout.getWest(), script);
-			Clients.response("autoHideWest", aus);
-		}
+	    if (layout == null || layout.getWest() == null) {
+	        return;
+	    }
+
+	    West west = layout.getWest();
+
+	    if (west.isCollapsible() && !west.isOpen()) {
+	        west.setOpen(true);
+	        west.invalidate();
+	    }
 	}
 
 	@Override

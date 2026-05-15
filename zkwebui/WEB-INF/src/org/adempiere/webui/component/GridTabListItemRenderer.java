@@ -74,9 +74,11 @@ public class GridTabListItemRenderer implements ListitemRenderer, ListitemRender
 	/**
 	 * @param listitem
 	 * @param data
-	 * @see ListitemRenderer#render(Listitem, Object)
+	 * @param index
+	 * @see ListitemRenderer#render(Listitem, Object, int)
 	 */
-	public void render(Listitem listitem, Object data) throws Exception {
+	@Override
+	public void render(Listitem listitem, Object data, int index) throws Exception {
 		//don't render if not visible
 		for(Component c = listitem.getParent(); c != null; c = c.getParent()) {
 			if (!c.isVisible())

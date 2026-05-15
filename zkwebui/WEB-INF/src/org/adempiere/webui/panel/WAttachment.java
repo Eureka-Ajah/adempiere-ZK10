@@ -110,49 +110,44 @@ public class WAttachment extends Window implements EventListener
 	 *  @param trxName transaction
 	 */
 	
-	public WAttachment(	int WindowNo, int AD_Attachment_ID,
-						int AD_Table_ID, int Record_ID, String trxName)
+	public WAttachment(int WindowNo, int AD_Attachment_ID,
+	        int AD_Table_ID, int Record_ID, String trxName)
 	{
-		super();
-		
-		log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
+	    super();
 
-		m_WindowNo = WindowNo;
+	    log.config("ID=" + AD_Attachment_ID + ", Table=" + AD_Table_ID + ", Record=" + Record_ID);
 
-		try
-		{
-			staticInit();
-		}
-		catch (Exception ex)
-		{
-			log.log(Level.SEVERE, "", ex);
-		}
-		
-		//	Create Model
-		
-		if (AD_Attachment_ID == 0)
-			m_attachment = new MAttachment (Env.getCtx(), AD_Table_ID, Record_ID, trxName);
-		else
-			m_attachment = new MAttachment (Env.getCtx(), AD_Attachment_ID, trxName);
-		
-		loadAttachments();
+	    m_WindowNo = WindowNo;
 
-		try
-		{
-			setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);			
-			AEnv.showWindow(this);
-			displayData(0, false);
-			String script = "setTimeout(\"$e('"+ preview.getUuid() + "').src = $e('" +
-			preview.getUuid() + "').src\", 1000)";
-			Clients.evalJavaScript(script);
-			
-			//enter modal
-			doModal();
-		}
-		catch (Exception e)
-		{
-		}
-		
+	    try
+	    {
+	        staticInit();
+	    }
+	    catch (Exception ex)
+	    {
+	        log.log(Level.SEVERE, "", ex);
+	    }
+
+	    if (AD_Attachment_ID == 0)
+	        m_attachment = new MAttachment(Env.getCtx(), AD_Table_ID, Record_ID, trxName);
+	    else
+	        m_attachment = new MAttachment(Env.getCtx(), AD_Attachment_ID, trxName);
+
+	    loadAttachments();
+
+	    try
+	    {
+	        setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
+	        AEnv.showWindow(this);
+
+	        displayData(0, false);
+
+	        doModal();
+	    }
+	    catch (Exception e)
+	    {
+	        log.log(Level.SEVERE, "Error opening attachment window", e);
+	    }
 	} // WAttachment
 
 	/**
@@ -445,58 +440,46 @@ public class WAttachment extends Window implements EventListener
 	
 	private void loadFile()
 	{
-		log.info("");
-		
-		preview.setVisible(false);
-		
-		Media media = null;
-		
-		try 
-		{
-			media = Fileupload.get(true); 
-			
-			if (media != null)
-			{
-//				pdfViewer.setContent(media);
-				;
-			}
-			else 
-			{
-				preview.setVisible(true);
-				preview.invalidate();
-				return;
-			}
-		}
-		catch (InterruptedException e) 
-		{
-			log.log(Level.WARNING, e.getLocalizedMessage(), e);
-		}
-	
-		String fileName = media.getName(); 
-		log.config(fileName);
-		int cnt = m_attachment.getEntryCount();
-		
-		//update		
-		for (int i = 0; i < cnt; i++) 
-		{
-			if (m_attachment.getEntryName(i).equals(fileName))
-			{
-				m_attachment.updateEntry(i, getMediaData(media));
-				cbContent.setSelectedIndex(i);
-				displayData(cbContent.getSelectedIndex(), false);
-				m_change = true;
-				return;
-			}
-		}
-		
-		//new		
-		if (m_attachment.addEntry(fileName, getMediaData(media)))
-		{
-			cbContent.appendItem(media.getName(), media.getName());
-			cbContent.setSelectedIndex(cbContent.getItemCount()-1);
-			displayData(cbContent.getSelectedIndex(), false);
-			m_change = true;
-		}
+	    log.info("");
+
+	    preview.setVisible(false);
+
+	    Media media = null;
+
+	    media = Fileupload.get(true);
+
+	    if (media == null)
+	    {
+	        preview.setVisible(true);
+	        preview.invalidate();
+	        return;
+	    }
+
+	    String fileName = media.getName();
+	    log.config(fileName);
+	    int cnt = m_attachment.getEntryCount();
+
+	    // update
+	    for (int i = 0; i < cnt; i++)
+	    {
+	        if (m_attachment.getEntryName(i).equals(fileName))
+	        {
+	            m_attachment.updateEntry(i, getMediaData(media));
+	            cbContent.setSelectedIndex(i);
+	            displayData(cbContent.getSelectedIndex(), false);
+	            m_change = true;
+	            return;
+	        }
+	    }
+
+	    // new
+	    if (m_attachment.addEntry(fileName, getMediaData(media)))
+	    {
+	        cbContent.appendItem(media.getName(), media.getName());
+	        cbContent.setSelectedIndex(cbContent.getItemCount() - 1);
+	        displayData(cbContent.getSelectedIndex(), false);
+	        m_change = true;
+	    }
 	}	//	getFileName
 
 	private byte[] getMediaData(Media media) {

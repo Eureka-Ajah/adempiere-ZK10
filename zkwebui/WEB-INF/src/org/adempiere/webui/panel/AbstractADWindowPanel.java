@@ -1761,41 +1761,42 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
     /**
      * @see ToolbarListener#onPrint()
      */
-	public void onPrint() {
-		GridTab currentTab = toolbar.getCurrentPanel().getGridTab();
-		//Get process defined for this tab
-		int AD_Process_ID = currentTab.getAD_Process_ID();
-		//log.info("ID=" + AD_Process_ID);
+    public void onPrint() {
+        GridTab currentTab = toolbar.getCurrentPanel().getGridTab();
 
-		//	No report defined
-		if (AD_Process_ID == 0)
-		{
-			onReport();
+        int AD_Process_ID = currentTab.getAD_Process_ID();
 
-			return;
-		}
+        if (AD_Process_ID == 0)
+        {
+            onReport();
+            return;
+        }
 
-		if (!onSave(false))
-			return;
-		//
-		int tableId = currentTab.getAD_Table_ID();
-		int recordId = currentTab.getRecord_ID();
+        if (!onSave(false))
+            return;
 
-		boolean isDirectPrint = MProcess.get(ctx, AD_Process_ID).isDirectPrint();
-		ProcessModalDialog processModalDialog = new ProcessModalDialog(this,getWindowNo(), AD_Process_ID,tableId, recordId, isDirectPrint);
-		if (processModalDialog.isValidDialog()) {
-			processModalDialog.setPosition("center");
-			try {
-				processModalDialog.setPage(this.getComponent().getPage());
-				processModalDialog.doModal();
-			}
-			catch (InterruptedException e) {
-			}
-		}
-		else
-			processModalDialog.runProcess();
-	}
+        int tableId = currentTab.getAD_Table_ID();
+        int recordId = currentTab.getRecord_ID();
 
+        boolean isDirectPrint = MProcess.get(ctx, AD_Process_ID).isDirectPrint();
+        ProcessModalDialog processModalDialog = new ProcessModalDialog(
+                this,
+                getWindowNo(),
+                AD_Process_ID,
+                tableId,
+                recordId,
+                isDirectPrint
+        );
+
+        if (processModalDialog.isValidDialog()) {
+            processModalDialog.setPosition("center");
+            processModalDialog.setPage(this.getComponent().getPage());
+            processModalDialog.doModal();
+        }
+        else {
+            processModalDialog.runProcess();
+        }
+    }
 	/**
      * @see ToolbarListener#onReport()
      */
@@ -2345,14 +2346,14 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		m_uiLocked = true;
 
 		if (Executions.getCurrent() != null)
-			Clients.showBusy(null, true);
+			Clients.showBusy("Procesando...");
 		else
 		{
 			try {
 				//get full control of desktop
 				Executions.activate(getComponent().getDesktop(), 2000);
 				try {
-					Clients.showBusy(null, true);
+					Clients.showBusy("Procesando...");
                 } catch(Error ex){
                 	throw ex;
                 } finally{
@@ -2385,7 +2386,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 			{
 				updateUI(pi);
 			} else {
-				Clients.showBusy(null, false);
+				Clients.showBusy("Procesando...");
 			}
 		}
 		else
@@ -2398,7 +2399,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 					{
 						updateUI(pi);
 					} else {
-						Clients.showBusy(null, false);
+						Clients.showBusy("Procesando...");
 					}
                 } catch(Error ex){
                 	throw ex;
@@ -2430,7 +2431,7 @@ public abstract class AbstractADWindowPanel extends AbstractUIPart implements To
 		ProcessInfoUtil.setLogFromDB(pi);
 		String logInfo = pi.getLogInfo();
 		//	
-		Clients.showBusy(null, false);
+		Clients.showBusy("Procesando...");
 		if (logInfo.length() > 0)
 			FDialog.info(curWindowNo, this.getComponent(), Env.getHeader(ctx, curWindowNo),
 				pi.getTitle() + "<br>" + logInfo);

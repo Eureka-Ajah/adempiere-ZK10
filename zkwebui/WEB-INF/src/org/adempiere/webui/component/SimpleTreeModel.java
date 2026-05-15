@@ -17,8 +17,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 
-import javax.swing.tree.TreeNode;
-
 import org.compiere.model.MTree;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.CLogger;
@@ -28,7 +26,8 @@ import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.SimpleTreeNode;
+import org.zkoss.zul.DefaultTreeNode;
+import org.zkoss.zul.DefaultTreeModel;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treecol;
@@ -38,282 +37,232 @@ import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.event.TreeDataEvent;
 
-/**
- * 
- * @author Low Heng Sin
- * @author Yamel Senih, ysenih@erpcya.com, ERPCyA http://www.erpcya.com 2015-09-09
- *  	<li>FR [ 9223372036854775807 ] Add Support to Dynamic Tree
- * @see https://adempiere.atlassian.net/browse/ADEMPIERE-442
- *
- */
-public class SimpleTreeModel extends org.zkoss.zul.SimpleTreeModel implements TreeitemRenderer, EventListener {
+@SuppressWarnings({ "rawtypes", "unchecked" })
+public class SimpleTreeModel extends DefaultTreeModel<MTreeNode> implements TreeitemRenderer<DefaultTreeNode<MTreeNode>>, EventListener {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4649471521757131755L;
+    private static final long serialVersionUID = -4649471521757131755L;
 
-	private static final CLogger logger = CLogger.getCLogger(SimpleTreeModel.class);
-	
-	private boolean itemDraggable;
-	private List<EventListener> onDropListners = new ArrayList<EventListener>();
+    private static final CLogger logger = CLogger.getCLogger(SimpleTreeModel.class);
 
-	public SimpleTreeModel(SimpleTreeNode root) {
-		super(root);
-	}
-	
-	/**
-	 * Init Tree with where clause
-	 * @param tree
-	 * @param treeId
-	 * @param windowNo
-	 * @param whereClause
-	 * @return
-	 */
-	public static SimpleTreeModel initADTree(Tree tree, int treeId, int windowNo, String whereClause) {
-		return initADTree(tree, treeId, windowNo, true, whereClause, null);
-	}
-	
-	/**
-	 * @param tree
-	 * @param AD_Tree_ID
-	 * @param windowNo
-	 * @param editable
-	 * @param whereClause
-	 * @param trxName
-	 * @return SimpleTreeModel
-	 */
-	public static SimpleTreeModel initADTree(Tree tree, int AD_Tree_ID, int windowNo, boolean editable, String whereClause, String trxName) { 
-		//	Change to where clause
-		if(!Util.isEmpty(whereClause)) {
-			whereClause = Env.parseContext(Env.getCtx(), windowNo, whereClause, false, false);
-		}
-		MTree vTree = new MTree (Env.getCtx(), AD_Tree_ID, editable, true, whereClause, trxName);
-		MTreeNode root = vTree.getRoot();
-		SimpleTreeModel treeModel = SimpleTreeModel.createFrom(root);
-		treeModel.setItemDraggable(editable);
-		if(editable) {
-			treeModel.addOnDropEventListener(new ADTreeOnDropListener(tree, treeModel, vTree, windowNo));
-		}
-		if (tree.getTreecols() == null) {
-			Treecols treeCols = new Treecols();
-			tree.appendChild(treeCols);
-			Treecol treeCol = new Treecol();
-			treeCols.appendChild(treeCol);
-		}
-		tree.setPageSize(-1);
-		try {
-			tree.setTreeitemRenderer(treeModel);
-			tree.setModel(treeModel);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Failed to setup tree");
-		}
-		return treeModel;
-	}
-	
-	/**
-	 * 
-	 * @param root
-	 * @return SimpleTreeModel
-	 */
-	public static SimpleTreeModel createFrom(MTreeNode root) {
-		SimpleTreeModel model = null;
-		Enumeration<TreeNode> nodeEnum = root.children();
-		SimpleTreeNode stRoot = new SimpleTreeNode(root, new ArrayList());
-        while(nodeEnum.hasMoreElements()) {
-        	MTreeNode childNode = (MTreeNode)nodeEnum.nextElement();
-        	SimpleTreeNode stNode = new SimpleTreeNode(childNode, new ArrayList());
-        	stRoot.getChildren().add(stNode);
-        	if (childNode.getChildCount() > 0) {
-        		populate(stNode, childNode);
-        	}
+    private boolean itemDraggable;
+    private List<EventListener> onDropListners = new ArrayList<EventListener>();
+
+    public SimpleTreeModel(DefaultTreeNode<MTreeNode> root) {
+        super(root);
+    }
+    public static SimpleTreeModel initADTree(Tree tree, int treeId, int windowNo, String whereClause) {
+        return initADTree(tree, treeId, windowNo, true, whereClause, null);
+    }
+
+    public static SimpleTreeModel initADTree(Tree tree, int AD_Tree_ID, int windowNo, boolean editable, String whereClause, String trxName) {
+        if (!Util.isEmpty(whereClause)) {
+            whereClause = Env.parseContext(Env.getCtx(), windowNo, whereClause, false, false);
         }
-        model = new SimpleTreeModel(stRoot);
-		return model;
-	}
 
-	private static void populate(SimpleTreeNode stNode, MTreeNode root) {
-		Enumeration<TreeNode> nodeEnum = root.children();
-		while(nodeEnum.hasMoreElements()) {
-			MTreeNode childNode = (MTreeNode)nodeEnum.nextElement();
-			SimpleTreeNode stChildNode = new SimpleTreeNode(childNode, new ArrayList());
-			stNode.getChildren().add(stChildNode);
-			if (childNode.getChildCount() > 0) {
-				populate(stChildNode, childNode);
-			}
-		}
-	}
+        MTree vTree = new MTree(Env.getCtx(), AD_Tree_ID, editable, true, whereClause, trxName);
+        MTreeNode root = vTree.getRoot();
 
-	/**
-	 * @param ti
-	 * @param node
-	 */
-	public void render(Treeitem ti, Object node) {
-		Treecell tc = new Treecell(Objects.toString(node));
-		Treerow tr = null;
-		if(ti.getTreerow()==null){
-			tr = new Treerow();			
-			tr.setParent(ti);
-			if (isItemDraggable()) {
-				tr.setDraggable("true");
-			}
-			if (!onDropListners.isEmpty()) {
-				tr.setDroppable("true");
-				tr.addEventListener(Events.ON_DROP, this);
-			}
-		}else{
-			tr = ti.getTreerow(); 
-			tr.getChildren().clear();
-		}				
-		tc.setParent(tr);
-		
-		ti.setValue(node);
-	}
+        SimpleTreeModel treeModel = SimpleTreeModel.createFrom(root);
+        treeModel.setItemDraggable(editable);
 
-	/**
-	 * Add to root
-	 * @param newNode
-	 */
-	public void addNode(SimpleTreeNode newNode) {
-		SimpleTreeNode root = (SimpleTreeNode) getRoot();
-		root.getChildren().add(newNode);
-		fireEvent(root, root.getChildCount() - 1, root.getChildCount() - 1, TreeDataEvent.INTERVAL_ADDED);
-	}
+        if (editable) {
+            treeModel.addOnDropEventListener(new ADTreeOnDropListener(tree, treeModel, vTree, windowNo));
+        }
 
-	@Override
-	public SimpleTreeNode getRoot() {
-		return (SimpleTreeNode) super.getRoot();
-	}
+        if (tree.getTreecols() == null) {
+            Treecols treeCols = new Treecols();
+            tree.appendChild(treeCols);
 
-	@Override
-	public SimpleTreeNode getChild(Object parent, int index) {
-		return (SimpleTreeNode) super.getChild(parent, index);
-	}
+            Treecol treeCol = new Treecol();
+            treeCols.appendChild(treeCol);
+        }
 
-	/**
-	 * @param treeNode
-	 */
-	public void removeNode(SimpleTreeNode treeNode) {
-		int path[] = this.getPath(getRoot(), treeNode);
-		
-		if (path != null && path.length > 0) {
-			SimpleTreeNode parentNode = getRoot();
-			int index = path.length - 1;
-			for (int i = 0; i < index; i++) {
-				parentNode = getChild(parentNode, path[i]);
-			}
-			
-			
-			parentNode.getChildren().remove(path[index]);
-			fireEvent(parentNode, path[index], path[index], TreeDataEvent.INTERVAL_REMOVED);
-		}
-	}
-	
-	/**
-	 * @param b
-	 */
-	public void setItemDraggable(boolean b) {
-		itemDraggable = b;
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public boolean isItemDraggable() {
-		return itemDraggable;
-	}
-	
-	/**
-	 * @param listener
-	 */
-	public void addOnDropEventListener(EventListener listener) {
-		onDropListners.add(listener);
-	}
+        tree.setPageSize(-1);
 
-	/**
-	 * @param event
-	 * @see EventListener#onEvent(Event)
-	 */
-	public void onEvent(Event event) throws Exception {
-		if (Events.ON_DROP.equals(event.getName())) {
-			for (EventListener listener : onDropListners) {
-				listener.onEvent(event);
-			}
-		}
-	}
+        try {
+            tree.setTreeitemRenderer(treeModel);
+            tree.setModel(treeModel);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to setup tree", e);
+        }
 
-	/**
-	 * @param treeNode
-	 * @return SimpleTreeNode
-	 */
-	public SimpleTreeNode getParent(SimpleTreeNode treeNode) {
-		int path[] = this.getPath(getRoot(), treeNode);
-		
-		if (path != null && path.length > 0) {
-			SimpleTreeNode parentNode = getRoot();
-			int index = path.length - 1;
-			for (int i = 0; i < index; i++) {
-				parentNode = getChild(parentNode, path[i]);
-			}
-						
-			return parentNode;
-		}
-		
-		return null;
-	}
+        return treeModel;
+    }
 
-	/**
-	 * @param newParent
-	 * @param newNode
-	 * @param index
-	 */
-	public void addNode(SimpleTreeNode newParent, SimpleTreeNode newNode,
-			int index) {
-		newParent.getChildren().add(index, newNode);
-		fireEvent(newParent, index, index, TreeDataEvent.INTERVAL_ADDED);
-	}
-	
-	/**
-	 * @param fromNode
-	 * @param recordId
-	 * @return SimpleTreeNode
-	 */
-	public SimpleTreeNode find(SimpleTreeNode fromNode, int recordId) {
-		if (fromNode == null)
-			fromNode = getRoot();
-		MTreeNode data = (MTreeNode) fromNode.getData();
-		if (data.getNode_ID() == recordId) 
-			return fromNode;
+    public static SimpleTreeModel createFrom(MTreeNode root) {
+        Enumeration<javax.swing.tree.TreeNode> nodeEnum = root.children();
 
-		// If the MTree model and the tree model aren't in sync, the data 
-		// could include a new node that hasn't been initialized (node_id == -1).  
-		// This will have no children causing a NPE error in isLeaf().
-		try {
-			if (isLeaf(fromNode)) 
-				return null;
-		} catch (NullPointerException e) {
-			logger.severe("Uninitialized node exists in tree. Node ID: " + data.getNode_ID());
-			return null;
-		}
-				
-		int cnt = getChildCount(fromNode);
-		for(int i = 0; i < cnt; i++ ) {
-			SimpleTreeNode child = getChild(fromNode, i);
-			SimpleTreeNode treeNode = find(child, recordId);
-			if (treeNode != null)
-				return treeNode;
-		}
-		return null;
-	}
-	
-	/**
-	 * @param node
-	 */
-	public void nodeUpdated(SimpleTreeNode node) {
-		SimpleTreeNode parent = getParent(node);
-		if (parent != null) {
-			int i = parent.getChildren().indexOf(node);
-			fireEvent(parent, i, i, TreeDataEvent.CONTENTS_CHANGED);
-		}
-	}
+        DefaultTreeNode stRoot = new DefaultTreeNode(root, new ArrayList());
+
+        while (nodeEnum.hasMoreElements()) {
+            MTreeNode childNode = (MTreeNode) nodeEnum.nextElement();
+            DefaultTreeNode stNode = new DefaultTreeNode(childNode, new ArrayList());
+
+            stRoot.getChildren().add(stNode);
+
+            if (childNode.getChildCount() > 0) {
+                populate(stNode, childNode);
+            }
+        }
+
+        return new SimpleTreeModel(stRoot);
+    }
+
+    private static void populate(DefaultTreeNode stNode, MTreeNode root) {
+        Enumeration<javax.swing.tree.TreeNode> nodeEnum = root.children();
+
+        while (nodeEnum.hasMoreElements()) {
+            MTreeNode childNode = (MTreeNode) nodeEnum.nextElement();
+            DefaultTreeNode stChildNode = new DefaultTreeNode(childNode, new ArrayList());
+
+            stNode.getChildren().add(stChildNode);
+
+            if (childNode.getChildCount() > 0) {
+                populate(stChildNode, childNode);
+            }
+        }
+    }
+
+    @Override
+    public void render(Treeitem ti, DefaultTreeNode<MTreeNode> node, int index) throws Exception {
+        Treecell tc = new Treecell(Objects.toString(node.getData()));
+        Treerow tr = null;
+
+        if (ti.getTreerow() == null) {
+            tr = new Treerow();
+            tr.setParent(ti);
+
+            if (isItemDraggable()) {
+                tr.setDraggable("true");
+            }
+
+            if (!onDropListners.isEmpty()) {
+                tr.setDroppable("true");
+                tr.addEventListener(Events.ON_DROP, this);
+            }
+        } else {
+            tr = ti.getTreerow();
+            tr.getChildren().clear();
+        }
+
+        tc.setParent(tr);
+        ti.setValue(node);
+    }
+
+    public void addNode(DefaultTreeNode newNode) {
+        DefaultTreeNode root = getRoot();
+        root.getChildren().add(newNode);
+        fireEvent(root, root.getChildCount() - 1, root.getChildCount() - 1, TreeDataEvent.INTERVAL_ADDED);
+    }
+
+    @Override
+    public DefaultTreeNode getRoot() {
+        return (DefaultTreeNode) super.getRoot();
+    }
+    @Override
+    public DefaultTreeNode getChild(org.zkoss.zul.TreeNode parent, int index) {
+        return (DefaultTreeNode) super.getChild(parent, index);
+    }
+
+    public void removeNode(DefaultTreeNode treeNode) {
+        int path[] = this.getPath(treeNode);
+
+        if (path != null && path.length > 0) {
+            DefaultTreeNode parentNode = getRoot();
+            int index = path.length - 1;
+
+            for (int i = 0; i < index; i++) {
+                parentNode = getChild(parentNode, path[i]);
+            }
+
+            parentNode.getChildren().remove(path[index]);
+            fireEvent(parentNode, path[index], path[index], TreeDataEvent.INTERVAL_REMOVED);
+        }
+    }
+
+    public void setItemDraggable(boolean b) {
+        itemDraggable = b;
+    }
+
+    public boolean isItemDraggable() {
+        return itemDraggable;
+    }
+
+    public void addOnDropEventListener(EventListener listener) {
+        onDropListners.add(listener);
+    }
+
+    @Override
+    public void onEvent(Event event) throws Exception {
+        if (Events.ON_DROP.equals(event.getName())) {
+            for (EventListener listener : onDropListners) {
+                listener.onEvent(event);
+            }
+        }
+    }
+
+    public DefaultTreeNode getParent(DefaultTreeNode treeNode) {
+        int path[] = this.getPath(treeNode);
+
+        if (path != null && path.length > 0) {
+            DefaultTreeNode parentNode = getRoot();
+            int index = path.length - 1;
+
+            for (int i = 0; i < index; i++) {
+                parentNode = getChild(parentNode, path[i]);
+            }
+
+            return parentNode;
+        }
+
+        return null;
+    }
+
+    public void addNode(DefaultTreeNode newParent, DefaultTreeNode newNode, int index) {
+        newParent.getChildren().add(index, newNode);
+        fireEvent(newParent, index, index, TreeDataEvent.INTERVAL_ADDED);
+    }
+
+    public DefaultTreeNode find(DefaultTreeNode fromNode, int recordId) {
+        if (fromNode == null) {
+            fromNode = getRoot();
+        }
+
+        MTreeNode data = (MTreeNode) fromNode.getData();
+
+        if (data.getNode_ID() == recordId) {
+            return fromNode;
+        }
+
+        try {
+            if (isLeaf(fromNode)) {
+                return null;
+            }
+        } catch (NullPointerException e) {
+            logger.severe("Uninitialized node exists in tree. Node ID: " + data.getNode_ID());
+            return null;
+        }
+
+        int cnt = getChildCount(fromNode);
+
+        for (int i = 0; i < cnt; i++) {
+            DefaultTreeNode child = getChild(fromNode, i);
+            DefaultTreeNode treeNode = find(child, recordId);
+
+            if (treeNode != null) {
+                return treeNode;
+            }
+        }
+
+        return null;
+    }
+
+    public void nodeUpdated(DefaultTreeNode node) {
+        DefaultTreeNode parent = getParent(node);
+
+        if (parent != null) {
+            int i = parent.getChildren().indexOf(node);
+            fireEvent(parent, i, i, TreeDataEvent.CONTENTS_CHANGED);
+        }
+    }
 }

@@ -48,7 +48,6 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
-import org.zkoss.zk.au.out.AuScript;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -56,7 +55,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.OpenEvent;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
@@ -134,7 +132,6 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
         w.setCollapsible(true);
         w.setSplittable(true);
         w.setTitle(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "Menu")));
-        w.setFlex(true);
         w.addEventListener(Events.ON_OPEN, new EventListener() {			
 			@Override
 			public void onEvent(Event event) throws Exception {
@@ -151,11 +148,10 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 
         Center center = new Center();
         center.setParent(layout);
-        center.setFlex(true);
 
         Borderlayout innerLayout = new Borderlayout();
-        innerLayout.setHeight("100%");
-        innerLayout.setWidth("100%");
+        innerLayout.setHflex("1");
+        innerLayout.setVflex("1");
         innerLayout.setParent(center);
 
         West innerW = new West();
@@ -188,7 +184,6 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 
         windowArea = new Center();
         windowArea.setParent(innerLayout);
-        windowArea.setFlex(true);
 
         windowContainer.createPart(windowArea);
 
@@ -450,18 +445,16 @@ public class NavBar2Desktop extends TabbedDesktop implements MenuListener, Seria
 	}
 	
 	private void autoHideMenu() {
-		if (layout.getWest().isCollapsible() && !layout.getWest().isOpen())
-		{
-			//using undocumented js api, need to be retested after every version upgrade
-			String id = layout.getWest().getUuid() + "!real";
-			String btn = layout.getWest().getUuid() + "!btn";
-			String script = "zk.show('" + id + "', false);";
-			script += "$e('"+id+"')._isSlide = false;";
-			script += "$e('"+id+"')._lastSize = null;";
-			script += "$e('"+btn+"').style.display = '';";
-			AuScript aus = new AuScript(layout.getWest(), script);
-			Clients.response("autoHideWest", aus);
-		}
+	    if (layout == null || layout.getWest() == null) {
+	        return;
+	    }
+
+	    West west = layout.getWest();
+
+	    if (west.isCollapsible() && !west.isOpen()) {
+	        west.setOpen(true);
+	        west.invalidate();
+	    }
 	}
 
 	@Override
