@@ -335,7 +335,7 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
         //	Change to Standard button order
         pnlButtonRight.appendChild(btnCancel);
         pnlButtonRight.appendChild(btnOk);
-        pnlButtonRight.setAlign("right");
+        pnlButtonRight.setStyle("text-align: right;");
         pnlButtonRight.setWidth("100%");
 
         Panel pnlButtonLeft = new Panel();
@@ -384,7 +384,7 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
         Center center = new Center();
         layout.appendChild(center);
         center.appendChild(contentSimple);
-        center.setFlex(true);
+        //center.setFlex(true);
 
         South south = new South();
         layout.appendChild(south);
@@ -450,7 +450,7 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
         //	Change to Standard button order
         pnlButtonRight.appendChild(btnCancel);
         pnlButtonRight.appendChild(btnOk);
-        pnlButtonRight.setAlign("right");
+        pnlButtonRight.setStyle("text-align: right;");
 
         ToolBar toolBar = new ToolBar();
         toolBar.appendChild(btnNew);
@@ -518,7 +518,9 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
         Center center = new Center();
         layout.appendChild(center);
         center.appendChild(advancedPanel);
-        center.setFlex(true);
+        //center.setFlex(true);
+        center.setHflex("1");
+        center.setVflex("1");
 
         South south = new South();
         layout.appendChild(south);
@@ -709,35 +711,30 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
         listColumn.setId("listColumn"+listItem.getId());
         listColumn.setName("listColumn");
         listColumn.setMold("select");
-        listColumn.setRows(0);
         listColumn.addEventListener(Events.ON_SELECT,this);
 
         Listbox listOperator = new Listbox();
         listOperator.setId("listOperator"+listItem.getId());
         listOperator.setName("listOperator");
         listOperator.setMold("select");
-        listOperator.setRows(0);
         listOperator.addEventListener(Events.ON_SELECT,this);
         
         Listbox listAndOr = new Listbox();
         listAndOr.setId("listAndOr"+listItem.getId());
         listAndOr.setName("listAndOr");
         listAndOr.setMold("select");
-        listAndOr.setRows(0);
         listAndOr.addEventListener(Events.ON_SELECT,this);
 
         Listbox listLeftBracket = new Listbox();
         listLeftBracket.setId("listLeftBracket"+listItem.getId());
         listLeftBracket.setName("listLeftBracket");
         listLeftBracket.setMold("select");
-        listLeftBracket.setRows(0);
         listLeftBracket.addEventListener(Events.ON_SELECT,this);
 
         Listbox listRightBracket = new Listbox();
         listRightBracket.setId("listRightBracket"+listItem.getId());
         listRightBracket.setName("listRightBracket");
         listRightBracket.setMold("select");
-        listRightBracket.setRows(0);
         listRightBracket.addEventListener(Events.ON_SELECT,this);
 
         setValues(listColumn, listOperator, fields);

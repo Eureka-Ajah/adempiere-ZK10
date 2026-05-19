@@ -51,9 +51,11 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.TimeUtil;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Timebox;
@@ -170,48 +172,57 @@ public class WAssignmentDialog extends Window implements EventListener
 		rows.appendChild(row);
 		
 		row = new Row();
-		row.setSpans("1, 2");
 		row.appendChild(LayoutUtils.makeRightAlign(lDate));
+
 		Div div = new Div();
 		div.appendChild(fDateFrom);
 		div.appendChild(fTimeFrom);
 		fTimeFrom.setStyle("margin-left: 1px");
-		row.appendChild(div);
+
+		row.appendChild(createCell(div, 2));
 		rows.appendChild(row);
-		
+
 		row = new Row();
-		row.appendChild(LayoutUtils.makeRightAlign(lQty));		
+		row.appendChild(LayoutUtils.makeRightAlign(lQty));
 		row.appendChild(fQty);
 		row.appendChild(lUOM);
 		rows.appendChild(row);
-		
+
 		row = new Row();
-		row.setSpans("1, 2");
 		row.appendChild(LayoutUtils.makeRightAlign(lName));
-		row.appendChild(fName);
+		row.appendChild(createCell(fName, 2));
 		fName.setStyle("width: 100%");
 		rows.appendChild(row);
-		
+
 		row = new Row();
-		row.setSpans("1, 2");
 		row.appendChild(LayoutUtils.makeRightAlign(lDescription));
-		row.appendChild(fDescription);
+		row.appendChild(createCell(fDescription, 2));
 		fDescription.setMultiline(true);
 		fDescription.setRows(3);
 		fDescription.setStyle("width: 100%");
 		rows.appendChild(row);
-		
+
 		row = new Row();
-		row.setSpans("3");
-		row.appendChild(new Label(" "));
+		row.appendChild(createCell(new Label(" "), 3));
 		rows.appendChild(row);
 
 		row = new Row();
-		row.setSpans("3");
-		row.appendChild(confirmPanel);
+		row.appendChild(createCell(confirmPanel, 3));
 		rows.appendChild(row);
 		//
 	}	//	jbInit
+	
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
+	}
 
 	/**
 	 * 	Initialize component & values from m_mAssignment

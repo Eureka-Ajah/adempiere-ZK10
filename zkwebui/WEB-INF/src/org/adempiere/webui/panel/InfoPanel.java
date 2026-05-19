@@ -82,11 +82,11 @@ import org.zkoss.zul.South;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.West;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.event.ZulEvents;
+import org.zkoss.zul.ext.Sortable;
 
 /**
  *	Search Information and return selection - Base Class.
@@ -101,7 +101,7 @@ import org.zkoss.zul.event.ZulEvents;
  * @author Michael McKay, ADEMPIERE-72 VLookup and Info Window improvements
  * 	<li>https://adempiere.atlassian.net/browse/ADEMPIERE-72
  */
-public abstract class InfoPanel extends Window implements EventListener, WTableModelListener, ListModelExt
+public abstract class InfoPanel extends Window implements EventListener, WTableModelListener, Sortable<Object>
 {
 	
 	/**
@@ -109,6 +109,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	 */
 	private static final long serialVersionUID = 325050327514511004L;
 	private final static int PAGE_SIZE = 100;
+	private boolean doubleClickListenerAdded = false;
 	
     public static InfoPanel create (int WindowNo,
             String tableName, String keyColumn, int record_id, String value,
@@ -471,11 +472,12 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		div.setStyle("width :100%; height: 100%");
 		p_centerCenter.appendChild(div);
 		p_centerCenter.setAutoscroll(false);
-        p_centerCenter.setFlex(true);
-		//
+		p_centerCenter.setVflex("1");
+		p_centerCenter.setHflex("1");
+
 		p_centerSouth.setCollapsible(true);
 		p_centerSouth.setSplittable(true);
-		p_centerSouth.setFlex(true);
+		// p_centerSouth.setFlex(true); // ZK 10.2.1: eliminar
 
 		//  Setup the north reset button and criteria grid
 		West spWest = new West();
@@ -1001,13 +1003,12 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	}
 
     private void addDoubleClickListener() {
-		Iterator<?> i = p_table.getListenerIterator(Events.ON_DOUBLE_CLICK);
-		while (i.hasNext()) {
-			if (i.next() == this)
-				return;
-		}
-		p_table.addEventListener(Events.ON_DOUBLE_CLICK, this);
-	}
+        if (doubleClickListenerAdded)
+            return;
+
+        p_table.addEventListener(Events.ON_DOUBLE_CLICK, this);
+        doubleClickListenerAdded = true;
+    }
     
     protected void insertPagingComponent() {
     	p_centerNorth.appendChild(paging);
@@ -1946,17 +1947,21 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	        this.detach();
     }   //  dispose
         
-    public void sort(Comparator cmpr, boolean ascending) {
+    @Override
+    public void sort(Comparator<Object> cmpr, boolean ascending) {
         WListItemRenderer.ColumnComparator lsc = (WListItemRenderer.ColumnComparator) cmpr;
+
         if (m_useDatabasePaging)
         {
             int col = lsc.getColumnIndex();
             String colsql = p_layout[col].getColSQL().trim();
             int lastSpaceIdx = colsql.lastIndexOf(" ");
+
             if (lastSpaceIdx > 0)
             {
                 String tmp = colsql.substring(0, lastSpaceIdx).trim();
                 char last = tmp.charAt(tmp.length() - 1);
+
                 if (tmp.toLowerCase().endsWith("as"))
                 {
                     colsql = colsql.substring(lastSpaceIdx).trim();
@@ -1964,6 +1969,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
                 else if (!(last == '*' || last == '-' || last == '+' || last == '/' || last == '>' || last == '<' || last == '='))
                 {
                     tmp = colsql.substring(lastSpaceIdx).trim();
+
                     if (tmp.startsWith("\"") && tmp.endsWith("\""))
                     {
                         colsql = colsql.substring(lastSpaceIdx).trim();
@@ -1971,9 +1977,11 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
                     else
                     {
                         boolean hasAlias = true;
-                        for(int i = 0; i < tmp.length(); i++)
+
+                        for (int i = 0; i < tmp.length(); i++)
                         {
                             char c = tmp.charAt(i);
+
                             if (Character.isLetterOrDigit(c))
                             {
                                 continue;
@@ -1984,6 +1992,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
                                 break;
                             }
                         }
+
                         if (hasAlias)
                         {
                             colsql = colsql.substring(lastSpaceIdx).trim();
@@ -1991,9 +2000,12 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
                     }
                 }
             }
+
             m_sqlUserOrder = " ORDER BY " + colsql;
+
             if (!ascending)
                 m_sqlUserOrder += " DESC ";
+
             executeQuery();
             renderItems();
         }
@@ -2005,7 +2017,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
     }
 
     @Override
-    public String getSortDirection(Comparator cmpr)
+    public String getSortDirection(Comparator<Object> cmpr)
     {
         return "natural";
     }

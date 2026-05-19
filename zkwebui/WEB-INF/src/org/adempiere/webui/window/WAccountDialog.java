@@ -53,6 +53,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -62,6 +63,7 @@ import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Caption;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Hbox;
@@ -236,15 +238,18 @@ public final class WAccountDialog extends Window
 
 		North nRegion = new North();
 		nRegion.setParent(layout);
-		nRegion.setFlex(false);
+		//nRegion.setFlex(false);
 		nRegion.appendChild(northPanel);
 		nRegion.setStyle("background-color: transparent; border: none");
+		nRegion.setHeight("120px"); // ajustar si queda muy alto o bajo
 		northPanel.setStyle("background-color: transparent;");
 
 		Center cRegion = new Center();
 		cRegion.setParent(layout);
 		cRegion.appendChild(m_adTabPanel);
-		cRegion.setFlex(true);
+		//cRegion.setFlex(true);
+		cRegion.setHflex("1");
+		cRegion.setVflex("1");
 
 		South sRegion = new South();
 		sRegion.setParent(layout);
@@ -458,9 +463,8 @@ public final class WAccountDialog extends Window
 		//	Add description
 		m_newRow = true;
 		Row row = new Row();
-		f_Description.setStyle("font-decoration: italic;");
-		row.appendChild(f_Description);
-		row.setSpans("4");
+		f_Description.setStyle("font-style: italic;");
+		row.appendChild(createCell(f_Description, 4));
 		row.setStyle("background-color: transparent;");
 		m_rows.appendChild(row);
 
@@ -493,6 +497,18 @@ public final class WAccountDialog extends Window
 		log.config("fini");
 		return true;
 	}	//	initAccount
+	
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
+	}
 
 	/**
 	 *	Add Editor to parameterPanel alernative right/left depending on m_newRow.

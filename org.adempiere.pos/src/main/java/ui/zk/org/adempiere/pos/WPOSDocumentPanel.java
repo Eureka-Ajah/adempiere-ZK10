@@ -36,6 +36,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Caption;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Style;
 
@@ -128,9 +129,13 @@ public class WPOSDocumentPanel extends WPOSSubPanel implements POSKeyListener, P
 		bPartnerName.addEventListener(this);
 		
 		row = rows.newRow();
-		row.setSpans("2");
 		row.setHeight("10px");
-		row.appendChild(bPartnerName);
+
+		Cell bPartnerCell = new Cell();
+		bPartnerCell.setColspan(2);
+		bPartnerCell.appendChild(bPartnerName);
+
+		row.appendChild(bPartnerCell);
 		
 		
 		v_GroupPanel.appendChild(rows);
@@ -273,8 +278,12 @@ public class WPOSDocumentPanel extends WPOSSubPanel implements POSKeyListener, P
 		keyboardPanel = new WPOSKeyPanel(C_POSKeyLayout_ID, this);
 		row = rows.newRow();
 		row.setHeight("50%");
-		row.setSpans("4");
-		row.appendChild(keyboardPanel);
+
+		Cell keyboardCell = new Cell();
+		keyboardCell.setColspan(4);
+		keyboardCell.appendChild(keyboardPanel);
+
+		row.appendChild(keyboardCell);
 		
 		collectPayment = new WCollect(posPanel);
 
@@ -483,18 +492,28 @@ public class WPOSDocumentPanel extends WPOSSubPanel implements POSKeyListener, P
 	 */
 	public WCollect getCollectPayment()
 	{
-		row.removeChild(keyboardPanel);
-		row.setHeight("50%");
-		row.setSpans("4");
-		row.appendChild(collectPayment.getPanel());
-		return collectPayment.load(posPanel);
+	    row.getChildren().clear();
+	    row.setHeight("50%");
+
+	    Cell collectPaymentCell = new Cell();
+	    collectPaymentCell.setColspan(4);
+	    collectPaymentCell.appendChild(collectPayment.getPanel());
+
+	    row.appendChild(collectPaymentCell);
+
+	    return collectPayment.load(posPanel);
 	}
 
-	public void closeCollectPayment(){
-		row.removeChild(collectPayment.getPanel());
-		row.setHeight("50%");
-		row.setSpans("4");
-		row.appendChild(keyboardPanel);
+	public void closeCollectPayment()
+	{
+	    row.getChildren().clear();
+	    row.setHeight("50%");
+
+	    Cell keyboardCell = new Cell();
+	    keyboardCell.setColspan(4);
+	    keyboardCell.appendChild(keyboardPanel);
+
+	    row.appendChild(keyboardCell);
 	}
 	public WPOSScalesPanel getScalesPanel()
 	{

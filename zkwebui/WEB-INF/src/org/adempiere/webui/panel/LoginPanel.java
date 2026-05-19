@@ -37,6 +37,7 @@ import org.adempiere.webui.LayoutUtils;
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.component.Combobox;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.GlobalCommandDispatcher;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.Textbox;
 import org.adempiere.webui.component.ToolBarButton;
@@ -277,6 +278,8 @@ public class LoginPanel extends Window implements EventListener
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
         div.appendChild(pnlButtons);
         this.appendChild(div);
+
+        this.setAuService(new GlobalCommandDispatcher(this));
 
         this.addEventListener(TokenEvent.ON_USER_TOKEN, new EventListener() {
 

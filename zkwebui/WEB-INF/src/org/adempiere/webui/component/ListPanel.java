@@ -284,7 +284,7 @@ public class ListPanel extends Borderlayout implements EventListener
 		LayoutUtils.addSclass("adtab-grid-panel", this);
 		
 		listbox.setVflex(true);
-		listbox.setFixedLayout(true);
+		//listbox.setFixedLayout(true);
 		listbox.addEventListener(Events.ON_SELECT, this);
 		
 		LayoutUtils.addSclass("adtab-grid", listbox);

@@ -34,6 +34,7 @@ import org.adempiere.webui.apps.ProcessModalDialog;
 import org.adempiere.webui.apps.WReport;
 import org.adempiere.webui.component.Checkbox;
 import org.adempiere.webui.component.ConfirmPanel;
+import org.adempiere.webui.component.GlobalCommandDispatcher;
 import org.adempiere.webui.component.Label;
 import org.adempiere.webui.component.ListItem;
 import org.adempiere.webui.component.Listbox;
@@ -211,6 +212,8 @@ public class ZkReportViewer extends Window implements EventListener {
 	}
 
 	private void init() {
+		this.setAuService(new GlobalCommandDispatcher(this));
+
 		Borderlayout layout = new Borderlayout();
 		layout.setStyle("position: absolute; height: 99%; width: 99%");
 		this.appendChild(layout);
@@ -363,7 +366,7 @@ public class ZkReportViewer extends Window implements EventListener {
 		North north = new North();
 		north.setParent(layout);
 		north.setCollapsible(false);
-		north.setFlex(true);
+		//north.setFlex(true);
 
 		Vbox box = new Vbox();
 		box.setWidth("100%");
@@ -371,7 +374,7 @@ public class ZkReportViewer extends Window implements EventListener {
 		box.setParent(north);
 
 		Center center = new Center();
-		center.setFlex(true);
+		//center.setFlex(true);
 		layout.appendChild(center);
 		iframe = new Iframe();
 		iframe.setId("reportFrame");
@@ -911,7 +914,7 @@ public class ZkReportViewer extends Window implements EventListener {
 			cboType.setSelectedIndex(defaultItem);
 			Hbox hb = new Hbox();
 			Div div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(new Label(Msg.getMsg(Env.getCtx(), "FilesOfType")));
 			hb.appendChild(div);
 			hb.appendChild(cboType);

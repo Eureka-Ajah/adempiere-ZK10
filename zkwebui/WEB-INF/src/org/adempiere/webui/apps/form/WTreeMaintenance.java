@@ -111,10 +111,10 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 	 */
 	private void jbInit () throws Exception
 	{
-		bAddAll.setSrc("images/FastBack16.png");
-		bAdd.setSrc("images/StepBack16.png");
-		bDelete.setSrc("images/StepForward16.png");
-		bDeleteAll.setSrc("images/FastForward16.png");
+		bAddAll.setImage("images/FastBack16.png");
+		bAdd.setImage("images/StepBack16.png");
+		bDelete.setImage("images/StepForward16.png");
+		bDeleteAll.setImage("images/FastForward16.png");
 		
 		form.setWidth("99%");
 		form.setHeight("100%");
@@ -161,7 +161,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		Center center = new Center();
 		mainLayout.appendChild(center);	
 		center.appendChild(centerTree);
-		center.setFlex(true);
+		//center.setFlex(true);
 		center.setAutoscroll(true);
 		
 		East east = new East();
@@ -171,7 +171,7 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		east.setSplittable(true);
 		east.setWidth("45%");
 		centerList.setVflex(true);
-		centerList.setFixedLayout(true);
+		//centerList.setFixedLayout(true);
 		centerList.addEventListener(Events.ON_SELECT, this);
 	}	//	jbInit
 

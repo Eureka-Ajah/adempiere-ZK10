@@ -156,110 +156,125 @@ public class WLocatorDialog extends Window implements EventListener
 
 	private void initComponents()
 	{
-		lblLocator.setValue(Msg.translate(Env.getCtx(), "M_Locator_ID"));
-		lblWarehouse.setValue(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
-		lblAisleX.setValue(Msg.getElement(Env.getCtx(), "X"));
-		lblBinY.setValue(Msg.getElement(Env.getCtx(), "Y"));
-		lblLevelZ.setValue(Msg.getElement(Env.getCtx(), "Z"));
-		lblKey.setValue(Msg.translate(Env.getCtx(), "Value"));
+	    lblLocator.setValue(Msg.translate(Env.getCtx(), "M_Locator_ID"));
+	    lblWarehouse.setValue(Msg.translate(Env.getCtx(), "M_Warehouse_ID"));
+	    lblAisleX.setValue(Msg.getElement(Env.getCtx(), "X"));
+	    lblBinY.setValue(Msg.getElement(Env.getCtx(), "Y"));
+	    lblLevelZ.setValue(Msg.getElement(Env.getCtx(), "Z"));
+	    lblKey.setValue(Msg.translate(Env.getCtx(), "Value"));
 
-		Hbox boxLocator = new Hbox();
-		boxLocator.setWidth("100%");
-		boxLocator.setWidths("30%, 70%");
+	    Hbox boxLocator = new Hbox();
+	    boxLocator.setWidth("100%");
 
-		lstLocator.setWidth("150px");
-		lstLocator.setMold("select");
-		lstLocator.setRows(0);
+	    lblLocator.setWidth("30%");
+	    lstLocator.setWidth("70%");
+	    lstLocator.setMold("select");
 
-		boxLocator.appendChild(lblLocator);
-		boxLocator.appendChild(lstLocator);
+	    boxLocator.appendChild(lblLocator);
+	    boxLocator.appendChild(lstLocator);
 
-		Hbox boxCheckbox = new Hbox();
-		boxCheckbox.setWidth("100%");
-		boxCheckbox.setWidths("30%, 70%");
-		boxCheckbox.setStyle("text-align:left");
+	    Hbox boxCheckbox = new Hbox();
+	    boxCheckbox.setWidth("100%");
+	    boxCheckbox.setStyle("text-align: left;");
 
-		chkCreateNew.setLabel(Msg.getMsg(Env.getCtx(), "CreateNew"));
+	    Label checkboxSpacer = new Label();
+	    checkboxSpacer.setWidth("30%");
+	    chkCreateNew.setWidth("70%");
+	    chkCreateNew.setLabel(Msg.getMsg(Env.getCtx(), "CreateNew"));
 
-		boxCheckbox.appendChild(new Label());
-		boxCheckbox.appendChild(chkCreateNew);
+	    boxCheckbox.appendChild(checkboxSpacer);
+	    boxCheckbox.appendChild(chkCreateNew);
 
-		Hbox boxWarehouse = new Hbox();
-		boxWarehouse.setWidth("100%");
-		boxWarehouse.setWidths("30%, 70%");
+	    Hbox boxWarehouse = new Hbox();
+	    boxWarehouse.setWidth("100%");
 
-		lstWarehouse.setWidth("100px");
-		lstWarehouse.setMold("select");
-		lstWarehouse.setRows(0);
+	    lblWarehouse.setWidth("30%");
+	    lstWarehouse.setWidth("70%");
+	    txtWarehouse.setWidth("70%");
 
-		boxWarehouse.appendChild(lblWarehouse);
-		boxWarehouse.appendChild(lstWarehouse);
-		boxWarehouse.appendChild(txtWarehouse);
+	    lstWarehouse.setMold("select");
 
-		Hbox boxAisle = new Hbox();
-		boxAisle.setWidth("100%");
-		boxAisle.setWidths("30%, 70%");
 
-		boxAisle.appendChild(lblAisleX);
-		boxAisle.appendChild(txtAisleX);
+	    boxWarehouse.appendChild(lblWarehouse);
+	    boxWarehouse.appendChild(lstWarehouse);
+	    boxWarehouse.appendChild(txtWarehouse);
 
-		Hbox boxBin = new Hbox();
-		boxBin.setWidth("100%");
-		boxBin.setWidths("30%, 70%");
+	    Hbox boxAisle = new Hbox();
+	    boxAisle.setWidth("100%");
 
-		boxBin.appendChild(lblBinY);
-		boxBin.appendChild(txtBinY);
+	    lblAisleX.setWidth("30%");
+	    txtAisleX.setWidth("70%");
 
-		Hbox boxLevel = new Hbox();
-		boxLevel.setWidth("100%");
-		boxLevel.setWidths("30%, 70%");
+	    boxAisle.appendChild(lblAisleX);
+	    boxAisle.appendChild(txtAisleX);
 
-		boxLevel.appendChild(lblLevelZ);
-		boxLevel.appendChild(txtLevelZ);
+	    Hbox boxBin = new Hbox();
+	    boxBin.setWidth("100%");
 
-		Hbox boxKey = new Hbox();
-		boxKey.setWidth("100%");
-		boxKey.setWidths("30%, 70%");
+	    lblBinY.setWidth("30%");
+	    txtBinY.setWidth("70%");
 
-		boxKey.appendChild(lblKey);
-		boxKey.appendChild(txtKey);
+	    boxBin.appendChild(lblBinY);
+	    boxBin.appendChild(txtBinY);
 
-		Hbox boxButtons = new Hbox();
-		boxButtons.setWidth("100%");
-		boxButtons.setWidths("80%, 10%, 10%");
-		boxButtons.setStyle("text-align:right");
+	    Hbox boxLevel = new Hbox();
+	    boxLevel.setWidth("100%");
 
-		btnCancel.setImage("/images/Cancel16.png");
-		btnCancel.addEventListener(Events.ON_CLICK, this);
+	    lblLevelZ.setWidth("30%");
+	    txtLevelZ.setWidth("70%");
 
-		btnOk.setImage("/images/Ok16.png");
-		btnOk.addEventListener(Events.ON_CLICK, this);
+	    boxLevel.appendChild(lblLevelZ);
+	    boxLevel.appendChild(txtLevelZ);
 
-		boxButtons.appendChild(new Label());
-		boxButtons.appendChild(btnCancel);
-		boxButtons.appendChild(btnOk);
+	    Hbox boxKey = new Hbox();
+	    boxKey.setWidth("100%");
 
-		mainBox.setWidth("250px");
-		mainBox.setStyle("text-align:right");
-		mainBox.appendChild(boxLocator);
-		mainBox.appendChild(new Separator());
-		mainBox.appendChild(boxCheckbox);
-		mainBox.appendChild(new Separator());
-		mainBox.appendChild(boxWarehouse);
-		mainBox.appendChild(boxAisle);
-		mainBox.appendChild(boxBin);
-		mainBox.appendChild(boxLevel);
-		mainBox.appendChild(boxKey);
-		mainBox.appendChild(new Separator());
-		mainBox.appendChild(boxButtons);
+	    lblKey.setWidth("30%");
+	    txtKey.setWidth("70%");
 
-		this.appendChild(mainBox);
-		this.setTitle(title);
-		this.setClosable(true);
-		this.setBorder("normal");
-		this.setWidth("260Px");
-		this.setAttribute("mode", "modal");
-		this.setSizable(true);
+	    boxKey.appendChild(lblKey);
+	    boxKey.appendChild(txtKey);
+
+	    Hbox boxButtons = new Hbox();
+	    boxButtons.setWidth("100%");
+	    boxButtons.setStyle("text-align: right;");
+
+	    Label spacer = new Label();
+	    spacer.setWidth("80%");
+	    btnCancel.setWidth("10%");
+	    btnOk.setWidth("10%");
+
+	    btnCancel.setImage("/images/Cancel16.png");
+	    btnCancel.addEventListener(Events.ON_CLICK, this);
+
+	    btnOk.setImage("/images/Ok16.png");
+	    btnOk.addEventListener(Events.ON_CLICK, this);
+
+	    boxButtons.appendChild(spacer);
+	    boxButtons.appendChild(btnCancel);
+	    boxButtons.appendChild(btnOk);
+
+	    mainBox.setWidth("250px");
+	    mainBox.setStyle("text-align: right;");
+	    mainBox.appendChild(boxLocator);
+	    mainBox.appendChild(new Separator());
+	    mainBox.appendChild(boxCheckbox);
+	    mainBox.appendChild(new Separator());
+	    mainBox.appendChild(boxWarehouse);
+	    mainBox.appendChild(boxAisle);
+	    mainBox.appendChild(boxBin);
+	    mainBox.appendChild(boxLevel);
+	    mainBox.appendChild(boxKey);
+	    mainBox.appendChild(new Separator());
+	    mainBox.appendChild(boxButtons);
+
+	    this.appendChild(mainBox);
+	    this.setTitle(title);
+	    this.setClosable(true);
+	    this.setBorder("normal");
+	    this.setWidth("260px");
+	    this.setAttribute("mode", "modal");
+	    this.setSizable(true);
 	}
 
 	private void initLocator()

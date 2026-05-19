@@ -39,9 +39,11 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Space;
@@ -251,81 +253,82 @@ public class ValuePreference extends Window implements EventListener
 	 */
 	private void init() throws Exception
 	{
-		//
-		lAttribute.setValue(Msg.translate(m_ctx, "Attribute").replace("&", ""));
-		lValue.setValue(Msg.translate(m_ctx, "Value").replace("&", ""));
-		lSetFor.setValue(Msg.getMsg(m_ctx, "ValuePreferenceSetFor"));
-		cbClient.setLabel(Msg.translate(m_ctx, "AD_Client_ID"));
-		cbOrg.setLabel(Msg.translate(m_ctx, "AD_Org_ID"));
-		cbUser.setLabel(Msg.translate(m_ctx, "AD_User_ID"));
-		cbUser.setChecked(true);
-		cbWindow.setLabel(Msg.translate(m_ctx, "AD_Window_ID"));
-		cbWindow.setChecked(true);
-		// 
-		setPanel.appendChild(setLayout);
-		fAttribute.setReadonly(true);
-		fValue.setReadonly(true);
-		
-		Vbox box = new Vbox();
-		box.setWidth("100%");
-		box.setHeight("100%");
-		box.setParent(this);
-		box.appendChild(setPanel);
-		
-		Rows rows = new Rows();
-		rows.setParent(setLayout);
-		
-		Row row = new Row();
-		row.setSpans("1, 4, 1");
-		Div div = new Div();
-		div.setStyle("text-align: right");
-		div.appendChild(lAttribute);
-		row.appendChild(div);
-		row.appendChild(fAttribute);
-		fAttribute.setWidth("100%");
-		row.appendChild(lAttributeValue);
-		rows.appendChild(row);
-		
-		row = new Row();
-		row.setSpans("1, 4, 1");
-		div = new Div();
-		div.setStyle("text-align: right");
-		div.appendChild(lValue);
-		row.appendChild(div);
-		row.appendChild(fValue);
-		fValue.setWidth("100%");
-		row.appendChild(lValueValue);
-		rows.appendChild(row);
-		
-		row = new Row();
-		div = new Div();
-		div.setStyle("text-align: right");
-		div.appendChild(lSetFor);
-		row.appendChild(div);
-		row.appendChild(cbClient);
-		row.appendChild(cbOrg);
-		row.appendChild(cbUser);
-		row.appendChild(cbWindow);
-		rows.appendChild(row);
-		
-		row = new Row();
-		row.setSpans("1, 5");
-		row.appendChild(new Space());
-		row.appendChild(lExplanation);
-		rows.appendChild(row);
-		
-		//
-		Separator separator = new Separator();
-		separator.setBar(true);
-		separator.setHeight("20px");
-		box.appendChild(separator);
-		box.appendChild(confirmPanel);
-		
-		this.setBorder("normal");
-		setLayout.makeNoStrip();
-		setLayout.setOddRowSclass("even");
-		
-	}   //  jbInit
+	    lAttribute.setValue(Msg.translate(m_ctx, "Attribute").replace("&", ""));
+	    lValue.setValue(Msg.translate(m_ctx, "Value").replace("&", ""));
+	    lSetFor.setValue(Msg.getMsg(m_ctx, "ValuePreferenceSetFor"));
+	    cbClient.setLabel(Msg.translate(m_ctx, "AD_Client_ID"));
+	    cbOrg.setLabel(Msg.translate(m_ctx, "AD_Org_ID"));
+	    cbUser.setLabel(Msg.translate(m_ctx, "AD_User_ID"));
+	    cbUser.setChecked(true);
+	    cbWindow.setLabel(Msg.translate(m_ctx, "AD_Window_ID"));
+	    cbWindow.setChecked(true);
+
+	    setPanel.appendChild(setLayout);
+	    fAttribute.setReadonly(true);
+	    fValue.setReadonly(true);
+
+	    Vbox box = new Vbox();
+	    box.setWidth("100%");
+	    box.setHeight("100%");
+	    box.setParent(this);
+	    box.appendChild(setPanel);
+
+	    Rows rows = new Rows();
+	    rows.setParent(setLayout);
+
+	    Row row = new Row();
+
+	    Div div = new Div();
+	    div.setStyle("text-align: right");
+	    div.appendChild(lAttribute);
+
+	    row.appendChild(createCell(div, 1));
+	    row.appendChild(createCell(fAttribute, 4));
+	    fAttribute.setWidth("100%");
+	    row.appendChild(createCell(lAttributeValue, 1));
+	    rows.appendChild(row);
+
+	    row = new Row();
+
+	    div = new Div();
+	    div.setStyle("text-align: right");
+	    div.appendChild(lValue);
+
+	    row.appendChild(createCell(div, 1));
+	    row.appendChild(createCell(fValue, 4));
+	    fValue.setWidth("100%");
+	    row.appendChild(createCell(lValueValue, 1));
+	    rows.appendChild(row);
+
+	    row = new Row();
+
+	    div = new Div();
+	    div.setStyle("text-align: right");
+	    div.appendChild(lSetFor);
+
+	    row.appendChild(div);
+	    row.appendChild(cbClient);
+	    row.appendChild(cbOrg);
+	    row.appendChild(cbUser);
+	    row.appendChild(cbWindow);
+	    rows.appendChild(row);
+
+	    row = new Row();
+
+	    row.appendChild(createCell(new Space(), 1));
+	    row.appendChild(createCell(lExplanation, 5));
+	    rows.appendChild(row);
+
+	    Separator separator = new Separator();
+	    separator.setBar(true);
+	    separator.setHeight("20px");
+	    box.appendChild(separator);
+	    box.appendChild(confirmPanel);
+
+	    this.setBorder("normal");
+	    setLayout.makeNoStrip();
+	    setLayout.setOddRowSclass("even");
+	}  //  jbInit
 
 	/**
 	 *  Dynamic Init
@@ -535,6 +538,17 @@ public class ValuePreference extends Window implements EventListener
 			FDialog.warn(m_WindowNo, this.getTitle(), "ValuePreferenceNotInserted");
 
 	}   //  insert
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
+	}
 
 
 }   //  ValuePreference

@@ -198,7 +198,7 @@ public class WTrialBalance extends TrialBalanceDrill implements IFormController,
 		center.appendChild(miniTable);
 		miniTable.setWidth("99%");
 		miniTable.setHeight("99%");
-		center.setFlex(true);
+		//center.setFlex(true);
 		center.setStyle("border: none");
 
 		// Command Panel

@@ -180,7 +180,7 @@ public class WDeleteEntity extends DeleteEntityControler
 		treeCols.appendChild(treeCol);
 		treeCols.appendChild(treeCol2);
         tree.appendChild(treeCols); 		
-		center.setFlex(true);
+		//enter.setFlex(true);
 		center.setAutoscroll(true);
 		
 		South south = new South();

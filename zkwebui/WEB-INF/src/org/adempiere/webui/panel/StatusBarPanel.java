@@ -109,27 +109,62 @@ public class StatusBarPanel extends Panel implements EventListener, IStatusBar
         Hbox hbox = new Hbox();
         hbox.setWidth("100%");
         hbox.setHeight("100%");
-        
+
         URI uri = AEnv.getImage("errormsg.png");
-    	image.setSrc(uri.toString());
-    	image.setVisible(false);
-    	hbox.appendChild(image);
-    	image.setVisible(false);
-        
-        if (embedded)
-        	hbox.setWidths("5%,80%,10%");
-        else
-        	hbox.setWidths("5%,50%,40%");
-        
+        image.setSrc(uri.toString());
+        image.setVisible(false);
+
+        image.setWidth("5%");
+        hbox.appendChild(image);
+
         west = new Div();
         west.setStyle("text-align: left; ");
         LayoutUtils.addSclass("status-db", statusLine);
         west.appendChild(statusLine);
+
         Vbox vbox = new Vbox();
         vbox.setPack("center");
         LayoutUtils.addSclass("status", vbox);
+
+        if (embedded)
+            vbox.setWidth("80%");
+        else
+            vbox.setWidth("50%");
+
         vbox.appendChild(west);
         hbox.appendChild(vbox);
+
+        east = new Div();
+        east.setWidth("100%");
+        east.setStyle("text-align: right; ");
+
+        if (!embedded)
+        {
+            infoLine = new Label();
+            east.appendChild(infoLine);
+            infoLine.setVisible(false);
+        }
+
+        east.appendChild(statusDB);
+
+        LayoutUtils.addSclass("status-db", statusDB);
+
+        if (!embedded)
+            LayoutUtils.addSclass("status-info", infoLine);
+
+        vbox = new Vbox();
+        vbox.setPack("center");
+        LayoutUtils.addSclass("status", vbox);
+
+        if (embedded)
+            vbox.setWidth("10%");
+        else
+            vbox.setWidth("40%");
+
+        vbox.appendChild(east);
+        hbox.appendChild(vbox);
+
+        this.appendChild(hbox);
 
         east = new Div();
         east.setWidth("100%");

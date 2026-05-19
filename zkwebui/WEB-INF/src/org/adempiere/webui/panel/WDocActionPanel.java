@@ -242,7 +242,6 @@ public class WDocActionPanel extends Window implements EventListener
 
 		lstDocAction  = new Listbox();
 		lstDocAction.setId("lstDocAction");
-		lstDocAction.setRows(0);
 		lstDocAction.setMold("select");
 		lstDocAction.setWidth("100px");
 		lstDocAction.addEventListener(Events.ON_SELECT, this);

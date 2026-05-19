@@ -52,10 +52,12 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.eevolution.services.ScanBar;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -210,7 +212,7 @@ public class WScanBarUI extends ScanBar implements IFormController, EventListene
 
 		Center center = new Center();
 		center.setBorder("none");
-		center.setFlex(true);
+		//center.setFlex(true);
 		center.setAutoscroll(true);
 		borderlayout.appendChild(center);
 		center.appendChild(productTable);
@@ -219,7 +221,7 @@ public class WScanBarUI extends ScanBar implements IFormController, EventListene
 		south.setBorder("none");
 		borderlayout.appendChild(south);
 		Panel southPanel = new Panel();
-		southPanel.setAlign("right");
+		southPanel.setStyle("text-align: right;");
 		south.appendChild(southPanel);
         return;
     }
@@ -275,8 +277,7 @@ public class WScanBarUI extends ScanBar implements IFormController, EventListene
 
         Row row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(createCell(new Separator(), 3));
         
         row = new Row();
         rows.appendChild(row);
@@ -291,8 +292,7 @@ public class WScanBarUI extends ScanBar implements IFormController, EventListene
         
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(createCell(new Separator(), 3));
         
     	row = new Row();
         rows.appendChild(row);
@@ -303,8 +303,7 @@ public class WScanBarUI extends ScanBar implements IFormController, EventListene
         
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(createCell(new Separator(), 3));
         
         row = new Row();
         rows.appendChild(row);
@@ -313,8 +312,7 @@ public class WScanBarUI extends ScanBar implements IFormController, EventListene
         
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(createCell(new Separator(), 3));
         
         row = new Row();
         rows.appendChild(row);
@@ -323,8 +321,8 @@ public class WScanBarUI extends ScanBar implements IFormController, EventListene
 
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(createCell(new Separator(), 3));
+        
         
         //Product Info
         productValueField.setReadonly(true);
@@ -343,23 +341,30 @@ public class WScanBarUI extends ScanBar implements IFormController, EventListene
         
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
-
+        row.appendChild(createCell(new Separator(), 3));
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(createCell(new Separator(), 3));
         
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(createCell(new Separator(), 3));
         upcField.setVisible(false);
         qtyCountField.setVisible(false);
         lotField.setVisible(false);
         serNoField.setVisible(false);
         return;
+    }
+    
+    private Cell createCell(Component child, int colspan)
+    {
+        Cell cell = new Cell();
+        cell.setColspan(colspan);
+
+        if (child != null)
+            cell.appendChild(child);
+
+        return cell;
     }
 
 

@@ -80,7 +80,7 @@ public class SimpleTreeModel extends DefaultTreeModel<MTreeNode> implements Tree
         tree.setPageSize(-1);
 
         try {
-            tree.setTreeitemRenderer(treeModel);
+            tree.setItemRenderer(treeModel);
             tree.setModel(treeModel);
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Failed to setup tree", e);
@@ -152,7 +152,9 @@ public class SimpleTreeModel extends DefaultTreeModel<MTreeNode> implements Tree
     public void addNode(DefaultTreeNode newNode) {
         DefaultTreeNode root = getRoot();
         root.getChildren().add(newNode);
-        fireEvent(root, root.getChildCount() - 1, root.getChildCount() - 1, TreeDataEvent.INTERVAL_ADDED);
+
+        int index = root.getChildCount() - 1;
+        fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(root), index, index);
     }
 
     @Override
@@ -175,8 +177,10 @@ public class SimpleTreeModel extends DefaultTreeModel<MTreeNode> implements Tree
                 parentNode = getChild(parentNode, path[i]);
             }
 
-            parentNode.getChildren().remove(path[index]);
-            fireEvent(parentNode, path[index], path[index], TreeDataEvent.INTERVAL_REMOVED);
+            int removeIndex = path[index];
+            parentNode.getChildren().remove(removeIndex);
+
+            fireEvent(TreeDataEvent.INTERVAL_REMOVED, getPath(parentNode), removeIndex, removeIndex);
         }
     }
 
@@ -220,7 +224,7 @@ public class SimpleTreeModel extends DefaultTreeModel<MTreeNode> implements Tree
 
     public void addNode(DefaultTreeNode newParent, DefaultTreeNode newNode, int index) {
         newParent.getChildren().add(index, newNode);
-        fireEvent(newParent, index, index, TreeDataEvent.INTERVAL_ADDED);
+        fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(newParent), index, index);
     }
 
     public DefaultTreeNode find(DefaultTreeNode fromNode, int recordId) {
@@ -261,8 +265,8 @@ public class SimpleTreeModel extends DefaultTreeModel<MTreeNode> implements Tree
         DefaultTreeNode parent = getParent(node);
 
         if (parent != null) {
-            int i = parent.getChildren().indexOf(node);
-            fireEvent(parent, i, i, TreeDataEvent.CONTENTS_CHANGED);
+            int index = parent.getChildren().indexOf(node);
+            fireEvent(TreeDataEvent.CONTENTS_CHANGED, getPath(parent), index, index);
         }
     }
 }

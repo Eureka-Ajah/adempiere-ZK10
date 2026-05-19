@@ -103,7 +103,9 @@ public class WDeleteSelection extends DeleteSelectionController implements Event
 		
 		Center center = new Center();
 		center.setParent(layout);
-		center.setFlex(true);
+		//center.setFlex(true);
+		center.setHflex("1");
+		center.setVflex("1");
 		center.appendChild(listbox);
 		listbox.setWidth("100%");
 		listbox.setVflex(true);

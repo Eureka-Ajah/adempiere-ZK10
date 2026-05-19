@@ -38,7 +38,8 @@ public class DrillCommand implements AuService {
 
 	    @Override
 	    public boolean service(AuRequest request, boolean everError) {
-	        if (!"onDrill".equals(request.getCommand())) {
+	        String command = request.getCommand();
+	        if (!DrillEvent.ON_DRILL_DOWN.equals(command) && !DrillEvent.ON_DRILL_ACROSS.equals(command)) {
 	            return false; // Not our command
 	        }
 
@@ -47,14 +48,14 @@ public class DrillCommand implements AuService {
 	            throw new UiException("Illegal request data: " + data);
 	        }
 
-	        String columnName = (String) data.get("columnName");
-	        String code = (String) data.get("code");
+	        String columnName = String.valueOf(data.get("columnName"));
+	        String code = String.valueOf(data.get("code"));
 	        String tableName = MQuery.getZoomTableName(columnName);
 
 	        MQuery query = new MQuery(tableName);
 	        query.addRestriction(columnName, MQuery.EQUAL, code);
 
-	        Events.postEvent(new DrillEvent("onDrill", comp, query));
+	        Events.postEvent(new DrillEvent(command, comp, query));
 	        return true;
 	    }
 }

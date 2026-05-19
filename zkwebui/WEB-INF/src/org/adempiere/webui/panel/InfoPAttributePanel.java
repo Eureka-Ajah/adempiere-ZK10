@@ -48,6 +48,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
@@ -139,7 +140,7 @@ public class InfoPAttributePanel extends Window implements EventListener
 		Borderlayout layout = new Borderlayout();
 		Center center = new Center();
 		layout.appendChild(center);
-		center.setFlex(true);
+		//center.setFlex(true);
 		center.setAutoscroll(true);
 		center.setStyle("border: none");
 		this.appendChild(layout);
@@ -181,7 +182,6 @@ public class InfoPAttributePanel extends Window implements EventListener
 		//
 		String s = Msg.translate(Env.getCtx(), "GuaranteeDate");
 		guaranteeDateSelection = new Listbox();
-		guaranteeDateSelection.setRows(0);
 		guaranteeDateSelection.setMultiple(false);
 		guaranteeDateSelection.setMold("select");
 		guaranteeDateSelection.setWidth("150px");
@@ -198,7 +198,7 @@ public class InfoPAttributePanel extends Window implements EventListener
 			row	= new Row();
 			rows.appendChild(row);
 			div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(serNoLabel);
 			row.appendChild(div);
 			row.appendChild(serNoField.getComponent());
@@ -210,7 +210,7 @@ public class InfoPAttributePanel extends Window implements EventListener
 			row = new Row();
 			rows.appendChild(row);
 			div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(lotLabel);
 			row.appendChild(div);
 			row.appendChild(lotField.getComponent());
@@ -220,7 +220,7 @@ public class InfoPAttributePanel extends Window implements EventListener
 			row = new Row();
 			rows.appendChild(row);
 			div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(lotLabel2);
 			row.appendChild(div);
 			row.appendChild(lotSelection);
@@ -230,7 +230,7 @@ public class InfoPAttributePanel extends Window implements EventListener
 			row = new Row();
 			rows.appendChild(row);
 			div = new Div();
-			div.setAlign("right");
+			div.setStyle("text-align: right;");
 			div.appendChild(guaranteeDateSelection);
 			row.appendChild(div);
 			row.appendChild(guaranteeDateField);
@@ -274,42 +274,58 @@ public class InfoPAttributePanel extends Window implements EventListener
 				// Add label for product attributes if there are any
 				if (!productLine && !isInstanceAttribute)
 				{
-					Row row = new Row();
-					rows.appendChild(row);
-					row.setSpans("2");
-    				Label group = new Label(Msg.translate(Env.getCtx(), "IsProductAttribute"));
-    				row.appendChild(group);
-    				rows.appendChild(row);
+				    Row row = new Row();
+				    rows.appendChild(row);
 
-    				row = new Row();
-					rows.appendChild(row);
-					row.setSpans("2");
-                    Separator separator = new Separator();
-                    separator.setBar(true);
-        			row.appendChild(separator);
-        			rows.appendChild(row);
+				    Label group = new Label(Msg.translate(Env.getCtx(), "IsProductAttribute"));
 
-					productLine = true;
+				    Cell groupCell = new Cell();
+				    groupCell.setColspan(2);
+				    groupCell.appendChild(group);
+
+				    row.appendChild(groupCell);
+
+				    row = new Row();
+				    rows.appendChild(row);
+
+				    Separator separator = new Separator();
+				    separator.setBar(true);
+
+				    Cell separatorCell = new Cell();
+				    separatorCell.setColspan(2);
+				    separatorCell.appendChild(separator);
+
+				    row.appendChild(separatorCell);
+
+				    productLine = true;
 				}
 				//	Add label for Instances attributes
 				if (!instanceLine && isInstanceAttribute)
 				{
-					Row row = new Row();
-					rows.appendChild(row);
-					row.setSpans("2");
-    				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute")); 
-    				row.appendChild(group);
-    				rows.appendChild(row);
-    				
-    				row = new Row();
-					rows.appendChild(row);
-					row.setSpans("2");
-                    Separator separator = new Separator();
-                    separator.setBar(true);
-        			row.appendChild(separator);
-        			rows.appendChild(row);
-        			
-					instanceLine = true;
+				    Row row = new Row();
+				    rows.appendChild(row);
+
+				    Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute"));
+
+				    Cell groupCell = new Cell();
+				    groupCell.setColspan(2);
+				    groupCell.appendChild(group);
+
+				    row.appendChild(groupCell);
+
+				    row = new Row();
+				    rows.appendChild(row);
+
+				    Separator separator = new Separator();
+				    separator.setBar(true);
+
+				    Cell separatorCell = new Cell();
+				    separatorCell.setColspan(2);
+				    separatorCell.appendChild(separator);
+
+				    row.appendChild(separatorCell);
+
+				    instanceLine = true;
 				}
 				//
 				
@@ -321,7 +337,7 @@ public class InfoPAttributePanel extends Window implements EventListener
 					label.setTooltiptext(description);
 				
 				Div div = new Div();
-				div.setAlign("right");
+				div.setStyle("text-align: right;");
 				div.appendChild(label);
 				row.appendChild(div);
 				
@@ -329,7 +345,6 @@ public class InfoPAttributePanel extends Window implements EventListener
 				if (MAttribute.ATTRIBUTEVALUETYPE_List.equals(attributeValueType))
 				{
 					field = new Listbox();
-					((Listbox) field).setRows(0);
 					((Listbox) field).setMultiple(false);
 					((Listbox) field).setMold("select");
 					((Listbox) field).setWidth("150px");
@@ -366,7 +381,7 @@ public class InfoPAttributePanel extends Window implements EventListener
 					row = new Row();
 					rows.appendChild(row);
 					div = new Div();
-					div.setAlign("right");
+					div.setStyle("text-align: right;");
 					div.appendChild(new Label("-"));
 					row.appendChild(div);
 					row.appendChild(fieldTo);
@@ -401,22 +416,30 @@ public class InfoPAttributePanel extends Window implements EventListener
 				isLot = as.isLot();
 			}
 			if (isGuarantee || isSerial || isLot) {
-				Row row = new Row();
-				rows.appendChild(row);
-				row.setSpans("2");
-				Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute")); 
-				row.appendChild(group);
-				rows.appendChild(row);
-				
-				row = new Row();
-				rows.appendChild(row);
-				row.setSpans("2");
-                Separator separator = new Separator();
-                separator.setBar(true);
-    			row.appendChild(separator);
-    			rows.appendChild(row);
-    			
-				instanceLine = true;
+			    Row row = new Row();
+			    rows.appendChild(row);
+
+			    Label group = new Label(Msg.translate(Env.getCtx(), "IsInstanceAttribute"));
+
+			    Cell groupCell = new Cell();
+			    groupCell.setColspan(2);
+			    groupCell.appendChild(group);
+
+			    row.appendChild(groupCell);
+
+			    row = new Row();
+			    rows.appendChild(row);
+
+			    Separator separator = new Separator();
+			    separator.setBar(true);
+
+			    Cell separatorCell = new Cell();
+			    separatorCell.setColspan(2);
+			    separatorCell.appendChild(separator);
+
+			    row.appendChild(separatorCell);
+
+			    instanceLine = true;
 			}
 		}
 		
@@ -469,7 +492,6 @@ public class InfoPAttributePanel extends Window implements EventListener
 	private void initLotSelection()
 	{
 		lotSelection = new Listbox();
-		lotSelection.setRows(0);
 		lotSelection.setMultiple(false);
 		lotSelection.setMold("select");
 		lotSelection.setWidth("150px");

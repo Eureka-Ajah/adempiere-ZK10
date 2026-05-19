@@ -219,7 +219,6 @@ public class ProcessPanel extends ProcessController implements SmallViewEditable
 		centerPanel = new Center();
 		mainLayout.appendChild(centerPanel);
 		centerPanel.appendChild(parameterPanel);
-		centerPanel.setFlex(false);
 		//	FR [ 1051 ]
 		centerPanel.setStyle("border: none; overflow-y:auto;width:98%");
 		
@@ -233,7 +232,7 @@ public class ProcessPanel extends ProcessController implements SmallViewEditable
 			hBox.appendChild(fSavedName);
 
 			Panel confParaPanel = new Panel();
-			confParaPanel.setAlign("right");
+			confParaPanel.setStyle("text-align: right;");
 			//	BR [ 300 ]
 			try{
 				//	Set Ok
@@ -381,7 +380,7 @@ public class ProcessPanel extends ProcessController implements SmallViewEditable
         }
 		//	
     	Div div = new Div();
-        div.setAlign("right");
+    	div.setStyle("text-align: right;");
         
         Label label = editor.getLabel();
         div.appendChild(label);

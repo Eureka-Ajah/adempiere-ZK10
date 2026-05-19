@@ -341,139 +341,139 @@ public class WFactReconcile extends CustomForm
 	 */
 	private void initLayout()
 	{
-		setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
-		setBorder("none");
-		setWidth("100%");
-		setHeight("100%");
-		setStyle("position: absolute");
+	    setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
+	    setBorder("none");
+	    setWidth("100%");
+	    setHeight("100%");
+	    setStyle("position: absolute");
 
-        miniTable.setAttribute("zk_component_ID", "Lookup_Data_SearchResults");        
-        miniTable.setVflex(true);
+	    miniTable.setAttribute("zk_component_ID", "Lookup_Data_SearchResults");
+	    miniTable.setVflex(true);
 
-        //  Define the criteria rows and grid  
-		Rows rows = new Rows();
-		//
-		Row row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 1, 1, 1");
-		row.appendChild(labelAcctSchema.rightAlign());
-		row.appendChild(fieldAcctSchema.getComponent());
-		row.appendChild(labelBPartner.rightAlign());
-		row.appendChild(fieldBPartner.getComponent());
-		//
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 1, 1, 1");
-		row.appendChild(labelOrg.rightAlign());
-		row.appendChild(fieldOrg.getComponent());
-		row.appendChild(labelProduct.rightAlign());
-		row.appendChild(fieldProduct.getComponent());
-		//
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 1, 1, 1");
-		row.appendChild(labelAccount.rightAlign());
-		row.appendChild(fieldAccount.getComponent());
-		row.appendChild(new Space());
-		row.appendChild(isReconciled);
-		//
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 1, 1, 1");
-		row.appendChild(labelDateAcct.rightAlign());
-		Hbox hbox = new Hbox();
-		hbox.appendChild(fieldDateAcct);
-		hbox.appendChild(labelDateAcct2);
-		hbox.appendChild(fieldDateAcct2);
-		row.appendChild(hbox);
-		//
-		parameterGrid.appendChild(rows);
-		//
-		Center center = new Center();
-		center.setBorder("0");
-		center.appendChild(parameterGrid);
-		Hbox btnBox = new Hbox();
-		btnBox.setStyle("border-top: 2px; border-bottom: 2px; padding: 4px");
-		btnBox.appendChild(bRefresh);
-		btnBox.setHeight("100%");
-		West west = new West();
-		west.setBorder("0");
-		west.appendChild(btnBox);
-		parameterPanel.appendChild(center);
-		parameterPanel.appendChild(west);
-		parameterPanel.setHeight("100px");
-		//
-		North north = new North();
-		north.appendChild(parameterPanel);
-		mainPanel.appendChild(north);
-		//
-		center = new Center();
-		center.appendChild(miniTable);
-		mainPanel.appendChild(center);
+	    // Define the criteria rows and grid
+	    Rows rows = new Rows();
 
-		//  Setup the command buttons
-		pnlBtnLeft = new Panel();
-        pnlBtnLeft.setAlign("left");
-        pnlBtnLeft.setStyle("border-top: 2px; border-bottom: 2px; padding: 4px");
-        pnlBtnLeft.appendChild(bZoom);
-        //
-        pnlBtnRight = new Panel();
-        pnlBtnRight.setAlign("right");
-        pnlBtnRight.setStyle("border-top: 2px; border-bottom: 2px; padding: 4px");
-        pnlBtnRight.appendChild(bGenerate);
-        pnlBtnRight.appendChild(bReset);
-        pnlBtnRight.appendChild(bCancel);
-        //
-        pnlTextCenter = new Panel();
-        pnlTextCenter.setStyle("border-top: 2px; border-bottom: 2px; padding: 4px");
-        pnlTextCenter.setAlign("center");
-        pnlTextCenter.appendChild(differenceLabel);
-        pnlTextCenter.appendChild(differenceField);
-        //
-        hboxBtnRight = new Hbox();
-        hboxBtnRight.appendChild(pnlBtnRight);
-        hboxBtnRight.setWidth("100%");
-        hboxBtnRight.setStyle("text-align:right");
-        //
-        hboxBtnLeft = new Hbox();
-        hboxBtnLeft.appendChild(pnlBtnLeft);
-        hboxBtnLeft.setWidth("100%");
-        hboxBtnLeft.setStyle("text-align:left");
-        //
-        hboxTextCenter = new Hbox();
-        hboxTextCenter.appendChild(pnlTextCenter);
-        hboxTextCenter.setWidth("100%");
-        hboxTextCenter.setHeight("100%");
-        hboxTextCenter.setPack("center");
-        hboxTextCenter.setStyle("text-align:Center");
-        //
-        commandPane = new Hbox();
-        commandPane.appendChild(hboxBtnLeft);
-        commandPane.appendChild(hboxTextCenter);
-        commandPane.appendChild(hboxBtnRight);
-        commandPane.setWidth("100%");
-        commandPane.setPack("center");        
-        //
-		commandPanel.setHeight("70px");
-		commandPanel.setStyle("border-top: 2px; border-bottom: 2px; padding: 4px");
-		commandPanel.setWidth("100%");
-		center = new Center();
-		center.appendChild(commandPane);
-		center.setBorder("0");
-		commandPanel.appendChild(center);
-		South south = new South();
-		south.appendChild(statusBar);
-		south.setBorder("0");
-		commandPanel.appendChild(south);
-		south = new South();
-		south.appendChild(commandPanel);
-		south.setBorder("0");
-		mainPanel.appendChild(south);
-		
-		//  Add everything to the form 
-		this.appendChild(mainPanel);
-		
-	}   //  initLayout
+	    Row row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(labelAcctSchema.rightAlign());
+	    row.appendChild(fieldAcctSchema.getComponent());
+	    row.appendChild(labelBPartner.rightAlign());
+	    row.appendChild(fieldBPartner.getComponent());
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(labelOrg.rightAlign());
+	    row.appendChild(fieldOrg.getComponent());
+	    row.appendChild(labelProduct.rightAlign());
+	    row.appendChild(fieldProduct.getComponent());
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(labelAccount.rightAlign());
+	    row.appendChild(fieldAccount.getComponent());
+	    row.appendChild(new Space());
+	    row.appendChild(isReconciled);
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(labelDateAcct.rightAlign());
+
+	    Hbox hbox = new Hbox();
+	    hbox.appendChild(fieldDateAcct);
+	    hbox.appendChild(labelDateAcct2);
+	    hbox.appendChild(fieldDateAcct2);
+
+	    row.appendChild(hbox);
+
+	    parameterGrid.appendChild(rows);
+
+	    Center center = new Center();
+	    center.setBorder("0");
+	    center.appendChild(parameterGrid);
+
+	    Hbox btnBox = new Hbox();
+	    btnBox.setStyle("border-top: 2px; border-bottom: 2px; padding: 4px");
+	    btnBox.appendChild(bRefresh);
+	    btnBox.setHeight("100%");
+
+	    West west = new West();
+	    west.setBorder("0");
+	    west.appendChild(btnBox);
+
+	    parameterPanel.appendChild(center);
+	    parameterPanel.appendChild(west);
+	    parameterPanel.setHeight("100px");
+
+	    North north = new North();
+	    north.appendChild(parameterPanel);
+	    mainPanel.appendChild(north);
+
+	    center = new Center();
+	    center.appendChild(miniTable);
+	    mainPanel.appendChild(center);
+
+	    // Setup the command buttons
+	    pnlBtnLeft = new Panel();
+	    pnlBtnLeft.setStyle("text-align: left; border-top: 2px; border-bottom: 2px; padding: 4px");
+	    pnlBtnLeft.appendChild(bZoom);
+
+	    pnlBtnRight = new Panel();
+	    pnlBtnRight.setStyle("text-align: right; border-top: 2px; border-bottom: 2px; padding: 4px");
+	    pnlBtnRight.appendChild(bGenerate);
+	    pnlBtnRight.appendChild(bReset);
+	    pnlBtnRight.appendChild(bCancel);
+
+	    pnlTextCenter = new Panel();
+	    pnlTextCenter.setStyle("text-align: center; border-top: 2px; border-bottom: 2px; padding: 4px");
+	    pnlTextCenter.appendChild(differenceLabel);
+	    pnlTextCenter.appendChild(differenceField);
+
+	    hboxBtnRight = new Hbox();
+	    hboxBtnRight.appendChild(pnlBtnRight);
+	    hboxBtnRight.setWidth("100%");
+	    hboxBtnRight.setStyle("text-align: right");
+
+	    hboxBtnLeft = new Hbox();
+	    hboxBtnLeft.appendChild(pnlBtnLeft);
+	    hboxBtnLeft.setWidth("100%");
+	    hboxBtnLeft.setStyle("text-align: left");
+
+	    hboxTextCenter = new Hbox();
+	    hboxTextCenter.appendChild(pnlTextCenter);
+	    hboxTextCenter.setWidth("100%");
+	    hboxTextCenter.setHeight("100%");
+	    hboxTextCenter.setPack("center");
+	    hboxTextCenter.setStyle("text-align: center");
+
+	    commandPane = new Hbox();
+	    commandPane.appendChild(hboxBtnLeft);
+	    commandPane.appendChild(hboxTextCenter);
+	    commandPane.appendChild(hboxBtnRight);
+	    commandPane.setWidth("100%");
+	    commandPane.setPack("center");
+
+	    commandPanel.setHeight("70px");
+	    commandPanel.setStyle("border-top: 2px; border-bottom: 2px; padding: 4px");
+	    commandPanel.setWidth("100%");
+
+	    center = new Center();
+	    center.appendChild(commandPane);
+	    center.setBorder("0");
+	    commandPanel.appendChild(center);
+
+	    South south = new South();
+	    south.appendChild(statusBar);
+	    south.setBorder("0");
+	    commandPanel.appendChild(south);
+
+	    south = new South();
+	    south.appendChild(commandPanel);
+	    south.setBorder("0");
+	    mainPanel.appendChild(south);
+
+	    // Add everything to the form
+	    this.appendChild(mainPanel);
+	}  //  initLayout
 
 	/**
 	 *  Query and create TableInfo

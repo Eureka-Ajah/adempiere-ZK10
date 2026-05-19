@@ -179,7 +179,7 @@ public class WBOMDrop extends ADForm implements BOMDropForm, EventListener, Valu
 		Center center = new Center();
 		center.appendChild(selectBOMItemsPanel); 
 		center.setBorder("none");
-		center.setFlex(true);
+		//center.setFlex(true);
 		center.setAutoscroll(true);
 		mainLayout.appendChild(center);
 
@@ -375,136 +375,146 @@ public class WBOMDrop extends ADForm implements BOMDropForm, EventListener, Valu
 
 	@Override
 	public Object createFeature(String featureKey, String featureName) {
-		
-		// Create a group box to show the items
-		Caption caption = new Caption(featureName);	
-		caption.setStyle("cursor: pointer");
-		Groupbox optionGroup = new Groupbox();
-		optionGroup.setMold("3d");
-		optionGroup.appendChild(caption);
-		optionGroup.setLegend(false);
-		optionGroup.setContentStyle("border-style: solid; border-color: lightgray; border-width: 0px 1px 1px 1px; border-radius: 0px 0px 5px 5px;");
-		optionGroup.setTooltiptext(Msg.translate(Env.getCtx(), MSG_ClickToOpen));
-		optionGroup.setClosable(true);
-		optionGroup.setOpen(false);
-		
-		if (selectBOMItemsPanel.getChildren().size() == 0)
-		{
-			selectBOMItemsPanel.appendChild(new Separator());
-		}
-		selectBOMItemsPanel.appendChild(optionGroup);
-		
-		return optionGroup;
+
+	    // Create a group box to show the items
+	    Caption caption = new Caption(featureName);
+	    caption.setStyle("cursor: pointer");
+
+	    Groupbox optionGroup = new Groupbox();
+	    optionGroup.setMold("3d");
+	    optionGroup.appendChild(caption);
+	    optionGroup.setContentStyle("border-style: solid; border-color: lightgray; border-width: 0px 1px 1px 1px; border-radius: 0px 0px 5px 5px;");
+	    optionGroup.setTooltiptext(Msg.translate(Env.getCtx(), MSG_ClickToOpen));
+	    optionGroup.setClosable(true);
+	    optionGroup.setOpen(false);
+
+	    if (selectBOMItemsPanel.getChildren().size() == 0)
+	    {
+	        selectBOMItemsPanel.appendChild(new Separator());
+	    }
+
+	    selectBOMItemsPanel.appendChild(optionGroup);
+
+	    return optionGroup;
 	}
 
 	@Override
 	public CEditor addCheck(Object feature, String itemType, String name) {
-		
-		boxBOMItem = new Hbox();
-		boxBOMItem.setWidth("100%");
-		boxBOMItem.setWidths("50%,25%,25%");
 
-		if (ITEMTYPE_CHECK.equals(itemType))
-		{
-			String title = "";
-			WYesNoEditor cb = new WYesNoEditor(name, name, title, false, feature==null, true);
-			boxBOMItem.appendChild(cb.getComponent());
+	    boxBOMItem = new Hbox();
+	    boxBOMItem.setWidth("100%");
 
-			if (feature != null && (feature instanceof Groupbox))
-			{
-				// Append the boxQty to the feature group
-				Groupbox optionGroup = (Groupbox) feature;				
-				optionGroup.appendChild(boxBOMItem);
-				cb.setValue(false);
-				cb.getComponent().setEnabled(true);
-			}
-			else
-			{
-				// Append the boxQty to the panel
-				cb.setValue(true);
-				cb.setReadWrite(false);
-				cb.getComponent().setEnabled(true);
-				if (selectBOMItemsPanel.getChildren().size() == 0)
-				{
-					selectBOMItemsPanel.appendChild(new Separator());
-				}
-				selectBOMItemsPanel.appendChild(boxBOMItem);
-			}
-			
-			return cb;
+	    if (ITEMTYPE_CHECK.equals(itemType))
+	    {
+	        String title = "";
+	        WYesNoEditor cb = new WYesNoEditor(name, name, title, false, feature == null, true);
 
-		}
-		else if (ITEMTYPE_RADIO.equals(itemType))
-		{
-			
-			if (feature == null || !(feature instanceof Groupbox))
-				throw new IllegalArgumentException("Can't have radiobutton type without a group!");
+	        ((HtmlBasedComponent) cb.getComponent()).setWidth("50%");
+	        boxBOMItem.appendChild(cb.getComponent());
 
-			String title = "";
-			WRadioEditor rb = new WRadioEditor(name, name, title, false, false, true);
-			
-			Groupbox optionGroup = (Groupbox) feature;
-			Radiogroup radioGroup = (Radiogroup) buttonGroups.get(optionGroup);
-			if (radioGroup == null)
-			{
-				radioGroup = new Radiogroup();
-				optionGroup.appendChild(radioGroup);
-				buttonGroups.put(optionGroup, radioGroup);
-				rb.setValue(true); // Select the first one
-			}
+	        if (feature != null && (feature instanceof Groupbox))
+	        {
+	            Groupbox optionGroup = (Groupbox) feature;
+	            optionGroup.appendChild(boxBOMItem);
+	            cb.setValue(false);
+	            cb.getComponent().setEnabled(true);
+	        }
+	        else
+	        {
+	            cb.setValue(true);
+	            cb.setReadWrite(false);
+	            cb.getComponent().setEnabled(true);
 
-			optionGroup.appendChild(radioGroup);
-			radioGroup.appendChild(boxBOMItem);
-			boxBOMItem.appendChild(rb.getComponent());
-			rb.addValueChangeListener(controller);
-			
-			return rb;
-			
-		}
-		else
-		{
-			log.severe("Unhandled Item type: " + itemType);
-		}
-		return null;
+	            if (selectBOMItemsPanel.getChildren().size() == 0)
+	            {
+	                selectBOMItemsPanel.appendChild(new Separator());
+	            }
+
+	            selectBOMItemsPanel.appendChild(boxBOMItem);
+	        }
+
+	        return cb;
+	    }
+	    else if (ITEMTYPE_RADIO.equals(itemType))
+	    {
+	        if (feature == null || !(feature instanceof Groupbox))
+	            throw new IllegalArgumentException("Can't have radiobutton type without a group!");
+
+	        String title = "";
+	        WRadioEditor rb = new WRadioEditor(name, name, title, false, false, true);
+
+	        Groupbox optionGroup = (Groupbox) feature;
+	        Radiogroup radioGroup = (Radiogroup) buttonGroups.get(optionGroup);
+
+	        if (radioGroup == null)
+	        {
+	            radioGroup = new Radiogroup();
+	            optionGroup.appendChild(radioGroup);
+	            buttonGroups.put(optionGroup, radioGroup);
+	            rb.setValue(true);
+	        }
+
+	        optionGroup.appendChild(radioGroup);
+	        radioGroup.appendChild(boxBOMItem);
+
+	        ((HtmlBasedComponent) rb.getComponent()).setWidth("50%");
+	        boxBOMItem.appendChild(rb.getComponent());
+
+	        rb.addValueChangeListener(controller);
+
+	        return rb;
+	    }
+	    else
+	    {
+	        log.severe("Unhandled Item type: " + itemType);
+	    }
+
+	    return null;
 	}  //  addCheck
 
 	@Override
 	public CEditor addQty(Object feature, BigDecimal qty) {
 
-		WNumberEditor qtyEditor = new WNumberEditor("qty", false, false, true, DisplayType.Quantity, "");
-		qtyEditor.setValue(qty);
-		((HtmlBasedComponent) qtyEditor.getComponent()).setWidth("100%");
-		boxBOMItem.appendChild(qtyEditor.getComponent());
-		return qtyEditor;
-		
+	    WNumberEditor qtyEditor = new WNumberEditor("qty", false, false, true, DisplayType.Quantity, "");
+	    qtyEditor.setValue(qty);
+
+	    ((HtmlBasedComponent) qtyEditor.getComponent()).setWidth("25%");
+	    boxBOMItem.appendChild(qtyEditor.getComponent());
+
+	    return qtyEditor;
 	}
 
 	@Override
 	public CEditor addUOM(Object feature, MLookup uomLookup, int c_uom_id) {
 
-		String name = "";
-		String description = "";
-		int displayType = uomLookup.getDisplayType();
-		WEditor uomEditor = null;
-        if (displayType == DisplayType.TableDir || 
-                displayType == DisplayType.Table || displayType == DisplayType.List
-                || displayType == DisplayType.ID )
-        {
-        	uomEditor = new WTableDirEditor(uomLookup, name, description, true, false, true);
-        }
-        else if (displayType == DisplayType.Search)
-        {
-        	uomEditor = new WSearchEditor(uomLookup, name, description, true, false, true);
-        }
-        if (uomEditor != null)
-        {
-			uomEditor.setValue(c_uom_id);
-			uomEditor.addValueChangeListener(controller);
-			((HtmlBasedComponent) uomEditor.getComponent()).setWidth("100%");
-			boxBOMItem.appendChild(uomEditor.getComponent());
-        }
-		return uomEditor;
-	}  //  addUOM
+	    String name = "";
+	    String description = "";
+	    int displayType = uomLookup.getDisplayType();
+	    WEditor uomEditor = null;
+
+	    if (displayType == DisplayType.TableDir ||
+	            displayType == DisplayType.Table ||
+	            displayType == DisplayType.List ||
+	            displayType == DisplayType.ID)
+	    {
+	        uomEditor = new WTableDirEditor(uomLookup, name, description, true, false, true);
+	    }
+	    else if (displayType == DisplayType.Search)
+	    {
+	        uomEditor = new WSearchEditor(uomLookup, name, description, true, false, true);
+	    }
+
+	    if (uomEditor != null)
+	    {
+	        uomEditor.setValue(c_uom_id);
+	        uomEditor.addValueChangeListener(controller);
+
+	        ((HtmlBasedComponent) uomEditor.getComponent()).setWidth("25%");
+	        boxBOMItem.appendChild(uomEditor.getComponent());
+	    }
+
+	    return uomEditor;
+	} //  addUOM
 
 	@Override
 	public void enableBOMList() {
@@ -517,19 +527,23 @@ public class WBOMDrop extends ADForm implements BOMDropForm, EventListener, Valu
 	@Override
 	public void setBOMListHeaders(String checkName, String productName, String qtyName, String uomName) {
 
-		bomItemsHeader.getChildren().clear();
-		bomItemsHeader.setWidth("100%");
-		bomItemsHeader.setWidths("10%, 40%,25%,25%");
-		
-		Label selectLabel = new Label(checkName);
-		Label nameLabel = new Label(productName);
-		Label qtyLabel = new Label(qtyName);
-		Label uomLabel = new Label(uomName);
-		bomItemsHeader.appendChild(selectLabel);
-		bomItemsHeader.appendChild(nameLabel);
-		bomItemsHeader.appendChild(qtyLabel);
-		bomItemsHeader.appendChild(uomLabel);
+	    bomItemsHeader.getChildren().clear();
+	    bomItemsHeader.setWidth("100%");
 
+	    Label selectLabel = new Label(checkName);
+	    Label nameLabel = new Label(productName);
+	    Label qtyLabel = new Label(qtyName);
+	    Label uomLabel = new Label(uomName);
+
+	    selectLabel.setWidth("10%");
+	    nameLabel.setWidth("40%");
+	    qtyLabel.setWidth("25%");
+	    uomLabel.setWidth("25%");
+
+	    bomItemsHeader.appendChild(selectLabel);
+	    bomItemsHeader.appendChild(nameLabel);
+	    bomItemsHeader.appendChild(qtyLabel);
+	    bomItemsHeader.appendChild(uomLabel);
 	}
 
 	@Override

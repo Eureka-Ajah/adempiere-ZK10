@@ -46,6 +46,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Separator;
 
@@ -222,22 +223,27 @@ public class WPOSBPartner extends Window implements EventListener, ValueChangeLi
 	 * 	@return label
 	 */
 	
-	private Label createLine (Component field, String title, boolean addSpace)
+	private Label createLine(Component field, String title, boolean addSpace)
 	{
-		Hbox hbox = new Hbox(); 
-		
-		hbox.setWidth("100%");
-		hbox.setWidths("30%, 70%");
-		
-		Label label = new Label(Msg.translate(Env.getCtx(), title));
-		label.setStyle(WPOS.FONTSIZESMALL);
-		hbox.appendChild(label.rightAlign());
-		hbox.appendChild(field);
-		
-		centerPanel.appendChild(hbox);
-		centerPanel.appendChild(new Separator());
-		
-		return label;
+	    Hbox hbox = new Hbox();
+
+	    hbox.setWidth("100%");
+
+	    Label label = new Label(Msg.translate(Env.getCtx(), title));
+	    label.setStyle(WPOS.FONTSIZESMALL);
+	    label.setWidth("30%");
+
+	    Div fieldContainer = new Div();
+	    fieldContainer.setWidth("70%");
+	    fieldContainer.appendChild(field);
+
+	    hbox.appendChild(label.rightAlign());
+	    hbox.appendChild(fieldContainer);
+
+	    centerPanel.appendChild(hbox);
+	    centerPanel.appendChild(new Separator());
+
+	    return label;
 	}	//	createLine
 
 	/**

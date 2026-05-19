@@ -365,7 +365,7 @@ public class GridPanel extends Borderlayout implements EventListener
 		LayoutUtils.addSclass("adtab-grid-panel", this);
 
 		listbox.setVflex(true);
-		listbox.setFixedLayout(true);
+		//listbox.setFixedLayout(true);
 		listbox.addEventListener(Events.ON_CLICK, this);
 		listbox.addEventListener(Events.ON_DOUBLE_CLICK, this);
 		listbox.addEventListener(Events.ON_CANCEL, this);

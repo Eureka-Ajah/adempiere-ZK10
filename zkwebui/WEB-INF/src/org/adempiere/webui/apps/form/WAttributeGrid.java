@@ -50,9 +50,11 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Vbox;
 
@@ -77,124 +79,144 @@ public class WAttributeGrid extends ADForm implements EventListener
 	 *	@param frame
 	 */
 	protected void initForm()
-    {
-		m_attributes = MAttribute.getOfClient(Env.getCtx(), true, true);
-		KeyNamePair[] vector = new KeyNamePair[m_attributes.length+1];
-		vector[0] = new KeyNamePair(0, "");
-		for (int i = 0; i < m_attributes.length; i++)
-			vector[i+1] = m_attributes[i].getKeyNamePair();
-		
-		attributeCombo1 = new Listbox(vector);
-		attributeCombo1.setMold("select");
-		attributeCombo1.setSelectedIndex(0);
-		
-		attributeCombo2 = new Listbox(vector);
-		attributeCombo2.setMold("select");
-		attributeCombo2.setSelectedIndex(0);
-		
-		pickPriceList.setMold("select");
-		pickWarehouse.setMold("select");
-		
-		fillPicks();
-		
-		for(int i = 0; i < MODES.length; i++)
-			modeCombo.appendItem(MODES[i], MODES[i]);
-		modeCombo.setMold("select");
-		
-		tabbox.setWidth("100%");
-		tabbox.setHeight("85%");
-		tabbox.appendChild(tabs);
-		tabbox.appendChild(tabpanels);
-		tabbox.addEventListener(Events.ON_SELECT, this);
-		
-		Grid gridSelection = new Grid();
-		gridSelection.setWidth("500px");
-		gridSelection.setStyle("margin:0; padding:0;");
-		gridSelection.makeNoStrip();
-		gridSelection.setOddRowSclass("even");
-		
-		gridView.setWidth("100%");
-		gridView.setHeight("100%");
-		gridView.setFixedLayout(true);
-        
-		Rows rows = new Rows();
-		gridSelection.appendChild(rows);
-		
-		Row row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		Div div = new Div();
-		div.setAlign("right");
-		div.appendChild(attributeLabel1);
-		row.appendChild(div);
-		row.appendChild(attributeCombo1);
-		attributeCombo1.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(attributeLabel2);
-		row.appendChild(div);
-		row.appendChild(attributeCombo2);
-		attributeCombo2.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(labelPriceList);
-		row.appendChild(div);
-		row.appendChild(pickPriceList);
-		pickPriceList.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(labelWarehouse);
-		row.appendChild(div);
-		row.appendChild(pickWarehouse);
-		pickWarehouse.setWidth("100%");
-		
-		div = new Div();
-		div.setAlign("center");
-		div.appendChild(gridSelection);
-		
-		Tabpanel tabSelectionPanel = new Tabpanel();
-		tabSelectionPanel.appendChild(div);
+	{
+	    m_attributes = MAttribute.getOfClient(Env.getCtx(), true, true);
+	    KeyNamePair[] vector = new KeyNamePair[m_attributes.length + 1];
+	    vector[0] = new KeyNamePair(0, "");
 
-		Tab tabSelection = new Tab(Msg.getMsg(Env.getCtx(), "Selection"));
-		tabpanels.appendChild(tabSelectionPanel);
-		tabs.appendChild(tabSelection);
+	    for (int i = 0; i < m_attributes.length; i++)
+	        vector[i + 1] = m_attributes[i].getKeyNamePair();
 
-		div = new Div();
-		div.setAlign("center");
-		div.appendChild(modeLabel);
-		div.appendChild(modeCombo);
-		modeCombo.addEventListener(Events.ON_CHANGE, this);
-		
-		Vbox vbAttributeGrid = new Vbox();
-		vbAttributeGrid.appendChild(div);
-		vbAttributeGrid.appendChild(gridView);
+	    attributeCombo1 = new Listbox(vector);
+	    attributeCombo1.setMold("select");
+	    attributeCombo1.setSelectedIndex(0);
 
-		Tabpanel tabAttributeGridPanel = new Tabpanel();
-		tabAttributeGridPanel.appendChild(vbAttributeGrid);
-		
-		Tab tabAttributeGrid = new Tab(Msg.getMsg(Env.getCtx(), "AttributeGrid"));
-		tabpanels.appendChild(tabAttributeGridPanel);
-		tabs.appendChild(tabAttributeGrid);
-		
-		this.setWidth("100%");
-		this.setHeight("100%");
-		this.appendChild(tabbox);
-		tabbox.addEventListener(Events.ON_SELECT, this);
-		this.appendChild(confirmPanel);
-		confirmPanel.addActionListener(this);
+	    attributeCombo2 = new Listbox(vector);
+	    attributeCombo2.setMold("select");
+	    attributeCombo2.setSelectedIndex(0);
+
+	    pickPriceList.setMold("select");
+	    pickWarehouse.setMold("select");
+
+	    fillPicks();
+
+	    for (int i = 0; i < MODES.length; i++)
+	        modeCombo.appendItem(MODES[i], MODES[i]);
+
+	    modeCombo.setMold("select");
+
+	    tabbox.setWidth("100%");
+	    tabbox.setHeight("85%");
+	    tabbox.appendChild(tabs);
+	    tabbox.appendChild(tabpanels);
+	    tabbox.addEventListener(Events.ON_SELECT, this);
+
+	    Grid gridSelection = new Grid();
+	    gridSelection.setWidth("500px");
+	    gridSelection.setStyle("margin:0; padding:0;");
+	    gridSelection.makeNoStrip();
+	    gridSelection.setOddRowSclass("even");
+
+	    gridView.setWidth("100%");
+	    gridView.setHeight("100%");
+	    // gridView.setFixedLayout(true); // ZK 10.2.1: eliminar
+	    gridView.setStyle("table-layout: fixed;");
+
+	    Rows rows = new Rows();
+	    gridSelection.appendChild(rows);
+
+	    Row row = new Row();
+	    rows.appendChild(row);
+
+	    Div div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(attributeLabel1);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(attributeCombo1, 2));
+	    attributeCombo1.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(attributeLabel2);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(attributeCombo2, 2));
+	    attributeCombo2.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(labelPriceList);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(pickPriceList, 2));
+	    pickPriceList.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(labelWarehouse);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(pickWarehouse, 2));
+	    pickWarehouse.setWidth("100%");
+
+	    div = new Div();
+	    div.setStyle("text-align: center;");
+	    div.appendChild(gridSelection);
+
+	    Tabpanel tabSelectionPanel = new Tabpanel();
+	    tabSelectionPanel.appendChild(div);
+
+	    Tab tabSelection = new Tab(Msg.getMsg(Env.getCtx(), "Selection"));
+	    tabpanels.appendChild(tabSelectionPanel);
+	    tabs.appendChild(tabSelection);
+
+	    div = new Div();
+	    div.setStyle("text-align: center;");
+	    div.appendChild(modeLabel);
+	    div.appendChild(modeCombo);
+	    modeCombo.addEventListener(Events.ON_CHANGE, this);
+
+	    Vbox vbAttributeGrid = new Vbox();
+	    vbAttributeGrid.appendChild(div);
+	    vbAttributeGrid.appendChild(gridView);
+
+	    Tabpanel tabAttributeGridPanel = new Tabpanel();
+	    tabAttributeGridPanel.appendChild(vbAttributeGrid);
+
+	    Tab tabAttributeGrid = new Tab(Msg.getMsg(Env.getCtx(), "AttributeGrid"));
+	    tabpanels.appendChild(tabAttributeGridPanel);
+	    tabs.appendChild(tabAttributeGrid);
+
+	    this.setWidth("100%");
+	    this.setHeight("100%");
+	    this.appendChild(tabbox);
+
+	    tabbox.addEventListener(Events.ON_SELECT, this);
+
+	    this.appendChild(confirmPanel);
+	    confirmPanel.addActionListener(this);
 	}	//	init
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
+	}
 
 	/**	Window No			*/
 //	private int         	m_WindowNo = 0;
@@ -456,7 +478,7 @@ public class WAttributeGrid extends ADForm implements EventListener
 					if (xValues != null)
 					{
 						Div div = new Div();
-						div.setAlign("right");
+						div.setStyle("text-align: right;");
 						div.appendChild(new Label(m_attributes[indexAttr1].getName()));
 						descr.appendChild(div);
 					}
@@ -470,7 +492,7 @@ public class WAttributeGrid extends ADForm implements EventListener
 					if (xValue != null)
 					{
 						Div div = new Div();
-						div.setAlign("center");
+						div.setStyle("text-align: center;");
 						div.appendChild(new Label(xValue.getName()));
 						row.appendChild(div);
 					}

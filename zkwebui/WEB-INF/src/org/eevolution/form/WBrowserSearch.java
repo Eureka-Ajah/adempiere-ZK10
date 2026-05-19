@@ -147,7 +147,7 @@ public class WBrowserSearch extends BrowserSearch implements SmallViewEditable {
 		editor.fillHorizontal();
 		
     	Div div = new Div();
-        div.setAlign("right");
+    	div.setStyle("text-align: right;");
         
         Label label = editor.getLabel();
         div.appendChild(label);

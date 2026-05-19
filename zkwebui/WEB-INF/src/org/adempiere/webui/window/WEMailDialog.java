@@ -45,9 +45,11 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.spin.queue.notification.DefaultNotifier;
 import org.spin.queue.util.QueueLoader;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Div;
@@ -202,7 +204,7 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		Row row = new Row();
 		rows.appendChild(row);
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lFrom);
 		row.appendChild(div);
 		row.appendChild(fFrom);
@@ -211,7 +213,7 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lTo);
 		row.appendChild(div);
 		row.appendChild(fUser.getComponent());
@@ -226,7 +228,7 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lCc);
 		row.appendChild(div);
 		row.appendChild(fCcUser.getComponent());
@@ -240,13 +242,12 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(new Separator());
+		row.appendChild(createCell(new Separator(), 2));
 		
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lSubject);
 		row.appendChild(div);
 		row.appendChild(fSubject);
@@ -254,13 +255,12 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(new Separator());
+		row.appendChild(createCell(new Separator(), 2));
 		
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lAttachment);
 		row.appendChild(div);
 		row.appendChild(fAttachment);
@@ -268,16 +268,15 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(fMessage);
+		row.appendChild(createCell(fMessage, 2));
 		fMessage.setWidth("100%");
 		fMessage.setHeight("100%");
 		fMessage.setRows(10);
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("2");
-		row.appendChild(confirmPanel);
+		rows.appendChild(row);
+		row.appendChild(createCell(confirmPanel, 2));
 		confirmPanel.addActionListener(this);
 		
 		Borderlayout layout = new Borderlayout();
@@ -297,6 +296,17 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		
 		this.appendChild(layout);		
 	}	//	jbInit
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
+	}
 
 	/**
 	 *	Set all properties

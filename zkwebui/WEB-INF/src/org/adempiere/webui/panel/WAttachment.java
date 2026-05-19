@@ -182,7 +182,6 @@ public class WAttachment extends Window implements EventListener
 		northPanel.setSplittable(false);
 		
 		cbContent.setMold("select");
-		cbContent.setRows(0);
 		cbContent.addEventListener(Events.ON_SELECT, this);
 		
 		toolBar.appendChild(bLoad);
@@ -217,7 +216,7 @@ public class WAttachment extends Window implements EventListener
 			
 		Center centerPane = new Center();
 		centerPane.setAutoscroll(true);
-		centerPane.setFlex(true);
+		//centerPane.setFlex(true);
 		mainPanel.appendChild(centerPane);
 		centerPane.appendChild(previewPanel);
 		

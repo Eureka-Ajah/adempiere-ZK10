@@ -166,7 +166,6 @@ public class WBPartner extends Window implements EventListener, ValueChangeListe
 		
 		//	Greeting Business Partner
 		fBPGroup.setMold("select");
-		fBPGroup.setRows(0);
 		
 		for (int i = 0; i < m_bpgroup.length; i++)
 			fBPGroup.appendItem(m_bpgroup[i].toString(), m_bpgroup[i]);
@@ -175,7 +174,6 @@ public class WBPartner extends Window implements EventListener, ValueChangeListe
 		//BPGroup
 //		Greeting Business Partner
 			fGreetingBP.setMold("select");
-			fGreetingBP.setRows(0);
 			
 			for (int i = 0; i < m_greeting.length; i++)
 				fGreetingBP.appendItem(m_greeting[i].toString(), m_greeting[i]);
@@ -195,7 +193,6 @@ public class WBPartner extends Window implements EventListener, ValueChangeListe
 
 		//	Greeting Contact
 		fGreetingC.setMold("select");
-		fGreetingC.setRows(0);
 		
 		for (int i = 0; i < m_greeting.length; i++)
 			fGreetingC.appendItem(m_greeting[i].toString(), m_greeting[i]);
@@ -245,22 +242,27 @@ public class WBPartner extends Window implements EventListener, ValueChangeListe
 	 * 	@return label
 	 */
 	
-	private Label createLine (Component field, String title, boolean addSpace)
+	private Label createLine(Component field, String title, boolean addSpace)
 	{
-		Hbox hbox = new Hbox(); 
-		
-		hbox.setWidth("100%");
-		hbox.setWidths("30%, 70%");
-		
-		Label label = new Label(Msg.translate(Env.getCtx(), title));
-		hbox.appendChild(label);
+	    Hbox hbox = new Hbox();
 
-		hbox.appendChild(field);
-		
-		centerPanel.appendChild(hbox);
-		centerPanel.appendChild(new Separator());
-		
-		return label;
+	    hbox.setWidth("100%");
+
+	    Label label = new Label(Msg.translate(Env.getCtx(), title));
+	    label.setWidth("30%");
+
+	    if (field instanceof org.zkoss.zk.ui.HtmlBasedComponent)
+	    {
+	        ((org.zkoss.zk.ui.HtmlBasedComponent) field).setWidth("70%");
+	    }
+
+	    hbox.appendChild(label);
+	    hbox.appendChild(field);
+
+	    centerPanel.appendChild(hbox);
+	    centerPanel.appendChild(new Separator());
+
+	    return label;
 	}	//	createLine
 
 	/**

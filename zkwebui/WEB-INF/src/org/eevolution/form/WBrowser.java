@@ -227,17 +227,13 @@ public class WBrowser extends Browser implements IFormController,
 				
 				South south = new South();
 				south.setBorder("none");
-				
 				south.setAutoscroll(true);
-				south.setFlex(true);
 				south.setCollapsible(true);
-				south.setTitle(Msg.getMsg(Env.getCtx(),("Parameter")));
-				south.setCollapsible(true);
-				south.setAutoscroll(true);
-				south.appendChild(panel);
-				south.setStyle("background-color: transparent");
-				south.setStyle("border: none");
+				south.setTitle(Msg.getMsg(Env.getCtx(), "Parameter"));
 				south.setHeight("40%");
+				south.setStyle("background-color: transparent; border: none; overflow-y: auto;");
+
+				south.appendChild(panel);
 				//	
 				detailPanel.appendChild(south);
 			}
@@ -563,8 +559,9 @@ public class WBrowser extends Browser implements IFormController,
 		dCenter.appendChild(detail);
 		dCenter.setBorder("none");
 		detail.setVflex(true);
-		detail.setFixedLayout(true);
-		dCenter.setFlex(true);
+		//dCenter.setFlex(true);
+		dCenter.setHflex("1");
+		dCenter.setVflex("1");
 		dCenter.setAutoscroll(true);
 		
 		detailPanel.setHeight("100%");
@@ -596,7 +593,7 @@ public class WBrowser extends Browser implements IFormController,
 		});
 		
 		Div confirmDiv = new Div();
-		confirmDiv.setAlign("center");
+		confirmDiv.setStyle("text-align: center;");
 		hbox.appendChild(bCancel);
 		hbox.appendChild(bOk);
 		hbox.setAlign("center");

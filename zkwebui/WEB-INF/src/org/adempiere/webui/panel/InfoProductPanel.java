@@ -404,7 +404,6 @@ public class InfoProductPanel extends InfoPanel implements EventListener, ValueC
 
 		Row row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 1, 1, 1, 1, 1");
 		row.appendChild(lblValue.rightAlign());
 		row.appendChild(fieldValue);
 		row.appendChild(lblWarehouse.rightAlign());
@@ -414,28 +413,24 @@ public class InfoProductPanel extends InfoPanel implements EventListener, ValueC
 
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 1, 1, 1, 1, 1");
 		row.appendChild(lblName.rightAlign());
 		row.appendChild(fieldName);
 		row.appendChild(lblPriceList.rightAlign());
 		row.appendChild(fPriceList_ID.getComponent());
 		row.appendChild(lblAS.rightAlign());
 		row.appendChild(fAS_ID.getComponent());
-		//
 
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 1, 1, 1, 1, 1");
 		row.appendChild(lblUPC.rightAlign());
 		row.appendChild(fieldUPC);
 		row.appendChild(lblProductCategory.rightAlign());
 		row.appendChild(fProductCategory_ID.getComponent());
 		row.appendChild(lblASI.rightAlign());
 		row.appendChild(fASI_ID.getComponent());
-		
+
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("1, 1, 1, 1, 1, 1");
 		row.appendChild(lblSKU.rightAlign());
 		row.appendChild(fieldSKU);
 		row.appendChild(lblVendor.rightAlign());

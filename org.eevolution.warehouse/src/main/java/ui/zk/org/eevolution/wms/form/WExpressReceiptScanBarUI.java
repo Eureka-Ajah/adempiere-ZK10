@@ -56,6 +56,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -192,32 +193,34 @@ public class WExpressReceiptScanBarUI extends ExpressReceiptScanBar implements I
      */
     private void productPanel()
     {
-    	Borderlayout borderlayout = new Borderlayout();
-    	borderlayout.setStyle("position: absolute");
-    	borderlayout.setWidth("100%");
-    	borderlayout.setHeight("100%");
-    	m_panelProduct.appendChild(borderlayout);
+        Borderlayout borderlayout = new Borderlayout();
+        borderlayout.setStyle("position: absolute");
+        borderlayout.setWidth("100%");
+        borderlayout.setHeight("100%");
+        m_panelProduct.appendChild(borderlayout);
 
-		North north = new North();
-		north.setBorder("none");
-		borderlayout.appendChild(north);
+        North north = new North();
+        north.setBorder("none");
+        borderlayout.appendChild(north);
+
         Label label = new Label(Msg.translate(Env.getCtx(), "M_Product_ID"));
         label.setStyle("font-weight: bold;");
-		north.appendChild(label);
+        north.appendChild(label);
 
-		Center center = new Center();
-		center.setBorder("none");
-		center.setFlex(true);
-		center.setAutoscroll(true);
-		borderlayout.appendChild(center);
-		center.appendChild(productTable);
+        Center center = new Center();
+        center.setBorder("none");
+        center.setAutoscroll(true);
+        borderlayout.appendChild(center);
+        center.appendChild(productTable);
 
-		South south = new South();
-		south.setBorder("none");
-		borderlayout.appendChild(south);
-		Panel southPanel = new Panel();
-		southPanel.setAlign("right");
-		south.appendChild(southPanel);
+        South south = new South();
+        south.setBorder("none");
+        borderlayout.appendChild(south);
+
+        Panel southPanel = new Panel();
+        southPanel.setStyle("text-align: right;");
+        south.appendChild(southPanel);
+
         return;
     }
 
@@ -229,76 +232,88 @@ public class WExpressReceiptScanBarUI extends ExpressReceiptScanBar implements I
      */
     private void createProductPanel()
     {
-    //  load Locator
-    	locatorLabel.setValue(Msg.translate(Env.getCtx(), "M_Locator_ID"));
-    	locatorLabel.setMandatory(true);
-    	MLocatorLookup locator = new MLocatorLookup(Env.getCtx(), form.getWindowNo());
-    	locator.setOnly_Warehouse_ID(getDefaultWarehouseId());
-    	locatorField = new WLocatorEditor ("M_Locator_ID", true, false, true, locator, form.getWindowNo());
-    	locatorField.setMandatory(true);
-    	locatorField.setValue(Env.getContextAsInt(Env.getCtx(), form.getWindowNo() , "M_Locator_ID"));
-    	locatorField.addValueChangeListener(this);
-    	
-    	upcLabel.setText(Msg.getElement(Env.getCtx(), "Value", false));
-    	upcLabel.setMandatory(true);
-        upcField = new WStringEditor ("UPC", false, false, true, 10, 30, null, null);
-		upcField.getComponent().addEventListener(Events.ON_CHANGE, this);
-		
-		qtyCountLabel.setText(Msg.getElement(Env.getCtx(), "QtyCount", false));
-		qtyCountField.getComponent().addEventListener(Events.ON_CHANGE, this);
-		
-		lotLabel.setText(Msg.getElement(Env.getCtx(), "Lot", false));
-        lotField = new WStringEditor ("Lot", false, false, true, 10, 30, null, null);
-		lotField.getComponent().addEventListener(Events.ON_CHANGE, this);
-		
-		serNoLabel.setText(Msg.getElement(Env.getCtx(), "SerNo", false));
-        serNoField = new WStringEditor ("SerNo", false, false, true, 10, 30, null, null);
-		serNoField.getComponent().addEventListener(Events.ON_CHANGE, this);
-		
+        //  load Locator
+        locatorLabel.setValue(Msg.translate(Env.getCtx(), "M_Locator_ID"));
+        locatorLabel.setMandatory(true);
+        MLocatorLookup locator = new MLocatorLookup(Env.getCtx(), form.getWindowNo());
+        locator.setOnly_Warehouse_ID(getDefaultWarehouseId());
+        locatorField = new WLocatorEditor("M_Locator_ID", true, false, true, locator, form.getWindowNo());
+        locatorField.setMandatory(true);
+        locatorField.setValue(Env.getContextAsInt(Env.getCtx(), form.getWindowNo(), "M_Locator_ID"));
+        locatorField.addValueChangeListener(this);
+
+        upcLabel.setText(Msg.getElement(Env.getCtx(), "Value", false));
+        upcLabel.setMandatory(true);
+        upcField = new WStringEditor("UPC", false, false, true, 10, 30, null, null);
+        upcField.getComponent().addEventListener(Events.ON_CHANGE, this);
+
+        qtyCountLabel.setText(Msg.getElement(Env.getCtx(), "QtyCount", false));
+        qtyCountField.getComponent().addEventListener(Events.ON_CHANGE, this);
+
+        lotLabel.setText(Msg.getElement(Env.getCtx(), "Lot", false));
+        lotField = new WStringEditor("Lot", false, false, true, 10, 30, null, null);
+        lotField.getComponent().addEventListener(Events.ON_CHANGE, this);
+
+        serNoLabel.setText(Msg.getElement(Env.getCtx(), "SerNo", false));
+        serNoField = new WStringEditor("SerNo", false, false, true, 10, 30, null, null);
+        serNoField.getComponent().addEventListener(Events.ON_CHANGE, this);
+
         productValueLabel.setValue(Msg.translate(Env.getCtx(), "Value"));
         productLabel.setValue(Msg.translate(Env.getCtx(), "Name"));
         UOMLabel.setValue(Msg.translate(Env.getCtx(), "C_UOM_ID"));
 
-    	Rows rows = new Rows();
-    	newGrid.appendChild(rows);
+        Rows rows = new Rows();
+        newGrid.appendChild(rows);
 
         Row row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
-        
+
+        Cell separatorCell = new Cell();
+        separatorCell.setColspan(3);
+        separatorCell.appendChild(new Separator());
+        row.appendChild(separatorCell);
+
         row = new Row();
         rows.appendChild(row);
         row.appendChild(locatorLabel);
         row.appendChild(locatorField.getComponent());
-        
+
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
-        
-    	row = new Row();
+
+        separatorCell = new Cell();
+        separatorCell.setColspan(3);
+        separatorCell.appendChild(new Separator());
+        row.appendChild(separatorCell);
+
+        row = new Row();
         rows.appendChild(row);
         row.appendChild(upcLabel);
         row.appendChild(upcField.getComponent());
         row.appendChild(qtyCountLabel);
         row.appendChild(qtyCountField.getComponent());
-        
+
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
-        
+
+        separatorCell = new Cell();
+        separatorCell.setColspan(3);
+        separatorCell.appendChild(new Separator());
+        row.appendChild(separatorCell);
+
         row = new Row();
         rows.appendChild(row);
         row.appendChild(serNoLabel);
         row.appendChild(serNoField.getComponent());
-        
+
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
-        
+
+        separatorCell = new Cell();
+        separatorCell.setColspan(3);
+        separatorCell.appendChild(new Separator());
+        row.appendChild(separatorCell);
+
         row = new Row();
         rows.appendChild(row);
         row.appendChild(lotLabel);
@@ -306,45 +321,57 @@ public class WExpressReceiptScanBarUI extends ExpressReceiptScanBar implements I
 
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
-        
-        //Product Info
+
+        separatorCell = new Cell();
+        separatorCell.setColspan(3);
+        separatorCell.appendChild(new Separator());
+        row.appendChild(separatorCell);
+
+        // Product Info
         productValueField.setReadonly(true);
         row = new Row();
         rows.appendChild(row);
         row.appendChild(productValueLabel);
         row.appendChild(productValueField);
-        
+
         productField.setReadonly(true);
         row.appendChild(productLabel);
-        row.appendChild(productField);  
-        
+        row.appendChild(productField);
+
         UOMField.setReadonly(true);
         row.appendChild(UOMLabel);
-        row.appendChild(UOMField);  
-        
-        row = new Row();
-        rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(UOMField);
 
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
-        
+
+        separatorCell = new Cell();
+        separatorCell.setColspan(3);
+        separatorCell.appendChild(new Separator());
+        row.appendChild(separatorCell);
+
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+
+        separatorCell = new Cell();
+        separatorCell.setColspan(3);
+        separatorCell.appendChild(new Separator());
+        row.appendChild(separatorCell);
+
+        row = new Row();
+        rows.appendChild(row);
+
+        separatorCell = new Cell();
+        separatorCell.setColspan(3);
+        separatorCell.appendChild(new Separator());
+        row.appendChild(separatorCell);
+
         upcField.setVisible(false);
         qtyCountField.setVisible(false);
         lotField.setVisible(false);
         serNoField.setVisible(false);
         return;
     }
-
 
     /**
      *  Initialises the dynamic components of the form.

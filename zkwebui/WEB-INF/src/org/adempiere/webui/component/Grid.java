@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Express;
 
 /**
  *
@@ -35,154 +34,179 @@ import org.zkoss.zk.ui.event.Express;
  */
 public class Grid extends org.zkoss.zul.Grid
 {
-	private static final long serialVersionUID = -4483759833677794926L;
-	private boolean noStrip = false;
-	private String oddRowSclass;
-	private transient Map<String, List<EventListenerInfo>> listeners;
+    private static final long serialVersionUID = -4483759833677794926L;
+
+    private boolean noStrip = false;
+    private String oddRowSclass;
+    private transient Map<String, List<EventListenerInfo>> listeners;
 
     public Grid() {
-		super();
-		//cache default
-		oddRowSclass = super.getOddRowSclass();
-		super.setOddRowSclass(oddRowSclass);
-		listeners = new HashMap<String, List<EventListenerInfo>>();
-	}
+        super();
 
-	public void makeNoStrip() {
-    	setStyle("border: none");
-    	setOddRowSclass(null);
+        // cache default
+        oddRowSclass = super.getOddRowSclass();
+        super.setOddRowSclass(oddRowSclass);
+
+        listeners = new HashMap<String, List<EventListenerInfo>>();
+    }
+
+    public void makeNoStrip() {
+        setStyle("border: none");
+        setOddRowSclass(null);
         noStrip = true;
     }
 
-	public Rows newRows() {
-		Rows rows = new Rows();
-		appendChild(rows);
-		
-		return rows;
-	}    
-	
-	public boolean insertBefore(Component child, Component refChild) {
-		boolean b = super.insertBefore(child, refChild);
-		if (b && child instanceof Rows && noStrip) {
-			Rows rows = (Rows) child;
-			rows.setNoStrip(true);
-		}
-		return b;
-	}
+    public Rows newRows() {
+        Rows rows = new Rows();
+        appendChild(rows);
 
-	@Override
-	public String getOddRowSclass() {
-		if (oddRowSclass == null)
-			return null;
-		else
-			return super.getOddRowSclass();
-	}
+        return rows;
+    }
 
-	@Override
-	public void setOddRowSclass(String scls) {
-		if (scls != null && scls.length() == 0)
-			oddRowSclass = null;
-		else
-			oddRowSclass = scls;
-		super.setOddRowSclass(scls);
-	}
-	
-	@Override
-	public boolean addEventListener(String evtnm, EventListener listener)
-	{
-	    return addEventListener((listener instanceof Express) ? 1000 : 0, evtnm, listener);
-	}
-	
-	@Override
-	public boolean addEventListener(int priority, String evtnm, EventListener listener)
-	{
-	    boolean b = super.addEventListener(priority, evtnm, listener);
+    @Override
+    public boolean insertBefore(Component child, Component refChild) {
+        boolean b = super.insertBefore(child, refChild);
 
-	    if (b)
-	    {
-	        final EventListenerInfo listenerInfo = new EventListenerInfo(priority, listener);
-	        List<EventListenerInfo> list = listeners.get(evtnm);
+        if (b && child instanceof Rows && noStrip) {
+            Rows rows = (Rows) child;
+            rows.setNoStrip(true);
+        }
 
-	        if (list != null)
-	        {
-	            for (Iterator<EventListenerInfo> it = list.iterator(); it.hasNext();)
-	            {
-	                final EventListenerInfo li = it.next();
+        return b;
+    }
 
-	                if (li.listener.equals(listener))
-	                {
-	                    if (li.priority == priority)
-	                        return false;
+    @Override
+    public String getOddRowSclass() {
+        if (oddRowSclass == null)
+            return null;
+        else
+            return super.getOddRowSclass();
+    }
 
-	                    it.remove();
-	                    break;
-	                }
-	            }
+    @Override
+    public void setOddRowSclass(String scls) {
+        if (scls != null && scls.length() == 0)
+            oddRowSclass = null;
+        else
+            oddRowSclass = scls;
 
-	            list.add(listenerInfo);
-	        }
-	        else
-	        {
-	            list = new LinkedList<EventListenerInfo>();
-	            list.add(listenerInfo);
-	            listeners.put(evtnm, list);
-	        }
-	    }
+        super.setOddRowSclass(scls);
+    }
 
-	    return b;
-	}
+    @Override
+    public boolean addEventListener(String evtnm, EventListener listener)
+    {
+        return addEventListener(0, evtnm, listener);
+    }
 
-	public boolean removeEventListener(String evtnm, EventListener listener)
-	{
-		boolean b = super.removeEventListener(evtnm, listener);
-		if (b)
-		{
-			List<EventListenerInfo> list = listeners.get(evtnm);
-			if (list != null)
-			{
-				for (Iterator<EventListenerInfo> it = list.iterator(); it.hasNext();)
-				{
-					final EventListenerInfo li = it.next();
-					if (li.listener.equals(listener))
-					{
-						it.remove();
-						break;
-					}
-				}
-			}
-		}
+    @Override
+    public boolean addEventListener(int priority, String evtnm, EventListener listener)
+    {
+        ensureListeners();
 
-		return b;
-	}
+        boolean b = super.addEventListener(priority, evtnm, listener);
 
-	public void copyEventListeners(Grid grid)
-	{
-		for (String evtnm : listeners.keySet())
-		{
-			if (evtnm.equals("onInitModel"))
-				continue;
-			List<EventListenerInfo> list = listeners.get(evtnm);
-			for (EventListenerInfo info : list)
-			{
-				grid.addEventListener(info.priority, evtnm, info.listener);
-			}
-		}
-	}
+        if (b)
+        {
+            final EventListenerInfo listenerInfo = new EventListenerInfo(priority, listener);
+            List<EventListenerInfo> list = listeners.get(evtnm);
 
-	/**
-	 * Temporarily hold in memory, Event Listener Info
-	 * 
-	 * @author Sachin
-	 */
-	private static class EventListenerInfo
-	{
-		private final int			priority;
-		private final EventListener	listener;
+            if (list != null)
+            {
+                for (Iterator<EventListenerInfo> it = list.iterator(); it.hasNext();)
+                {
+                    final EventListenerInfo li = it.next();
 
-		private EventListenerInfo(int priority, EventListener listener)
-		{
-			this.priority = priority;
-			this.listener = listener;
-		}
-	}
+                    if (li.listener.equals(listener))
+                    {
+                        if (li.priority == priority)
+                            return false;
+
+                        it.remove();
+                        break;
+                    }
+                }
+
+                list.add(listenerInfo);
+            }
+            else
+            {
+                list = new LinkedList<EventListenerInfo>();
+                list.add(listenerInfo);
+                listeners.put(evtnm, list);
+            }
+        }
+
+        return b;
+    }
+
+    @Override
+    public boolean removeEventListener(String evtnm, EventListener listener)
+    {
+        ensureListeners();
+
+        boolean b = super.removeEventListener(evtnm, listener);
+
+        if (b)
+        {
+            List<EventListenerInfo> list = listeners.get(evtnm);
+
+            if (list != null)
+            {
+                for (Iterator<EventListenerInfo> it = list.iterator(); it.hasNext();)
+                {
+                    final EventListenerInfo li = it.next();
+
+                    if (li.listener.equals(listener))
+                    {
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+        }
+
+        return b;
+    }
+
+    public void copyEventListeners(Grid grid)
+    {
+        ensureListeners();
+
+        for (String evtnm : listeners.keySet())
+        {
+            if (evtnm.equals("onInitModel"))
+                continue;
+
+            List<EventListenerInfo> list = listeners.get(evtnm);
+
+            for (EventListenerInfo info : list)
+            {
+                grid.addEventListener(info.priority, evtnm, info.listener);
+            }
+        }
+    }
+
+    private void ensureListeners()
+    {
+        if (listeners == null)
+            listeners = new HashMap<String, List<EventListenerInfo>>();
+    }
+
+    /**
+     * Temporarily hold in memory, Event Listener Info
+     *
+     * @author Sachin
+     */
+    private static class EventListenerInfo
+    {
+        private final int priority;
+        private final EventListener listener;
+
+        private EventListenerInfo(int priority, EventListener listener)
+        {
+            this.priority = priority;
+            this.listener = listener;
+        }
+    }
 }

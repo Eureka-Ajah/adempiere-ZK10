@@ -37,10 +37,10 @@ public class ListboxFactory {
 	    WListbox dataTable = new WListbox();
 
 	    dataTable.setWidth("100%");
-	    dataTable.setFixedLayout(true);
+	    //dataTable.setFixedLayout(true);
 
 	    /*
-	     * ZK 8.6.0:
+	     * ZK 10.2.1:
 	     * No usar setHeight("100%") junto con setVflex(true).
 	     */
 	    dataTable.setVflex(true);

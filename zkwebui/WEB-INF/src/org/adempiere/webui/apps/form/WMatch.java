@@ -54,10 +54,12 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -196,121 +198,150 @@ public class WMatch extends Match
 	 */
 	private void zkInit() throws Exception
 	{
-		form.appendChild(mainPanel);
-		mainPanel.setStyle("width: 99%; height: 100%; padding: 0; margin: 0");
-		mainPanel.appendChild(mainLayout);
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
-		northPanel.appendChild(northLayout);
-		matchFromLabel.setText(Msg.translate(Env.getCtx(), "MatchFrom"));
-		matchToLabel.setText(Msg.translate(Env.getCtx(), "MatchTo"));
-		matchModeLabel.setText(Msg.translate(Env.getCtx(), "MatchMode"));
-		onlyVendorLabel.setText(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
-		onlyProductLabel.setText(Msg.translate(Env.getCtx(), "M_Product_ID"));
-		dateFromLabel.setText(Msg.translate(Env.getCtx(), "DateFrom"));
-		dateToLabel.setText(Msg.translate(Env.getCtx(), "DateTo"));
-		bSearch.setLabel(Msg.translate(Env.getCtx(), "Search"));
-		southPanel.appendChild(southLayout);
-		xMatchedLabel.setText(Msg.translate(Env.getCtx(), "ToBeMatched"));
-		xMatchedToLabel.setText(Msg.translate(Env.getCtx(), "Matching"));
-		differenceLabel.setText(Msg.translate(Env.getCtx(), "Difference"));
-		bProcess.setLabel(Msg.translate(Env.getCtx(), "Process"));
-		centerPanel.appendChild(centerLayout);
-		sameProduct.setSelected(true);
-		sameProduct.setText(Msg.translate(Env.getCtx(), "SameProduct"));
-		sameBPartner.setSelected(true);
-		sameBPartner.setText(Msg.translate(Env.getCtx(), "SameBPartner"));
-		sameQty.setSelected(false);
-		sameQty.setText(Msg.translate(Env.getCtx(), "SameQty"));
-		
-		North north = new North();
-		mainLayout.appendChild(north);
-		north.appendChild(northPanel);
-		
-		Rows rows = northLayout.newRows();
-		Row row = rows.newRow();
-		row.appendChild(matchFromLabel.rightAlign());
-		row.appendChild(matchFrom);
-		row.appendChild(matchToLabel.rightAlign());
-		row.appendChild(matchTo);
-		row.appendChild(new Space());
-		
-		row = rows.newRow();
-		row.setSpans("1,1,3");
-		row.appendChild(matchModeLabel.rightAlign());
-		row.appendChild(matchMode);
-		row.appendChild(new Space());
-		
-		row = rows.newRow();
-		row.appendChild(onlyVendorLabel.rightAlign());
-		row.appendChild(onlyVendor.getComponent());
-		row.appendChild(onlyProductLabel.rightAlign());
-		row.appendChild(onlyProduct.getComponent());
-		row.appendChild(new Space());
-		
-		row = rows.newRow();
-		row.appendChild(dateFromLabel.rightAlign());		
-		row.appendChild(dateFrom.getComponent());
-		row.appendChild(dateToLabel.rightAlign());
-		row.appendChild(dateTo.getComponent());
-		row.appendChild(bSearch);
-		
-		South south = new South();
-		mainLayout.appendChild(south);
-		south.appendChild(southPanel);
-		
-		rows = southLayout.newRows();
-		
-		row = rows.newRow();
-		row.appendChild(xMatchedLabel.rightAlign());
-		row.appendChild(xMatched.getComponent());
-		row.appendChild(xMatchedToLabel.rightAlign());
-		row.appendChild(xMatchedTo.getComponent());
-		row.appendChild(differenceLabel.rightAlign());
-		row.appendChild(difference.getComponent());
-		row.appendChild(bProcess);
-		
-		Center center = new Center();
-		mainLayout.appendChild(center);
-		center.appendChild(centerPanel);
-		center.setFlex(true);
-		centerLayout.setWidth("100%");
-		centerLayout.setHeight("100%");
-		north = new North();
-		centerLayout.appendChild(north);
-		north.setStyle("border: none");
-		Panel p = new Panel();
-		p.appendChild(xMatchedBorder);
-		p.appendChild(xMatchedTable);
-		xMatchedTable.setWidth("99%");
-		xMatchedTable.setHeight("85%");
-		p.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
-		north.appendChild(p);
-		north.setHeight("44%");
-		
-		south = new South();
-		centerLayout.appendChild(south);
-		south.setStyle("border: none");
-		xMatchedToTable.setWidth("99%");
-		xMatchedToTable.setHeight("99%");
-		south.appendChild(xMatchedToTable);
-		south.setHeight("44%");
-		
-		center = new Center();
-		centerLayout.appendChild(center);
-		center.setStyle("border: none");
-		center.setFlex(false);
-//		center.setHeight("6%");
-		center.appendChild(xPanel);
-		xPanel.appendChild(sameBPartner);
-		xPanel.appendChild(new Space());
-		xPanel.appendChild(sameProduct);
-		xPanel.appendChild(new Space());
-		xPanel.appendChild(sameQty);
-		xPanel.setHeight("50px");
-		xPanel.appendChild(new Separator());
-		xPanel.appendChild(xMatchedToBorder);
-	}   //  jbInit
+	    form.appendChild(mainPanel);
+	    mainPanel.setStyle("width: 99%; height: 100%; padding: 0; margin: 0");
+	    mainPanel.appendChild(mainLayout);
+
+	    mainLayout.setWidth("100%");
+	    mainLayout.setHeight("100%");
+
+	    northPanel.appendChild(northLayout);
+
+	    matchFromLabel.setText(Msg.translate(Env.getCtx(), "MatchFrom"));
+	    matchToLabel.setText(Msg.translate(Env.getCtx(), "MatchTo"));
+	    matchModeLabel.setText(Msg.translate(Env.getCtx(), "MatchMode"));
+	    onlyVendorLabel.setText(Msg.translate(Env.getCtx(), "C_BPartner_ID"));
+	    onlyProductLabel.setText(Msg.translate(Env.getCtx(), "M_Product_ID"));
+	    dateFromLabel.setText(Msg.translate(Env.getCtx(), "DateFrom"));
+	    dateToLabel.setText(Msg.translate(Env.getCtx(), "DateTo"));
+	    bSearch.setLabel(Msg.translate(Env.getCtx(), "Search"));
+
+	    southPanel.appendChild(southLayout);
+
+	    xMatchedLabel.setText(Msg.translate(Env.getCtx(), "ToBeMatched"));
+	    xMatchedToLabel.setText(Msg.translate(Env.getCtx(), "Matching"));
+	    differenceLabel.setText(Msg.translate(Env.getCtx(), "Difference"));
+	    bProcess.setLabel(Msg.translate(Env.getCtx(), "Process"));
+
+	    centerPanel.appendChild(centerLayout);
+
+	    sameProduct.setSelected(true);
+	    sameProduct.setText(Msg.translate(Env.getCtx(), "SameProduct"));
+
+	    sameBPartner.setSelected(true);
+	    sameBPartner.setText(Msg.translate(Env.getCtx(), "SameBPartner"));
+
+	    sameQty.setSelected(false);
+	    sameQty.setText(Msg.translate(Env.getCtx(), "SameQty"));
+
+	    North north = new North();
+	    mainLayout.appendChild(north);
+	    north.appendChild(northPanel);
+
+	    Rows rows = northLayout.newRows();
+
+	    Row row = rows.newRow();
+	    row.appendChild(matchFromLabel.rightAlign());
+	    row.appendChild(matchFrom);
+	    row.appendChild(matchToLabel.rightAlign());
+	    row.appendChild(matchTo);
+	    row.appendChild(new Space());
+
+	    row = rows.newRow();
+	    row.appendChild(matchModeLabel.rightAlign());
+	    row.appendChild(matchMode);
+	    row.appendChild(createCell(new Space(), 3));
+
+	    row = rows.newRow();
+	    row.appendChild(onlyVendorLabel.rightAlign());
+	    row.appendChild(onlyVendor.getComponent());
+	    row.appendChild(onlyProductLabel.rightAlign());
+	    row.appendChild(onlyProduct.getComponent());
+	    row.appendChild(new Space());
+
+	    row = rows.newRow();
+	    row.appendChild(dateFromLabel.rightAlign());
+	    row.appendChild(dateFrom.getComponent());
+	    row.appendChild(dateToLabel.rightAlign());
+	    row.appendChild(dateTo.getComponent());
+	    row.appendChild(bSearch);
+
+	    South south = new South();
+	    mainLayout.appendChild(south);
+	    south.appendChild(southPanel);
+
+	    rows = southLayout.newRows();
+
+	    row = rows.newRow();
+	    row.appendChild(xMatchedLabel.rightAlign());
+	    row.appendChild(xMatched.getComponent());
+	    row.appendChild(xMatchedToLabel.rightAlign());
+	    row.appendChild(xMatchedTo.getComponent());
+	    row.appendChild(differenceLabel.rightAlign());
+	    row.appendChild(difference.getComponent());
+	    row.appendChild(bProcess);
+
+	    Center center = new Center();
+	    mainLayout.appendChild(center);
+	    center.appendChild(centerPanel);
+	    center.setHflex("1");
+	    center.setVflex("1");
+
+	    centerLayout.setWidth("100%");
+	    centerLayout.setHeight("100%");
+
+	    north = new North();
+	    centerLayout.appendChild(north);
+	    north.setStyle("border: none");
+
+	    Panel p = new Panel();
+	    p.appendChild(xMatchedBorder);
+	    p.appendChild(xMatchedTable);
+
+	    xMatchedTable.setWidth("99%");
+	    xMatchedTable.setHeight("85%");
+
+	    p.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
+
+	    north.appendChild(p);
+	    north.setHeight("44%");
+
+	    south = new South();
+	    centerLayout.appendChild(south);
+	    south.setStyle("border: none");
+
+	    xMatchedToTable.setWidth("99%");
+	    xMatchedToTable.setHeight("99%");
+
+	    south.appendChild(xMatchedToTable);
+	    south.setHeight("44%");
+
+	    center = new Center();
+	    centerLayout.appendChild(center);
+	    center.setStyle("border: none");
+
+	    center.appendChild(xPanel);
+
+	    xPanel.appendChild(sameBPartner);
+	    xPanel.appendChild(new Space());
+	    xPanel.appendChild(sameProduct);
+	    xPanel.appendChild(new Space());
+	    xPanel.appendChild(sameQty);
+	    xPanel.setHeight("50px");
+	    xPanel.appendChild(new Separator());
+	    xPanel.appendChild(xMatchedToBorder);
+	}  //  jbInit
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
+	}
 
 	/**
 	 *  Dynamic Init.

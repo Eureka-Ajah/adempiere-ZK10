@@ -16,6 +16,7 @@
  *****************************************************************************/
 package org.adempiere.webui;
 
+import java.time.ZoneId;
 import java.util.TimeZone;
 
 /**
@@ -31,5 +32,5 @@ public class ClientInfo {
 	public int desktopYOffset;
 	public int screenHeight;
 	public int screenWidth;
-	public TimeZone timeZone;
+	public ZoneId timeZone;
 }

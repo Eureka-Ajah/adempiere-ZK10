@@ -53,10 +53,12 @@ import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.TrxRunnable;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -236,15 +238,14 @@ public class WAllocation extends Allocation
 		row = rows.newRow();
 		row.appendChild(currencyLabel.rightAlign());
 		row.appendChild(currencyPick.getComponent());
+
 		Div div = new Div();
 		div.setStyle("text-align: center");
 		div.appendChild(multiCurrency);
-		row.appendChild(div);
+
+		row.appendChild(createCell(div, 2));
 		row.appendChild(apartLabel.rightAlign());
 		row.appendChild(aparPick.getComponent());
-		row.appendChild(new Space());
-		row.appendChild(new Space());
-		row.setSpans("1,1,2,1,1");
 		
 		row = rows.newRow();
 		row.appendChild(new Space());
@@ -326,7 +327,8 @@ public class WAllocation extends Allocation
 		center.setStyle("border: none");
 		//
 		center = new Center();
-		center.setFlex(true);
+		center.setHflex("1");
+		center.setVflex("1");
 		mainLayout.appendChild(center);
 		center.appendChild(infoPanel);
 		
@@ -342,10 +344,23 @@ public class WAllocation extends Allocation
 		north.setSplittable(true);
 		center = new Center();
 		center.setStyle("border: none");
-		center.setFlex(true);
+		center.setHflex("1");
+		center.setVflex("1");
 		infoPanel.appendChild(center);
 		center.appendChild(invoicePanel);
 	}   //  jbInit
+	
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
+	}
 
 	/**
 	 *  Dynamic Init (prepare dynamic fields)

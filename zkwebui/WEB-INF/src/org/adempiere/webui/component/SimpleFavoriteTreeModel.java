@@ -117,7 +117,7 @@ public class SimpleFavoriteTreeModel extends SimpleTreeModel
 		tree.setPageSize(-1);
 		try
 		{
-			tree.setTreeitemRenderer(treeModel);
+			tree.setItemRenderer(treeModel);
 			tree.setModel(treeModel);
 			//TODO : Might be need to code here for default expand collapse
 		}
@@ -134,7 +134,7 @@ public class SimpleFavoriteTreeModel extends SimpleTreeModel
 	 * @param root
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+
 	public static SimpleFavoriteTreeModel createFrom(MTreeNode root)
 	{
 		SimpleFavoriteTreeModel model = null;
@@ -164,7 +164,6 @@ public class SimpleFavoriteTreeModel extends SimpleTreeModel
 	 * @param stNode
 	 * @param root
 	 */
-	@SuppressWarnings("unchecked")
 	private static void populate(DefaultTreeNode<MTreeNode> stNode, MTreeNode root)
 	{
 		Enumeration<?> nodeEnum = root.children();
@@ -337,15 +336,18 @@ public class SimpleFavoriteTreeModel extends SimpleTreeModel
 		treeFavNode.saveEx();
 
 		int path[] = this.getPath(simpleTreeNode);
+
 		if (path != null && path.length > 0)
 		{
-			DefaultTreeNode parentNode = getRoot();
-			int index = path.length - 1;
-			for (int i = 0; i < index; i++)
-			{
-				parentNode = (DefaultTreeNode) getChild(parentNode, path[i]);
-			}
-			fireEvent(parentNode, path[index], path[index], TreeDataEvent.CONTENTS_CHANGED);
+		    DefaultTreeNode parentNode = getRoot();
+		    int index = path.length - 1;
+
+		    for (int i = 0; i < index; i++)
+		    {
+		        parentNode = getChild(parentNode, path[i]);
+		    }
+
+		    fireEvent(TreeDataEvent.CONTENTS_CHANGED, getPath(parentNode), path[index], path[index]);
 		}
 
 		
@@ -353,34 +355,41 @@ public class SimpleFavoriteTreeModel extends SimpleTreeModel
 
 	public void removeNode(DefaultTreeNode treeNode)
 	{
-		int path[] = this.getPath(treeNode);
+	    int path[] = this.getPath(treeNode);
 
-		if (path != null && path.length > 0)
-		{
-			DefaultTreeNode parentNode = getRoot();
-			int index = path.length - 1;
-			for (int i = 0; i < index; i++)
-			{
-				parentNode = (DefaultTreeNode) getChild(parentNode, path[i]);
-			}
-			parentNode.getChildren().remove(path[index]);
-			fireEvent(parentNode, path[index], path[index], TreeDataEvent.INTERVAL_REMOVED);
-		}
+	    if (path != null && path.length > 0)
+	    {
+	        DefaultTreeNode parentNode = getRoot();
+	        int index = path.length - 1;
+
+	        for (int i = 0; i < index; i++)
+	        {
+	            parentNode = getChild(parentNode, path[i]);
+	        }
+
+	        int removeIndex = path[index];
+	        parentNode.getChildren().remove(removeIndex);
+
+	        fireEvent(TreeDataEvent.INTERVAL_REMOVED, getPath(parentNode), removeIndex, removeIndex);
+	    }
 	}
 
-	@SuppressWarnings("unchecked")
+
 	public void addNode(DefaultTreeNode newNode)
 	{
-		DefaultTreeNode root = (DefaultTreeNode) getRoot();
-		root.getChildren().add(newNode);
-		fireEvent(root, root.getChildCount() - 1, root.getChildCount() - 1, TreeDataEvent.INTERVAL_ADDED);
+	    DefaultTreeNode root = getRoot();
+	    root.getChildren().add(newNode);
+
+	    int newIndex = root.getChildCount() - 1;
+
+	    fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(root), newIndex, newIndex);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void addNode(DefaultTreeNode newParent, DefaultTreeNode newNode, int index)
 	{
-		newParent.getChildren().add(index, newNode);
-		fireEvent(newParent, index, index, TreeDataEvent.INTERVAL_ADDED);
+	    newParent.getChildren().add(index, newNode);
+
+	    fireEvent(TreeDataEvent.INTERVAL_ADDED, getPath(newParent), index, index);
 	}
 
 	public void addOnDropEventListener(EventListener listener)

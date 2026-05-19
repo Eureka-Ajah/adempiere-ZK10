@@ -89,7 +89,7 @@ public class MenuPanel extends Panel implements EventListener
         menuTree.setId("mnuMain");
         menuTree.setWidth("100%");
         menuTree.setVflex(true);
-        menuTree.setFixedLayout(false);
+        //menuTree.setFixedLayout(false);
         menuTree.setPageSize(-1); // Due to bug in the new paging functionality
         
         menuTree.setStyle("border: none");

@@ -30,7 +30,7 @@ import org.zkoss.zk.ui.event.EventListener;
 /**
  * Visual and Control Part of Schedule.
  *
- * Implementacion temporal compatible con ZK 8.6.0.
+ * Implementacion de contingencia pendiente de reemplazo compatible con ZK 10.2.1.
  *
  * La implementacion original dependia de org.zkforge.timeline:
  * - org.zkforge.timeline.Timeline
@@ -38,7 +38,7 @@ import org.zkoss.zk.ui.event.EventListener;
  * - org.zkforge.timeline.event.BandScrollEvent
  *
  * Esa libreria no esta disponible en el classpath actual de Eureka durante
- * la migracion ZK 5 a ZK 8.6.0.
+ * la migracion hacia ZK 10.2.1.
  *
  * Esta clase permite compilar y mantener operativo el flujo general.
  * La vista grafica de agenda queda pendiente de reimplementacion.
@@ -76,7 +76,7 @@ public class WSchedule extends Panel implements EventListener
     {
         this.getChildren().clear();
 
-        Label label = new Label("Agenda no disponible temporalmente durante la migracion a ZK 8.6.0.");
+        Label label = new Label("Agenda no disponible. Requiere reimplementacion compatible con ZK 10.2.1.");
         label.setStyle("display:block; padding:10px; color:#666;");
 
         this.appendChild(label);
@@ -109,6 +109,6 @@ public class WSchedule extends Panel implements EventListener
     @Override
     public void onEvent(Event event) throws Exception
     {
-        // Timeline deshabilitado temporalmente durante la migracion ZK 8.6.0.
+        // Timeline deshabilitado hasta reimplementarlo sobre ZK 10.2.1.
     }
 }	//	WSchedule

@@ -54,12 +54,14 @@ import org.compiere.util.Util;
 import org.compiere.util.ValueNamePair;
 import org.zkforge.keylistener.Keylistener;
 import org.zkoss.zk.au.out.AuEcho;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -311,8 +313,7 @@ public class WPayment extends Window
 		row.appendChild(kOnline);   // check online processing not enabled
 		
 		row = rows.newRow();
-		row.setSpans("3,1");
-		row.appendChild(kStatus);
+		row.appendChild(createCell(kStatus, 3));
 		row.appendChild(new Space());
 		
 		//	DircetDebit/Credit
@@ -340,8 +341,7 @@ public class WPayment extends Window
 		row.appendChild(tOnline);
 				
 		row = rows.newRow();
-		row.setSpans("3,1");
-		row.appendChild(tStatus);
+		row.appendChild(createCell(tStatus, 3));
 		row.appendChild(new Space());
 						
 		// Cheque
@@ -404,8 +404,7 @@ public class WPayment extends Window
 		row.appendChild(sOnline);
 		
 		row = rows.newRow();
-		row.setSpans("3,1");
-		row.appendChild(sStatus);
+		row.appendChild(createCell(sStatus, 3));
 		row.appendChild(new Space());
 		
 		// Payment Term
@@ -463,6 +462,17 @@ public class WPayment extends Window
 		appendChild(keyListener);
 		
 	}	//	jbInit
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
+	}
 
 	
 	/**************************************************************************

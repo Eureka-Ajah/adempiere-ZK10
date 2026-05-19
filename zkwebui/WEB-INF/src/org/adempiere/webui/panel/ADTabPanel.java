@@ -179,7 +179,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         grid = new Grid();
 
         /*
-         * ZK 8.6.0:
+         * ZK 10.2.1:
          * No se permite combinar setWidth("100%") con setHflex("1")
          * en el mismo componente.
          */
@@ -325,19 +325,26 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
             		}
 
                     row = new Row();
-                    row.setSpans("5");
+                    row.appendChild(createCell(new Separator(), 5));
                     row.appendChild(new Separator());
                     rows.appendChild(row);
 
                     row = new Group();
-                    row.setSpans("2,3");
+                    Cell cell1 = new Cell();
+                    cell1.setColspan(2);
+
+                    Cell cell2 = new Cell();
+                    cell2.setColspan(3);
+
+                    row.appendChild(cell1);
+                    row.appendChild(cell2);
                     rows.appendChild(row);
                     includedTab.put(field.getIncluded_Tab_ID(), (Group)row);
 
     				org.zkoss.zul.Div div = new Div();
                     div.setWidth("100%");
                     row = new org.adempiere.webui.component.Row();
-                    row.setSpans("5");
+                    row.appendChild(createCell(new Separator(), 5));
                     row.appendChild(div);
                     rows.appendChild(row);
                     horizontalIncludedTab.put(field.getIncluded_Tab_ID(),  div);
@@ -396,7 +403,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
             			List<org.zkoss.zul.Row> headerRows = new ArrayList<org.zkoss.zul.Row>();
             			fieldGroupHeaders.put(fieldGroup, headerRows);
 
-            			row.setSpans("5");
+            			row.appendChild(createCell(new Separator(), 5));
             			row.appendChild(new Separator());
             			rows.appendChild(row);
             			headerRows.add(row);
@@ -407,7 +414,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
             			if (X_AD_FieldGroup.FIELDGROUPTYPE_Label.equals(field.getFieldGroupType()))
             			{
             				row = new Row();
-                			row.setSpans("4");
+            				row.appendChild(createCell(new Separator(), 4));
             				Label groupLabel = new Label(fieldGroup);
             				row.appendChild(groupLabel);
             				row.appendChild(createSpacer());
@@ -415,7 +422,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
             				headerRows.add(row);
 
             				row = new Row();
-	                        row.setSpans("4");
+            				row.appendChild(createCell(new Separator(), 4));
 	                        Separator separator = new Separator();
 	                        separator.setBar(true);
 	            			row.appendChild(separator);
@@ -488,8 +495,8 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
                     {
                     	Div div = new Div();
                     	div.setSclass("field-label");
-                    	//	Ajust align
-                        div.setAlign("right");
+                    	div.setStyle("text-align: right;");
+
                         Label label = editor.getLabel();
                         div.appendChild(label);
 
@@ -500,7 +507,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
                     }
                     row.appendChild(editor.getComponent());
                     if (field.isLongField()) {
-                    	row.setSpans("1,3,1");
+                    	//row.setSpans("1,3,1");
                     	row.appendChild(createSpacer());
                     	rows.appendChild(row);
                     	if (rowList != null)
@@ -549,7 +556,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
     				//display just a label if we are "heading only"
     				Label label = new Label(field.getHeader());
     				Div div = new Div();
-    				div.setAlign("center");
+    				div.setStyle("text-align: center;");
     				row.appendChild(createSpacer());
     				div.appendChild(label);
     				row.appendChild(div);
@@ -1426,7 +1433,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
 
 		org.zkoss.zul.Row row = new Row();
-		row.setSpans("5");
+		row.appendChild(createCell(new Separator(), 5));
 
 		if(!ep.gridWindow.getTab(ep.tabIndex).isDisplayed())
 		{
@@ -1891,8 +1898,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         divComponent.setWidth("100%");
         // Create a Panel Object
         Panel panel = new Panel();
-        //Setting Properties to Panel
-        panel.setFramable(true);
+        panel.setStyle("border: 1px solid #d9d9d9; background: #ffffff;");
     	//panel.setStyle("overflow:auto");
         panel.setWidth("100%");
         panel.setHeight("100%");
@@ -1922,12 +1928,12 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         org.zkoss.zul.Row newRow = new Group();
         // Create a Row For ToolBar
         org.zkoss.zul.Row toolbarRow = new org.adempiere.webui.component.Row();
-        toolbarRow.setSpans("5");
+        toolbarRow.appendChild(createCell(new Separator(), 5));
         ep.toolbarRow = toolbarRow;
         //Create a Row For All Widgets
         org.zkoss.zul.Row panelRow = new org.adempiere.webui.component.Row();
-        panelRow.setSpans("5");
-        panelRow.setWidth("100%");
+        panelRow.appendChild(createCell(new Separator(), 5));
+        //panelRow.setWidth("100%");
         panelRow.setHeight("100%");
         // Added to Group
         newRows.appendChild( newRow );
@@ -2017,6 +2023,17 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 		}
 		//	Set Context info
 		((HtmlBasedComponent) editor.getComponent()).setTooltiptext(messageValue);
+    }
+    
+    private Cell createCell(Component child, int colspan)
+    {
+        Cell cell = new Cell();
+        cell.setColspan(colspan);
+
+        if (child != null)
+            cell.appendChild(child);
+
+        return cell;
     }
 }
 

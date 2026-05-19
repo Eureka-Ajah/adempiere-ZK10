@@ -50,6 +50,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Trx;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Hbox;
 
 /**
@@ -290,28 +291,40 @@ public class InfoInvoicePanel extends InfoPanel implements ValueChangeListener
 		row.appendChild(fIsPaid);
 		
 		row = new Row();
-		row.setSpans("1, 1, 1, 3");
 		rows.appendChild(row);
+
 		row.appendChild(lblDescription.rightAlign());
 		row.appendChild(fDescription);
 		row.appendChild(lblDateInvoiced.rightAlign());
+
 		Hbox hbox = new Hbox();
 		hbox.appendChild(fDateFrom);
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(fDateTo);
-		row.appendChild(hbox);
+
+		Cell dateCell = new Cell();
+		dateCell.setColspan(3);
+		dateCell.appendChild(hbox);
+
+		row.appendChild(dateCell);
 		
 		row = new Row();
-		row.setSpans("1, 1, 1, 3");
 		rows.appendChild(row);
+
 		row.appendChild(fOrder_ID.getLabel().rightAlign());
 		row.appendChild(fOrder_ID.getComponent());
 		row.appendChild(lblGrandTotal.rightAlign());
+
 		hbox = new Hbox();
 		hbox.appendChild(fAmtFrom);
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(fAmtTo);
-		row.appendChild(hbox);
+
+		Cell amountCell = new Cell();
+		amountCell.setColspan(3);
+		amountCell.appendChild(hbox);
+
+		row.appendChild(amountCell);
 
 		p_criteriaGrid.appendChild(rows);
 		

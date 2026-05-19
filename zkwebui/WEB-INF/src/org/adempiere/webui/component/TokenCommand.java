@@ -37,24 +37,27 @@ public class TokenCommand implements AuService {
 
 	@Override
     public boolean service(AuRequest request, boolean everError) {
-        if (!"onToken".equals(request.getCommand())) {
+        if (!TokenEvent.ON_USER_TOKEN.equals(request.getCommand())) {
             return false; 
         }
 
         Map<String, Object> dataMap = request.getData();
-        if (dataMap == null || !dataMap.containsKey("arg0") || !dataMap.containsKey("arg1")) {
+        if (dataMap == null ||
+                !((dataMap.containsKey("sid") && dataMap.containsKey("hash")) ||
+                        (dataMap.containsKey("arg0") && dataMap.containsKey("arg1")))) {
             throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA, new Object[] {
                 Objects.toString(dataMap), this
             });
         }
 
-        // Extraer los datos como arreglo
+        Object sid = dataMap.containsKey("sid") ? dataMap.get("sid") : dataMap.get("arg0");
+        Object hash = dataMap.containsKey("hash") ? dataMap.get("hash") : dataMap.get("arg1");
         String[] data = new String[] {
-            (String) dataMap.get("arg0"),
-            (String) dataMap.get("arg1")
+            String.valueOf(sid),
+            String.valueOf(hash)
         };
 
-        Events.postEvent(new TokenEvent("onToken", comp, data));
+        Events.postEvent(new TokenEvent(TokenEvent.ON_USER_TOKEN, comp, data));
         return true;
     }
 }

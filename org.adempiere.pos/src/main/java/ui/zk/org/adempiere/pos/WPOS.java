@@ -51,6 +51,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.East;
 import org.zkoss.zul.South;
@@ -289,25 +290,34 @@ public class WPOS extends CPOS implements IFormController, EventListener, POSPan
 		}
 		okButton.addActionListener(this);
 		cancelButton.addEventListener("onClick", this);
+
 		okButton.setWidth("45px");
 		okButton.setHeight("45px");
 		cancelButton.setWidth("45px");
 		cancelButton.setHeight("45px");
+
 		listTerminal.setHeight("45px");
-		listTerminal.setStyle("height:45px;"+WPOS.FONTSIZEMEDIUM);
-		row.setSpans("2");
-		row.appendChild(listTerminal);
+		listTerminal.setStyle("height:45px;" + WPOS.FONTSIZEMEDIUM);
+
+		Cell listTerminalCell = new Cell();
+		listTerminalCell.setColspan(2);
+		listTerminalCell.appendChild(listTerminal);
+
+		row.appendChild(listTerminalCell);
 		row.setHeight("45px");
+
 		row = rows.newRow();
+
 		confirm = new ConfirmPanel(true);
 		confirm.addActionListener(this);
 		confirm.getOKButton().setWidth("55px");
 		confirm.getOKButton().setHeight("55px");
 		confirm.getButton(ConfirmPanel.A_CANCEL).setWidth("55px");
 		confirm.getButton(ConfirmPanel.A_CANCEL).setHeight("55px");
-		
+
 		row.appendChild(confirm);
 		row.setHeight("60px");
+
 		AEnv.showWindow(selection);
 			
 	}	//	setMPOS

@@ -55,6 +55,11 @@ public class SahiIdGenerator_v1 implements IdGenerator {
     }
 
     @Override
+    public String nextAnonymousComponentUuid(Component comp, ComponentInfo compInfo) {
+        return nextComponentUuid(comp.getDesktop(), comp, compInfo);
+    }
+
+    @Override
     public String nextDesktopId(Desktop desktop) {
         if (desktop.getAttribute("Id_Num") == null) {
             String number = "0";

@@ -49,6 +49,7 @@ import org.compiere.util.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Hbox;
 
 /**
@@ -230,29 +231,41 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		row.appendChild(fIsSOTrx);
 		
 		row = new Row();
-		row.setSpans("1, 1, 1, 2");
 		rows.appendChild(row);
+
 		row.appendChild(lblDescription.rightAlign());
 		row.appendChild(fDescription);
 		row.appendChild(lblDateOrdered.rightAlign());
+
 		Hbox hbox = new Hbox();
 		hbox.appendChild(fDateFrom);
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(fDateTo);
 		hbox.appendChild(fIsDelivered);
-		row.appendChild(hbox);
+
+		Cell dateCell = new Cell();
+		dateCell.setColspan(2);
+		dateCell.appendChild(hbox);
+
+		row.appendChild(dateCell);
 		
 		row = new Row();
-		row.setSpans("1, 1, 1, 2");
 		rows.appendChild(row);
+
 		row.appendChild(lblOrderRef.rightAlign());
 		row.appendChild(fPOReference);
 		row.appendChild(lblGrandTotal.rightAlign());
+
 		hbox = new Hbox();
 		hbox.appendChild(fAmtFrom);
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(fAmtTo);
-		row.appendChild(hbox);
+
+		Cell amountCell = new Cell();
+		amountCell.setColspan(2);
+		amountCell.appendChild(hbox);
+
+		row.appendChild(amountCell);
         
 		p_criteriaGrid.appendChild(rows);
 		super.setSizes();

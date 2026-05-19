@@ -157,7 +157,7 @@ public class WWFActivity extends ADForm implements EventListener
 		Row row = new Row();
 		rows.appendChild(row);
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lNode);
 		row.appendChild(div);
 		row.appendChild(fNode);
@@ -168,7 +168,7 @@ public class WWFActivity extends ADForm implements EventListener
 		rows.appendChild(row);
 		row.setValign("top");
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lDesctiption);
 		row.appendChild(div);
 		row.appendChild(fDescription);
@@ -179,7 +179,7 @@ public class WWFActivity extends ADForm implements EventListener
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lHelp);
 		row.appendChild(div);
 		row.appendChild(fHelp);
@@ -192,7 +192,7 @@ public class WWFActivity extends ADForm implements EventListener
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lHistory);
 		row.appendChild(div);
 		row.appendChild(fHistory);
@@ -201,7 +201,7 @@ public class WWFActivity extends ADForm implements EventListener
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lAnswer);
 		row.appendChild(div);
 		Hbox hbox = new Hbox();
@@ -216,7 +216,7 @@ public class WWFActivity extends ADForm implements EventListener
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lTextMsg);
 		row.appendChild(div);
 		row.appendChild(fTextMsg);
@@ -227,7 +227,7 @@ public class WWFActivity extends ADForm implements EventListener
 		row = new Row();
 		rows.appendChild(row);
 		div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(lForward);
 		row.appendChild(div);
 		hbox = new Hbox();
@@ -245,7 +245,8 @@ public class WWFActivity extends ADForm implements EventListener
 		North north = new North();
 		north.appendChild(listbox);
 		north.setSplittable(true);
-		north.setFlex(true);
+		north.setHflex("1");
+		north.setVflex("1");
 		north.setHeight("50%");
 		layout.appendChild(north);
 		north.setStyle("background-color: transparent");
@@ -255,7 +256,8 @@ public class WWFActivity extends ADForm implements EventListener
 		center.appendChild(grid);
 		layout.appendChild(center);
 		center.setStyle("background-color: transparent");
-		center.setFlex(true);
+		center.setHflex("1");
+		center.setVflex("1");
 
 		South south = new South();
 		south.appendChild(statusBar);
@@ -430,7 +432,7 @@ public class WWFActivity extends ADForm implements EventListener
 		listbox.setModel(model);
 		listbox.setItemRenderer(renderer);
 		listbox.repaint();
-		listbox.setFixedLayout(true);
+		listbox.setStyle("table-layout: fixed;");
 
 		return m_activities.length;
 	}	//	loadActivities

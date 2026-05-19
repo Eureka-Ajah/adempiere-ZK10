@@ -252,8 +252,13 @@ public class StringBox extends Div
 		return textbox.getRows();
 	}
 	
-	public void setRows(int rows) throws WrongValueException {
-		textbox.setRows(rows);
+	public void setRows(int rows) throws WrongValueException
+	{
+	    if (textbox != null)
+	    {
+	        textbox.setHeight(null);
+	        textbox.setRows(rows);
+	    }
 	}
 	
 	public void setMultiline(boolean multiline) {
@@ -279,10 +284,29 @@ public class StringBox extends Div
 		textbox.setWidth(width);
 	}
 	
+	@Override
 	public void setHeight(String height)
 	{
-		super.setHeight(height);
-		textbox.setHeight("95%");
+	    super.setHeight(height);
+
+	    if (textbox != null)
+	    {
+	        String style = textbox.getStyle();
+
+	        if (style == null)
+	            style = "";
+
+	        // Evita usar textbox.setHeight(...) porque ZK 10.2.1 no permite
+	        // combinar height con rows sobre el mismo Textbox.
+	        if (!style.toLowerCase().contains("height:"))
+	        {
+	            if (style.length() > 0 && !style.trim().endsWith(";"))
+	                style += ";";
+
+	            style += "height:95%;";
+	            textbox.setStyle(style);
+	        }
+	    }
 	}
 	
 }

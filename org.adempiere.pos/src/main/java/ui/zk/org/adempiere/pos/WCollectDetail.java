@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Caption;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Panelchildren;
@@ -256,10 +257,14 @@ public class WCollectDetail extends CollectDetail implements EventListener, POSP
 			}
 		}
 		
-		row.setSpans("1,2");
 		fCCardNo = new WPOSTextField(Msg.translate(p_ctx, "CreditCardNumber"), keyboard);
 		fCCardNo.setStyle(HEIGHT+WIDTH+FONT_SIZE);
-		row.appendChild(fCCardNo);
+
+		Cell cardNoCell = new Cell();
+		cardNoCell.setColspan(2);
+		cardNoCell.appendChild(fCCardNo);
+
+		row.appendChild(cardNoCell);
 		fCCardNo.addEventListener("onFocus", this);
 		
 		fCCardName = new WPOSTextField(Msg.translate(p_ctx, "Name"), keyboard);
@@ -314,15 +319,19 @@ public class WCollectDetail extends CollectDetail implements EventListener, POSP
 		Rows rows = v_DebitPanel.newRows();
 		Row row = rows.newRow();
 
-		row.setSpans("1,2");
 		fDebitRoutingNo = new WPOSTextField(Msg.translate(p_ctx, "RoutingNo"), keyboard);
 		fDebitRoutingNo.setStyle(HEIGHT+WIDTH+FONT_SIZE);
 		row.appendChild(fDebitRoutingNo);
 		fDebitRoutingNo.addEventListener("onFocus", this);
-		
+
 		fDebitCVC = new WPOSTextField(Msg.translate(p_ctx, "A_Country"), keyboard);
-		row.appendChild(fDebitCVC);
 		fDebitCVC.setStyle(HEIGHT+WIDTH+FONT_SIZE);
+
+		Cell debitCVCCell = new Cell();
+		debitCVCCell.setColspan(2);
+		debitCVCCell.appendChild(fDebitCVC);
+
+		row.appendChild(debitCVCCell);
 		fDebitCVC.addEventListener("onFocus", this);
 
 		fDebitCountry = new WPOSTextField(Msg.translate(p_ctx, "R_CVV2Match"), keyboard);
@@ -339,39 +348,37 @@ public class WCollectDetail extends CollectDetail implements EventListener, POSP
 	 * @return void
 	 */
 	private void loadCreditMemoPanel() {
-		v_CreditMemoPanel = GridFactory.newGridLayout();
-		v_CreditMemoPanel.setWidth("100%");
-		v_CreditMemoPanel.setHeight("95px");
-		
-		Rows rows = v_CreditMemoPanel.newRows();
-		Row row = rows.newRow();
+	    v_CreditMemoPanel = GridFactory.newGridLayout();
+	    v_CreditMemoPanel.setWidth("100%");
+	    v_CreditMemoPanel.setHeight("95px");
 
-		row.setSpans("1,2");
-		//	Add label credit note
-		lCreditMemo = new Label(Msg.translate(Env.getCtx(), "CreditMemo") + ":");
-		lCreditMemo.setStyle(HEIGHT+WIDTH+FONT_SIZE);
-		row.appendChild(lCreditMemo);
-		
-		MLookup lookup = getCreditMemoLockup(v_Parent.getC_BPartner_ID());
-		ArrayList<Object> types = lookup.getData(false, false, true, true);
-		
-		row = rows.newRow();
-		fCreditMemo = ListboxFactory.newDropdownListbox();
-		row.appendChild(fCreditMemo);
-		fCreditMemo.setStyle(HEIGHT+WIDTH+FONT_SIZE);
-		fCreditMemo.setValue(Msg.translate(p_ctx, "CreditMemoType"));
-		fCreditMemo.addActionListener(this);
-		
-		/**
-		 *	Load Credit Notes
-		 */
-		for (Object obj : types) {
-			if ( obj instanceof KeyNamePair )	{
-				KeyNamePair key = (KeyNamePair) obj;
-				fCreditMemo.appendItem(key.getName(), key.getID());
-			}
-		}
-		
+	    Rows rows = v_CreditMemoPanel.newRows();
+	    Row row = rows.newRow();
+
+	    //  Add label credit note
+	    lCreditMemo = new Label(Msg.translate(Env.getCtx(), "CreditMemo") + ":");
+	    lCreditMemo.setStyle(HEIGHT + WIDTH + FONT_SIZE);
+	    row.appendChild(lCreditMemo);
+
+	    MLookup lookup = getCreditMemoLockup(v_Parent.getC_BPartner_ID());
+	    ArrayList<Object> types = lookup.getData(false, false, true, true);
+
+	    row = rows.newRow();
+	    fCreditMemo = ListboxFactory.newDropdownListbox();
+	    row.appendChild(fCreditMemo);
+	    fCreditMemo.setStyle(HEIGHT + WIDTH + FONT_SIZE);
+	    fCreditMemo.setValue(Msg.translate(p_ctx, "CreditMemoType"));
+	    fCreditMemo.addActionListener(this);
+
+	    /**
+	     *  Load Credit Notes
+	     */
+	    for (Object obj : types) {
+	        if (obj instanceof KeyNamePair) {
+	            KeyNamePair key = (KeyNamePair) obj;
+	            fCreditMemo.appendItem(key.getName(), key.getID());
+	        }
+	    }
 	}
 	
 	

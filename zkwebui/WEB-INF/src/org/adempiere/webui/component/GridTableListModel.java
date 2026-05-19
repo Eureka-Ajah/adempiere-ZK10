@@ -23,9 +23,9 @@ import org.compiere.model.GridTable;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.AbstractListModel;
 import org.zkoss.zul.ListModel;
-import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.ListitemComparator;
 import org.zkoss.zul.event.ListDataEvent;
+import org.zkoss.zul.ext.Sortable;
 
 /**
  * 
@@ -33,7 +33,7 @@ import org.zkoss.zul.event.ListDataEvent;
  *
  */
 @SuppressWarnings({ "rawtypes", "unchecked", "deprecation" })
-public class GridTableListModel extends AbstractListModel<Object> implements TableModelListener, ListModelExt<Object>  {
+public class GridTableListModel extends AbstractListModel<Object> implements TableModelListener, Sortable<Object> {
 	
 	/**
 	 * 
@@ -165,7 +165,7 @@ public class GridTableListModel extends AbstractListModel<Object> implements Tab
 	/**
 	 * @param cmpr
 	 * @param ascending
-	 * @see ListModelExt#sort(Comparator, boolean) 
+	 * @see Sortable#sort(Comparator, boolean)
 	 */
 	@Override
 	public void sort(Comparator<Object> cmpr, boolean ascending) {

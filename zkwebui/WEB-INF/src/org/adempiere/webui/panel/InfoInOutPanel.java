@@ -44,6 +44,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Hbox;
 
 /**
@@ -222,16 +223,22 @@ public class InfoInOutPanel extends InfoPanel implements ValueChangeListener, Ev
 		row.appendChild(fIsSOTrx);
 		
 		row = new Row();
-		row.setSpans("1, 1, 1, 2");
 		rows.appendChild(row);
+
 		row.appendChild(lDescription.rightAlign());
 		row.appendChild(fDescription);
 		row.appendChild(lDateFrom.rightAlign());
+
 		Hbox hbox = new Hbox();
 		hbox.appendChild(fDateFrom);
 		hbox.appendChild(lDateTo);
 		hbox.appendChild(fDateTo);
-		row.appendChild(hbox);
+
+		Cell dateCell = new Cell();
+		dateCell.setColspan(2);
+		dateCell.appendChild(hbox);
+
+		row.appendChild(dateCell);
 		
 		row = new Row();
 		rows.appendChild(row);

@@ -202,8 +202,16 @@ public class AdempiereWebUI extends Window implements EventListener, IWebClient
 			httpSession.setMaxInactiveInterval(maxInactiveInterval);
 		});
 
-		MSession adempiereSession = MSession.get (ctx, currentSession.getRemoteAddr(),
-				currentSession.getRemoteHost(), httpSession.getId() );
+		HttpServletRequest request =
+		        (HttpServletRequest) Executions.getCurrent().getNativeRequest();
+
+		String remoteAddr = request.getRemoteAddr();
+		String remoteHost = request.getRemoteHost();
+
+		MSession adempiereSession = MSession.get(ctx,
+		        remoteAddr,
+		        remoteHost,
+		        httpSession.getId());
 
 		//enable full interface, relook into this when doing preference
 		Env.setContext(ctx, "#ShowTrl", true);
@@ -373,19 +381,21 @@ public class AdempiereWebUI extends Window implements EventListener, IWebClient
 	}
 
 	public void onEvent(Event event) {
-		if (event instanceof ClientInfoEvent) {
-			ClientInfoEvent c = (ClientInfoEvent)event;
-			clientInfo = new ClientInfo();
-			clientInfo.colorDepth = c.getColorDepth();
-			clientInfo.desktopHeight = c.getDesktopHeight();
-			clientInfo.desktopWidth = c.getDesktopWidth();
-			clientInfo.desktopXOffset = c.getDesktopXOffset();
-			clientInfo.desktopYOffset = c.getDesktopYOffset();
-			clientInfo.timeZone = c.getTimeZone();
-			if (applicationDesktop != null)
-				applicationDesktop.setClientInfo(clientInfo);
-		}
+	    if (event instanceof ClientInfoEvent) {
+	        ClientInfoEvent c = (ClientInfoEvent) event;
 
+	        clientInfo = new ClientInfo();
+	        clientInfo.colorDepth = c.getColorDepth();
+	        clientInfo.desktopHeight = c.getDesktopHeight();
+	        clientInfo.desktopWidth = c.getDesktopWidth();
+	        clientInfo.desktopXOffset = c.getDesktopXOffset();
+	        clientInfo.desktopYOffset = c.getDesktopYOffset();
+
+	        clientInfo.timeZone = c.getZoneId(); 
+
+	        if (applicationDesktop != null)
+	            applicationDesktop.setClientInfo(clientInfo);
+	    }
 	}
 
 

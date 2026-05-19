@@ -44,6 +44,7 @@ import org.compiere.apps.ConfirmPanel;
 import org.compiere.util.CLogger;
 import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.South;
 
 /**
@@ -175,66 +176,74 @@ public abstract class WPOSQuery extends Window implements POSQueryInterface, Mou
 	 * @return void
 	 */
 	private void initMainPanel() {
-		//	Instance Panel
-		//
-		Panel buttonsPanel = new Panel();
-		Rows rows = null;
-		Row row = null;
-		South north = new South();
+	    //  Instance Panel
+	    //
+	    Panel buttonsPanel = new Panel();
+	    Rows rows = null;
+	    Row row = null;
+	    South north = new South();
 
-		northPanel = new Panel();
-		mainLayout = new Borderlayout();
-		north.setStyle("border: none");
-		mainLayout.appendChild(north);
-		north.appendChild(northPanel);
-		Grid productLayout = GridFactory.newGridLayout();
-		northPanel.appendChild(productLayout);
-		rows = productLayout.newRows();
-		row = rows.newRow();
-		buttonsPanel.setAlign("Center");
-		row.setHeight("65px");
-		row.setSpans("6");
+	    northPanel = new Panel();
+	    mainLayout = new Borderlayout();
+	    north.setStyle("border: none");
+	    mainLayout.appendChild(north);
+	    north.appendChild(northPanel);
 
-		buttonNew = createButtonAction("New", KeyStroke.getKeyStroke(KeyEvent.VK_N, 0));
-		buttonNew.setId("New");
-		buttonsPanel.appendChild(buttonNew);
-		buttonNew.addActionListener(this);
+	    Grid productLayout = GridFactory.newGridLayout();
+	    northPanel.appendChild(productLayout);
 
-		buttonEdit = createButtonAction("Edit", KeyStroke.getKeyStroke(KeyEvent.VK_N, 0));
-		buttonEdit.setId("Edit");
-		buttonsPanel.appendChild(buttonEdit);
-		buttonEdit.addActionListener(this);
-		
-		buttonReset = createButtonAction("Reset", KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-		buttonsPanel.appendChild(buttonReset);
-		buttonReset.setId("Reset");
-		buttonRefresh = createButtonAction("Refresh", KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-		buttonsPanel.appendChild(buttonRefresh);
-		buttonRefresh.setId("Refresh");
-		
-		
-		buttonOk = createButtonAction("Ok", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
-		buttonsPanel.appendChild(buttonOk);
-		buttonOk.setId("Ok");
-		buttonCancel = createButtonAction("Cancel", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
-		buttonsPanel.appendChild(buttonCancel);
-		buttonCancel.setId("Cancel");
-		buttonOk.setTooltiptext(Msg.translate(ctx, "Ok"));
-		buttonCancel.setTooltiptext(Msg.translate(ctx, "Cancel"));
-		buttonOk.setTooltiptext(Msg.translate(ctx, "Ok"));
-		buttonCancel.setTooltiptext(Msg.translate(ctx, "Cancel"));
-		buttonNew.setTooltiptext(Msg.translate(ctx, "New"));
-		buttonEdit.setTooltiptext(Msg.translate(ctx, "Edit"));
-		buttonRefresh.setTooltiptext(Msg.translate(ctx, "Refresh"));
-		row.appendChild(buttonsPanel);
-		//	Center
-		posTable = new WListbox();
-		
-		posTable.addActionListener(this);
-		//	Visible New
-		buttonNew.setVisible(false);
-		buttonEdit.setVisible(false);
-		buttonEdit.setEnabled(false);
+	    rows = productLayout.newRows();
+	    row = rows.newRow();
+
+	    buttonsPanel.setStyle("text-align: center;");
+	    row.setHeight("65px");
+
+	    Cell buttonsCell = new Cell();
+	    buttonsCell.setColspan(6);
+	    buttonsCell.appendChild(buttonsPanel);
+
+	    buttonNew = createButtonAction("New", KeyStroke.getKeyStroke(KeyEvent.VK_N, 0));
+	    buttonNew.setId("New");
+	    buttonsPanel.appendChild(buttonNew);
+	    buttonNew.addActionListener(this);
+
+	    buttonEdit = createButtonAction("Edit", KeyStroke.getKeyStroke(KeyEvent.VK_N, 0));
+	    buttonEdit.setId("Edit");
+	    buttonsPanel.appendChild(buttonEdit);
+	    buttonEdit.addActionListener(this);
+
+	    buttonReset = createButtonAction("Reset", KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+	    buttonsPanel.appendChild(buttonReset);
+	    buttonReset.setId("Reset");
+
+	    buttonRefresh = createButtonAction("Refresh", KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+	    buttonsPanel.appendChild(buttonRefresh);
+	    buttonRefresh.setId("Refresh");
+
+	    buttonOk = createButtonAction("Ok", KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
+	    buttonsPanel.appendChild(buttonOk);
+	    buttonOk.setId("Ok");
+
+	    buttonCancel = createButtonAction("Cancel", KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+	    buttonsPanel.appendChild(buttonCancel);
+	    buttonCancel.setId("Cancel");
+
+	    buttonOk.setTooltiptext(Msg.translate(ctx, "Ok"));
+	    buttonCancel.setTooltiptext(Msg.translate(ctx, "Cancel"));
+	    buttonNew.setTooltiptext(Msg.translate(ctx, "New"));
+	    buttonEdit.setTooltiptext(Msg.translate(ctx, "Edit"));
+	    buttonRefresh.setTooltiptext(Msg.translate(ctx, "Refresh"));
+
+	    row.appendChild(buttonsCell);
+
+	    //  Center
+	    posTable = new WListbox();
+	    posTable.addActionListener(this);
+
+	    //  Visible New
+	    buttonNew.setVisible(false);
+	    buttonEdit.setVisible(false);
+	    buttonEdit.setEnabled(false);
 	}
 
 	/**

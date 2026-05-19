@@ -14,6 +14,7 @@ import org.compiere.util.Msg;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 
 /**
@@ -44,56 +45,67 @@ public class WPOSUserPinDialog extends Window implements EventListener{
 	private char[] 			returnValue;
 	
 	private void showDialog(WPOS pos) {
-		passwordField = new WPOSTextField("", pos.getKeyboard());
-        passwordField.setStyle("Font-size:medium; font-weight:bold");
-        passwordField.addEventListener(this);
-        passwordField.addEventListener(Events.ON_OK,this);
-        passwordField.setType("password");
-        
-        Panel mainPanel = new Panel();
-        this.setWidth("200px");
-        this.setHeight("100px");
-        b_ok.addActionListener(pos);
-        b_ok.addEventListener(Events.ON_OK,pos);
-        b_cancel.addActionListener(pos);
+	    passwordField = new WPOSTextField("", pos.getKeyboard());
+	    passwordField.setStyle("Font-size:medium; font-weight:bold");
+	    passwordField.addEventListener(this);
+	    passwordField.addEventListener(Events.ON_OK, this);
+	    passwordField.setType("password");
 
-        Borderlayout mainLayout = new Borderlayout();
-        Grid layout = GridFactory.newGridLayout();
-        mainPanel.appendChild(mainLayout);
-        mainPanel.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
-        mainLayout.setHeight("100%");
-        mainLayout.setWidth("100%");
+	    Panel mainPanel = new Panel();
+	    this.setWidth("200px");
+	    this.setHeight("100px");
 
-        Panel centerPanel = new Panel();
-        Center center = new Center();
-        center.setStyle("border: none");
-        mainLayout.appendChild(center);
-        center.appendChild(centerPanel);
-        centerPanel.appendChild(layout);
-        layout.setWidth("100%");
-        layout.setHeight("100%");
-        this.appendChild(mainPanel);
-        Rows rows = null;
-        Row row = null;
-        rows = layout.newRows();
-        row = rows.newRow();
+	    b_ok.addActionListener(pos);
+	    b_ok.addEventListener(Events.ON_OK, pos);
+	    b_cancel.addActionListener(pos);
 
-        Label msg = new Label(Msg.parseTranslation(pos.getCtx() , "@UserPIN@"));
-        row.appendChild(msg);
+	    Borderlayout mainLayout = new Borderlayout();
+	    Grid layout = GridFactory.newGridLayout();
 
-        row = rows.newRow();
-        row.appendChild(passwordField);
+	    mainPanel.appendChild(mainLayout);
+	    mainPanel.setStyle("width: 100%; height: 100%; padding: 0; margin: 0");
 
-        row.setSpans("2");
-        row = rows.newRow();
-        row.appendChild(b_ok);
-        row.appendChild(b_cancel);
+	    mainLayout.setHeight("100%");
+	    mainLayout.setWidth("100%");
 
-        b_ok.addActionListener(this);
-        b_cancel.addActionListener(this);
-        AEnv.showWindow(this);
-        pos.validateAndSetUserPin(returnValue);
-    }
+	    Panel centerPanel = new Panel();
+
+	    Center center = new Center();
+	    center.setStyle("border: none");
+	    mainLayout.appendChild(center);
+	    center.appendChild(centerPanel);
+
+	    centerPanel.appendChild(layout);
+	    layout.setWidth("100%");
+	    layout.setHeight("100%");
+
+	    this.appendChild(mainPanel);
+
+	    Rows rows = layout.newRows();
+
+	    Row row = rows.newRow();
+
+	    Label msg = new Label(Msg.parseTranslation(pos.getCtx(), "@UserPIN@"));
+	    row.appendChild(msg);
+
+	    row = rows.newRow();
+
+	    Cell passwordCell = new Cell();
+	    passwordCell.setColspan(2);
+	    passwordCell.appendChild(passwordField);
+
+	    row.appendChild(passwordCell);
+
+	    row = rows.newRow();
+	    row.appendChild(b_ok);
+	    row.appendChild(b_cancel);
+
+	    b_ok.addActionListener(this);
+	    b_cancel.addActionListener(this);
+
+	    AEnv.showWindow(this);
+	    pos.validateAndSetUserPin(returnValue);
+	}
 	
 	public static void show(WPOS p_POS) {
 		WPOSUserPinDialog msg = new WPOSUserPinDialog();

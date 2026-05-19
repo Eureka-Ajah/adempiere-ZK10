@@ -46,6 +46,8 @@ import org.zkforge.keylistener.Keylistener;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.KeyEvent;
+import org.zkoss.zul.Cell;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Timer;
 
 /**
@@ -208,27 +210,43 @@ public class WPOSActionPanel extends WPOSSubPanel
 		fieldProductName.addEventListener(this);
 
 		row = rows.newRow();
-		row.setSpans("12");
+
+		Cell productSearchCell = new Cell();
+		productSearchCell.setColspan(12);
+
+		Div productSearchContainer = new Div();
+		productSearchContainer.setWidth("100%");
+
 		if (posPanel.isEnableProductLookup() && !posPanel.isVirtualKeyboard()) {
-			lookupProduct = new WPOSLookupProduct(this, fieldProductName, Long.valueOf("1"));
-			lookupProduct.setPriceListId(posPanel.getM_PriceList_ID());
-			lookupProduct.setPartnerId(posPanel.getC_BPartner_ID());
-			lookupProduct.setWarehouseId(posPanel.getM_Warehouse_ID());
-			findProductTimer = new Timer(500); // , lookupProduct);
-			lookupProduct.setWidth("100%");
-			lookupProduct.setStyle(WPOS.FONTSTYLE+WPOS.FONTSIZELARGE);
-			fieldProductName.appendChild(keyListener);
-			fieldProductName.setVisible(false);
-			fieldProductName.setWidth("0%");
-			findProductTimer.start();
-			lookupProduct.addEventListener(Events.ON_CHANGE, this);
-	        row.appendChild(lookupProduct);
-			row.appendChild(fieldProductName);
+		    lookupProduct = new WPOSLookupProduct(this, fieldProductName, Long.valueOf("1"));
+		    lookupProduct.setPriceListId(posPanel.getM_PriceList_ID());
+		    lookupProduct.setPartnerId(posPanel.getC_BPartner_ID());
+		    lookupProduct.setWarehouseId(posPanel.getM_Warehouse_ID());
+
+		    findProductTimer = new Timer(500);
+
+		    lookupProduct.setWidth("100%");
+		    lookupProduct.setStyle(WPOS.FONTSTYLE + WPOS.FONTSIZELARGE);
+
+		    fieldProductName.appendChild(keyListener);
+		    fieldProductName.setVisible(false);
+		    fieldProductName.setWidth("0%");
+
+		    findProductTimer.start();
+
+		    lookupProduct.addEventListener(Events.ON_CHANGE, this);
+
+		    productSearchContainer.appendChild(lookupProduct);
+		    productSearchContainer.appendChild(fieldProductName);
 		} else {
-			row.appendChild(fieldProductName);
-			fieldProductName.appendChild(keyListener);
-			fieldProductName.setWidth("100%");
+		    fieldProductName.appendChild(keyListener);
+		    fieldProductName.setWidth("100%");
+
+		    productSearchContainer.appendChild(fieldProductName);
 		}
+
+		productSearchCell.appendChild(productSearchContainer);
+		row.appendChild(productSearchCell);
 		enableButton();
 		actionProcessMenu = new WPOSActionMenu(posPanel);
 		

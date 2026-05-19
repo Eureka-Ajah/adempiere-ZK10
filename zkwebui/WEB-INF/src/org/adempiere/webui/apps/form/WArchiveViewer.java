@@ -57,9 +57,11 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.AMedia;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Iframe;
@@ -175,272 +177,297 @@ public class WArchiveViewer extends Archive implements IFormController, EventLis
 	
 	private void jbInit() throws Exception
 	{
-		tabbox.setWidth("100%");
-		tabbox.setHeight("90%");
-		tabbox.appendChild(tabs);
-		tabbox.appendChild(tabpanels);
-		tabbox.addEventListener(Events.ON_SELECT, this);
-		
-		processField.setMold("select");
-		processField.setRows(1);
-		
-		tableField.setMold("select");
-		tableField.setRows(1);
-		
-		createdByQField.setMold("select");
-		createdByQField.setRows(1);
-		
-		updateArchive.setImage("/images/Ok16.png");
-		updateArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
-		updateArchive.addEventListener(Events.ON_CLICK, this);
-		
-		bRefresh.setImage("/images/Refresh16.png");
-		bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
-		bRefresh.addEventListener(Events.ON_CLICK, this);
-		
-		bBack.setImage("/images/Parent24.png");
-		bBack.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
-		bBack.addEventListener(Events.ON_CLICK, this);
-		
-		bNext.setImage("/images/Detail24.png");
-		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
-		bNext.addEventListener(Events.ON_CLICK, this);
-		
-		nameField.addEventListener(Events.ON_CHANGE, this);
-		descriptionField.addEventListener(Events.ON_CHANGE, this);
-		helpField.addEventListener(Events.ON_CHANGE, this);
-		
-		reportField.setLabel(Msg.translate(Env.getCtx(), "IsReport"));
-		reportField.addEventListener(Events.ON_CHECK, this);
-		
-		Grid gridQuery = new Grid();
-		gridQuery.setWidth("500px");
-		gridQuery.setStyle("margin:0; padding:0;");
-		gridQuery.makeNoStrip();
-		gridQuery.setOddRowSclass("even");
-        
-		Rows rows = new Rows();
-		gridQuery.appendChild(rows);
-		
-		Row row = new Row();
-		rows.appendChild(row);
-		row.setSpans("3");
-		row.setAlign("right");
-		row.appendChild(reportField);
+	    tabbox.setWidth("100%");
+	    tabbox.setHeight("90%");
+	    tabbox.appendChild(tabs);
+	    tabbox.appendChild(tabpanels);
+	    tabbox.addEventListener(Events.ON_SELECT, this);
 
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		Div div = new Div();
-		div.setAlign("right");
-		div.appendChild(processLabel);
-		row.appendChild(div);
-		row.appendChild(processField);
-		processField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(bPartnerLabel);
-		row.appendChild(div);
-		row.appendChild(bPartnerField.getComponent());
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(tableLabel);
-		row.appendChild(div);
-		row.appendChild(tableField);
-		tableField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(nameQLabel);
-		row.appendChild(div);
-		row.appendChild(nameQField);
-		nameQField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(descriptionQLabel);
-		row.appendChild(div);
-		row.appendChild(descriptionQField);
-		descriptionQField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(helpQLabel);
-		row.appendChild(div);
-		row.appendChild(helpQField);
-		helpQField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(createdByQLabel);
-		row.appendChild(div);
-		row.appendChild(createdByQField);
-		createdByQField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(createdQLabel);
-		row.appendChild(div);
-		row.appendChild(createdQFrom);
-		row.appendChild(createdQTo);
-		
-		div = new Div();
-		div.setAlign("center");
-		div.appendChild(gridQuery);
-		
-		Tabpanel tabQueryPanel = new Tabpanel();
-		tabQueryPanel.appendChild(div);
+	    processField.setMold("select");
+	    processField.setRows(1);
 
-		Tab tabQuery = new Tab(Msg.getMsg(Env.getCtx(), "ViewerQuery"));
+	    tableField.setMold("select");
+	    tableField.setRows(1);
 
-		tabpanels.appendChild(tabQueryPanel);
-		tabs.appendChild(tabQuery);
-		
-		Grid gridView = new Grid();
-		gridView.setStyle("margin:0; padding:0;");
-		gridView.makeNoStrip();
-		gridView.setOddRowSclass("even");
-        
-		rows = new Rows();
-		gridView.appendChild(rows);
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("1, 2, 1");
-		div = new Div();
-		div.setAlign("left");
-		div.appendChild(bBack);
-		row.appendChild(div);
-		div = new Div();
-		div.setAlign("center");
-		div.appendChild(positionInfo);
-		row.appendChild(div);
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(bNext);
-		row.appendChild(div);
+	    createdByQField.setMold("select");
+	    createdByQField.setRows(1);
 
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(createdByLabel);
-		createdByLabel.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(createdByField);
-		createdByField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(createdField);
-		row.appendChild(div);
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(nameLabel);
-		nameLabel.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(nameField);
-		nameField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(descriptionLabel);
-		descriptionLabel.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(descriptionField);
-		descriptionField.setRows(3);
-		descriptionField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(helpLabel);
-		helpLabel.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		row.appendChild(helpField);
-		helpField.setRows(3);
-		helpField.setWidth("100%");
-		
-		row = new Row();
-		rows.appendChild(row);
-		row.setSpans("4");
-		div = new Div();
-		div.setAlign("right");
-		div.appendChild(bRefresh);
-		div.appendChild(updateArchive);
-		row.appendChild(div);
-				
-		createdByField.setReadonly(true);
-		createdField.getDatebox().setReadonly(true);
-		createdField.getTimebox().setReadonly(true);
-		
-		Tab tabView = new Tab(Msg.getMsg(Env.getCtx(), "ViewerResult"));
-		
-		Tabpanel tabViewPanel = new Tabpanel();
-		Hbox boxViewSeparator = new Hbox();
-		boxViewSeparator.setWidth("100%");
-		boxViewSeparator.setHeight("100%");	
-		boxViewSeparator.setWidths("70%, 30%");		
-		boxViewSeparator.appendChild(iframe);
-		boxViewSeparator.appendChild(gridView);
-		tabViewPanel.appendChild(boxViewSeparator);
+	    updateArchive.setImage("/images/Ok16.png");
+	    updateArchive.setTooltiptext(Msg.getMsg(Env.getCtx(), "Update"));
+	    updateArchive.addEventListener(Events.ON_CLICK, this);
 
-		tabs.appendChild(tabView);
-		tabpanels.appendChild(tabViewPanel);
-		
-		confirmPanel.addActionListener(this);
-		updateQDisplay();
+	    bRefresh.setImage("/images/Refresh16.png");
+	    bRefresh.setTooltiptext(Msg.getMsg(Env.getCtx(), "Refresh"));
+	    bRefresh.addEventListener(Events.ON_CLICK, this);
 
-		iframe.setId("reportFrame");
-		int height = Double.valueOf(SessionManager.getAppDesktop().getClientInfo().desktopHeight * 0.8).intValue();
-		height = height - 50;
-		iframe.setHeight(height + "px");
-		iframe.setWidth("100%");
-		iframe.setAutohide(true);
-		
-		form.setWidth("100%");
-		form.setHeight("100%");
-		form.appendChild(tabbox);
-		form.appendChild(confirmPanel);
+	    bBack.setImage("/images/Parent24.png");
+	    bBack.setTooltiptext(Msg.getMsg(Env.getCtx(), "Previous"));
+	    bBack.addEventListener(Events.ON_CLICK, this);
+
+	    bNext.setImage("/images/Detail24.png");
+	    bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
+	    bNext.addEventListener(Events.ON_CLICK, this);
+
+	    nameField.addEventListener(Events.ON_CHANGE, this);
+	    descriptionField.addEventListener(Events.ON_CHANGE, this);
+	    helpField.addEventListener(Events.ON_CHANGE, this);
+
+	    reportField.setLabel(Msg.translate(Env.getCtx(), "IsReport"));
+	    reportField.addEventListener(Events.ON_CHECK, this);
+
+	    Grid gridQuery = new Grid();
+	    gridQuery.setWidth("500px");
+	    gridQuery.setStyle("margin:0; padding:0;");
+	    gridQuery.makeNoStrip();
+	    gridQuery.setOddRowSclass("even");
+
+	    Rows rows = new Rows();
+	    gridQuery.appendChild(rows);
+
+	    Row row = new Row();
+	    rows.appendChild(row);
+
+	    Div div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(reportField);
+
+	    row.appendChild(createCell(div, 3));
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(processLabel);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(processField, 2));
+	    processField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(bPartnerLabel);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(bPartnerField.getComponent(), 2));
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(tableLabel);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(tableField, 2));
+	    tableField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(nameQLabel);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(nameQField, 2));
+	    nameQField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(descriptionQLabel);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(descriptionQField, 2));
+	    descriptionQField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(helpQLabel);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(helpQField, 2));
+	    helpQField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(createdByQLabel);
+
+	    row.appendChild(div);
+	    row.appendChild(createCell(createdByQField, 2));
+	    createdByQField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(createdQLabel);
+
+	    row.appendChild(div);
+	    row.appendChild(createdQFrom);
+	    row.appendChild(createdQTo);
+
+	    div = new Div();
+	    div.setStyle("text-align: center;");
+	    div.appendChild(gridQuery);
+
+	    Tabpanel tabQueryPanel = new Tabpanel();
+	    tabQueryPanel.appendChild(div);
+
+	    Tab tabQuery = new Tab(Msg.getMsg(Env.getCtx(), "ViewerQuery"));
+
+	    tabpanels.appendChild(tabQueryPanel);
+	    tabs.appendChild(tabQuery);
+
+	    Grid gridView = new Grid();
+	    gridView.setStyle("margin:0; padding:0;");
+	    gridView.makeNoStrip();
+	    gridView.setOddRowSclass("even");
+
+	    rows = new Rows();
+	    gridView.appendChild(rows);
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: center;");
+	    div.appendChild(bBack);
+	    row.appendChild(div);
+
+	    div = new Div();
+	    div.setStyle("text-align: center;");
+	    div.appendChild(positionInfo);
+	    row.appendChild(createCell(div, 2));
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(bNext);
+	    row.appendChild(div);
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(createCell(createdByLabel, 4));
+	    createdByLabel.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(createCell(createdByField, 4));
+	    createdByField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(createdField);
+
+	    row.appendChild(createCell(div, 4));
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(createCell(nameLabel, 4));
+	    nameLabel.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(createCell(nameField, 4));
+	    nameField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(createCell(descriptionLabel, 4));
+	    descriptionLabel.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(createCell(descriptionField, 4));
+	    descriptionField.setRows(3);
+	    descriptionField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(createCell(helpLabel, 4));
+	    helpLabel.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+	    row.appendChild(createCell(helpField, 4));
+	    helpField.setRows(3);
+	    helpField.setWidth("100%");
+
+	    row = new Row();
+	    rows.appendChild(row);
+
+	    div = new Div();
+	    div.setStyle("text-align: right;");
+	    div.appendChild(bRefresh);
+	    div.appendChild(updateArchive);
+
+	    row.appendChild(createCell(div, 4));
+
+	    createdByField.setReadonly(true);
+	    createdField.getDatebox().setReadonly(true);
+	    createdField.getTimebox().setReadonly(true);
+
+	    Tab tabView = new Tab(Msg.getMsg(Env.getCtx(), "ViewerResult"));
+
+	    Tabpanel tabViewPanel = new Tabpanel();
+
+	    Hbox boxViewSeparator = new Hbox();
+	    boxViewSeparator.setWidth("100%");
+	    boxViewSeparator.setHeight("100%");
+
+	    iframe.setWidth("70%");
+	    gridView.setWidth("30%");
+
+	    boxViewSeparator.appendChild(iframe);
+	    boxViewSeparator.appendChild(gridView);
+
+	    tabViewPanel.appendChild(boxViewSeparator);
+
+	    tabs.appendChild(tabView);
+	    tabpanels.appendChild(tabViewPanel);
+
+	    confirmPanel.addActionListener(this);
+	    updateQDisplay();
+
+	    iframe.setId("reportFrame");
+
+	    int height = Double.valueOf(SessionManager.getAppDesktop().getClientInfo().desktopHeight * 0.8).intValue();
+	    height = height - 50;
+
+	    iframe.setHeight(height + "px");
+	    iframe.setAutohide(true);
+
+	    form.setWidth("100%");
+	    form.setHeight("100%");
+	    form.appendChild(tabbox);
+	    form.appendChild(confirmPanel);
+	}
+	
+	private Cell createCell(Component child, int colspan)
+	{
+	    Cell cell = new Cell();
+	    cell.setColspan(colspan);
+
+	    if (child != null)
+	        cell.appendChild(child);
+
+	    return cell;
 	}
 	
 	public void onEvent(Event e) throws Exception 

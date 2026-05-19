@@ -139,10 +139,10 @@ public class DPRecentItems extends DashboardPanel implements EventListener, Tree
 			tree = new Tree();
 			tree.setMultiple(false);
 			tree.setWidth("100%");
-			tree.setFixedLayout(false);
+			//tree.setFixedLayout(false);
 			tree.setStyle("border:none");
 			tree.setClass("menu-tree");
-			tree.setTreeitemRenderer(this);
+			tree.setItemRenderer(this);
 			bxRecentItems.appendChild(tree);
 
 		}

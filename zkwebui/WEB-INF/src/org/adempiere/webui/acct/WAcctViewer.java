@@ -304,7 +304,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxAcctSchema = new Hbox();
 		boxAcctSchema.setWidth("100%");
-		boxAcctSchema.setWidths("30%, 70%");
+		lacctSchema.setWidth("30%");
+		selAcctSchema.setWidth("70%");
 
 		lacctSchema.setValue(Msg.translate(Env.getCtx(), "C_AcctSchema_ID"));
 		lacctSchema.setAttribute("zk_component_ID", "Lookup_Criteria_Label_C_AcctSchema_ID");
@@ -318,7 +319,9 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSelDoc = new Hbox();
 		boxSelDoc.setWidth("100%");
-		boxSelDoc.setWidths("30%, 50%, 20%");
+		selDocument.setWidth("30%");
+		selTable.setWidth("50%");
+		selRecord.setWidth("20%");
 
 		selDocument.setLabel(Msg.getMsg(Env.getCtx(), "SelectDocument"));
 		selDocument.setAttribute("zk_component_ID", "Lookup_Criteria_selDocument");
@@ -338,7 +341,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxPostingType = new Hbox();
 		boxPostingType.setWidth("100%");
-		boxPostingType.setWidths("30%, 70%");
+		lpostingType.setWidth("30%");
+		selPostingType.setWidth("70%");
 
 		lpostingType.setValue(Msg.translate(Env.getCtx(), "PostingType"));
 		selPostingType.setMold("select");
@@ -353,7 +357,9 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxDate = new Hbox();
 		boxDate.setWidth("100%");
-		boxDate.setWidths("30%, 35%, 35%");
+		lDate.setWidth("30%");
+		selDateFrom.setWidth("35%");
+		selDateTo.setWidth("35%");
 
 		lDate.setValue(Msg.translate(Env.getCtx(), "DateAcct"));
 		lDate.setAttribute("zk_component_ID", "Lookup_Criteria_Label_Date");
@@ -368,7 +374,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxOrg = new Hbox();
 		boxOrg.setWidth("100%");
-		boxOrg.setWidths("30%, 70%");
+		lOrg.setWidth("30%");
+		selOrg.setWidth("70%");
 
 		lOrg.setValue(Msg.translate(Env.getCtx(), "AD_Org_ID"));
 		selOrg.setMold("select");
@@ -384,7 +391,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxAcct = new Hbox();
 		boxAcct.setWidth("100%");
-		boxAcct.setWidths("30%, 70%");
+		lAcct.setWidth("30%");
+		selAcct.setWidth("70%");
 
 		lAcct.setValue(Msg.translate(Env.getCtx(), "Account_ID"));
 		lAcct.setAttribute("zk_component_ID", "Lookup_Criteria_Label_Acct");
@@ -395,63 +403,70 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSel1 = new Hbox();
 		boxSel1.setWidth("100%");
-		boxSel1.setWidths("30%, 70%");
+		lsel1.setWidth("30%");
+		sel1.setWidth("70%");
 
 		boxSel1.appendChild(lsel1);
 		boxSel1.appendChild(sel1);
 
 		Hbox boxSel2 = new Hbox();
 		boxSel2.setWidth("100%");
-		boxSel2.setWidths("30%, 70%");
+		lsel2.setWidth("30%");
+		lsel2.setWidth("70%");
 
 		boxSel2.appendChild(lsel2);
 		boxSel2.appendChild(sel2);
 
 		Hbox boxSel3 = new Hbox();
 		boxSel3.setWidth("100%");
-		boxSel3.setWidths("30%, 70%");
+		lsel3.setWidth("30%");
+		sel3.setWidth("70%");
 
 		boxSel3.appendChild(lsel3);
 		boxSel3.appendChild(sel3);
 
 		Hbox boxSel4 = new Hbox();
 		boxSel4.setWidth("100%");
-		boxSel4.setWidths("30%, 70%");
+		lsel4.setWidth("30%");
+		sel4.setWidth("70%");
 
 		boxSel4.appendChild(lsel4);
 		boxSel4.appendChild(sel4);
 
 		Hbox boxSel5 = new Hbox();
 		boxSel5.setWidth("100%");
-		boxSel5.setWidths("30%, 70%");
+		lsel5.setWidth("30%");
+		sel5.setWidth("70%");
 
 		boxSel5.appendChild(lsel5);
 		boxSel5.appendChild(sel5);
 
 		Hbox boxSel6 = new Hbox();
 		boxSel6.setWidth("100%");
-		boxSel6.setWidths("30%, 70%");
+		lsel6.setWidth("30%");
+		sel6.setWidth("70%");
 
 		boxSel6.appendChild(lsel6);
 		boxSel6.appendChild(sel6);
 
 		Hbox boxSel7 = new Hbox();
 		boxSel7.setWidth("100%");
-		boxSel7.setWidths("30%, 70%");
+		lsel7.setWidth("30%");
+		sel7.setWidth("70%");
 
 		boxSel7.appendChild(lsel7);
 		boxSel7.appendChild(sel7);
 
 		Hbox boxSel8 = new Hbox();
-		boxSel8.setWidth("100%");
-		boxSel8.setWidths("30%, 70%");
+		lsel8.setWidth("30%");
+		sel8.setWidth("70%");
 
 		boxSel8.appendChild(lsel8);
 		boxSel8.appendChild(sel8);
 
 		Hbox boxSel9 = new Hbox();
-		boxSel9.setWidth("100%");
-		boxSel9.setWidths("30%, 70%");
+		lsel9.setWidth("30%");
+		sel9.setWidth("70%");
 
 		boxSel9.appendChild(lsel9);
 		boxSel9.appendChild(sel9);
@@ -459,8 +474,8 @@ public class WAcctViewer extends Window implements EventListener
 
 
 		Hbox boxSel10 = new Hbox();
-		boxSel10.setWidth("100%");
-		boxSel10.setWidths("30%, 70%");
+		lsel10.setWidth("30%");
+		lsel10.setWidth("70%");
 
 		boxSel10.appendChild(lsel10);
 		boxSel10.appendChild(sel10);
@@ -468,7 +483,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSel11 = new Hbox();
 		boxSel11.setWidth("100%");
-		boxSel11.setWidths("30%, 70%");
+		lsel11.setWidth("30%");
+		sel11.setWidth("70%");
 
 		boxSel11.appendChild(lsel11);
 		boxSel11.appendChild(sel11);
@@ -476,14 +492,16 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSel12 = new Hbox();
 		boxSel12.setWidth("100%");
-		boxSel12.setWidths("30%, 70%");
+		lsel12.setWidth("30%");
+		sel12.setWidth("70%");
 
 		boxSel12.appendChild(lsel12);
 		boxSel12.appendChild(sel12);
 
 		Hbox boxSel13 = new Hbox();
 		boxSel13.setWidth("100%");
-		boxSel13.setWidths("30%, 70%");
+		lsel13.setWidth("30%");
+		sel13.setWidth("70%");
 
 		boxSel13.appendChild(lsel13);
 		boxSel13.appendChild(sel13);
@@ -528,7 +546,9 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSortDisplay = new Hbox();
 		boxSortDisplay.setWidth("100%");
-		boxSortDisplay.setWidths("70%, 30%");
+
+		lSort.setWidth("30%");
+		lGroup.setWidth("70%");
 
 		lSort.setValue(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "SortBy")));
 		lGroup.setValue(Util.cleanAmp(Msg.getMsg(Env.getCtx(), "GroupBy")));
@@ -538,7 +558,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSort1 = new Hbox();
 		boxSort1.setWidth("100%");
-		boxSort1.setWidths("70%, 30%");
+		sortBy1.setWidth("30%");
+		group1.setWidth("70%");
 
 		sortBy1.setMold("select");
 		sortBy1.setRows(1);
@@ -548,7 +569,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSort2 = new Hbox();
 		boxSort2.setWidth("100%");
-		boxSort2.setWidths("70%, 30%");
+		sortBy2.setWidth("30%");
+		group2.setWidth("70%");
 
 		sortBy2.setMold("select");
 		sortBy2.setRows(1);
@@ -558,7 +580,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSort3 = new Hbox();
 		boxSort3.setWidth("100%");
-		boxSort3.setWidths("70%, 30%");
+		sortBy3.setWidth("30%");
+		group3.setWidth("70%");
 
 		sortBy3.setMold("select");
 		sortBy3.setRows(1);
@@ -568,7 +591,8 @@ public class WAcctViewer extends Window implements EventListener
 
 		Hbox boxSort4 = new Hbox();
 		boxSort4.setWidth("100%");
-		boxSort4.setWidths("70%, 30%");
+		sortBy4.setWidth("30%");
+		group4.setWidth("70%");
 
 		sortBy4.setMold("select");
 		sortBy4.setRows(1);
@@ -601,11 +625,16 @@ public class WAcctViewer extends Window implements EventListener
 		Hbox boxQueryPanel = new Hbox();
 
 		boxQueryPanel.setWidth("98%");
-		boxQueryPanel.setWidths("63%,1%,36%");
 
-		boxQueryPanel.appendChild(groupSelection);
+		groupSelection.setWidth("63%");
+
 		Separator separator = new Separator();
 		separator.setOrient("vertical");
+		separator.setWidth("1%");
+
+		groupDisplay.setWidth("36%");
+
+		boxQueryPanel.appendChild(groupSelection);
 		boxQueryPanel.appendChild(separator);
 		boxQueryPanel.appendChild(groupDisplay);
 
@@ -638,7 +667,13 @@ public class WAcctViewer extends Window implements EventListener
 		bPrint.addEventListener(Events.ON_CLICK, this);
 		
 		southPanel.setWidth("100%");
-		southPanel.setWidths("2%, 12%, 82%, 2% , 2%, 2%");
+		bRePost.setWidth("2%");
+		forcePost.setWidth("12%");
+		statusLine.setWidth("78%");
+		bZoom.setWidth("2%");
+		bExport.setWidth("2%");
+		bPrint.setWidth("2%");
+		bQuery.setWidth("2%");
 		southPanel.appendChild(bRePost);
 		southPanel.appendChild(forcePost);
 		southPanel.appendChild(statusLine);
@@ -656,7 +691,8 @@ public class WAcctViewer extends Window implements EventListener
 		result.appendChild(resultPanel);
 
 		Center resultCenter = new Center();
-		resultCenter.setFlex(true);
+		resultCenter.setHflex("1");
+		resultCenter.setVflex("1");
 		resultPanel.appendChild(resultCenter);
 		table.setWidth("96%");
 		table.setHeight("98%");
@@ -709,13 +745,14 @@ public class WAcctViewer extends Window implements EventListener
 
 		Center center = new Center();
 		center.setParent(layout);
-		center.setFlex(true);
+		center.setHflex("1");
+		center.setVflex("1");
 		center.setStyle("background-color: transparent");
 		tabbedPane.setParent(center);
 
 		South south = new South();
 		south.setParent(layout);
-		south.setFlex(true);
+		south.setSize("40px");
 		south.setStyle("background-color: transparent");
 		southPanel.setParent(south);
 

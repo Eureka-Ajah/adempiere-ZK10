@@ -52,7 +52,7 @@ public class WPOSTable extends WListbox {
 		super();
 		setWidth("100%");
 		setHeight("100%");
-		setFixedLayout(true);
+		//setFixedLayout(true);
 		setVflex(true);
 	}
 	

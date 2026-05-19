@@ -51,6 +51,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Hbox;
 
 /**
@@ -272,13 +273,18 @@ public class InfoPaymentPanel extends InfoPanel implements ValueChangeListener, 
 		row.appendChild(fCheckPayment);
 		
 		row = new Row();
-		row.setSpans("3, 1");
 		rows.appendChild(row);
-		row.appendChild(lAmtFrom.rightAlign());
+
+		Cell amtLabelCell = new Cell();
+		amtLabelCell.setColspan(3);
+		amtLabelCell.appendChild(lAmtFrom.rightAlign());
+		row.appendChild(amtLabelCell);
+
 		hbox = new Hbox();
 		hbox.appendChild(fAmtFrom);
 		hbox.appendChild(lAmtTo);
 		hbox.appendChild(fAmtTo);
+
 		row.appendChild(hbox);
 
 		p_criteriaGrid.appendChild(rows);

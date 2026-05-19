@@ -134,9 +134,10 @@ public class TimelineEventFeed extends HttpServlet {
             if (slot.getMAssignment() != null) {
                 String link = "<a href=\"javascript:void(0)\" onclick=\""
                         + "ad_closeBuble('" + timeLineId + "');"
-                        + "zkau.send({uuid: '" + uuid + "', cmd: 'onClick', data: "
+                        + "var w=zk.Widget.$('" + uuid + "');"
+                        + "if(w){w.fire('onClick', "
                         + "[" + slot.getMAssignment().getS_ResourceAssignment_ID() + ", 0]"
-                        + ", ctl: true})\">Edit</a>";
+                        + ", {toServer: true});}\">Edit</a>";
 
                 xml.append("\r\n").append(XMLs.encodeText(link));
             }

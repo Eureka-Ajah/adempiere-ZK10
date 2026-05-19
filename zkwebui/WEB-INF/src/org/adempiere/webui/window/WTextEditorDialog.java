@@ -110,7 +110,7 @@ public class WTextEditorDialog extends Window implements EventListener{
 		textBox.setRows(30);
 		textBox.setEnabled(editable);
 		textBox.setWidth("700px");
-		textBox.setHeight("500px");
+		//textBox.setHeight("500px");
 		tabPanel.appendChild(textBox);
 		
 		if (isShowHTMLTab) {

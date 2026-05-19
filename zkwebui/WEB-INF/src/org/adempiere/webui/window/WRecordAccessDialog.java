@@ -35,9 +35,11 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Toolbarbutton;
 
@@ -210,11 +212,12 @@ public class WRecordAccessDialog extends Window implements EventListener
 		
 		row = new Row();
 		rows.appendChild(row);
-		row.setSpans("7");
+
 		Div div = new Div();
-		div.setAlign("right");
+		div.setStyle("text-align: right;");
 		div.appendChild(confirmPanel);
-		row.appendChild(div);
+
+		row.appendChild(createCell(div, 7));
 		
 		bUp.addEventListener(Events.ON_CLICK, this);
 		bDown.addEventListener(Events.ON_CLICK, this);
@@ -222,6 +225,19 @@ public class WRecordAccessDialog extends Window implements EventListener
 		bNew.addEventListener(Events.ON_CLICK, this);
 		confirmPanel.addActionListener(this);
 	}	//	jbInit
+
+	private Cell createCell(Component child, int colspan)
+	{
+		Cell cell = new Cell();
+		cell.setColspan(colspan);
+
+		if (child != null)
+			cell.appendChild(child);
+
+		return cell;
+	}
+	
+	
 
 	/**
 	 * 	Set Line

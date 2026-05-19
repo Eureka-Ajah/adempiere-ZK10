@@ -154,13 +154,13 @@ public class InfoPAttributeInstancePanel extends Window implements EventListener
         North north = new North();
         borderlayout.appendChild(north);
         Div div = new Div();
-        div.setAlign("right");
+        div.setStyle("text-align: right;");
         div.appendChild(showAll);
         north.appendChild(div);
         
         Center center = new Center();
         center.setAutoscroll(true);
-        center.setFlex(true);
+        //center.setFlex(true);
 		borderlayout.appendChild(center);
 		center.appendChild(m_table);
 		

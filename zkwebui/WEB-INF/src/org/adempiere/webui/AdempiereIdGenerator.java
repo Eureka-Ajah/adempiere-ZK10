@@ -79,6 +79,12 @@ public class AdempiereIdGenerator implements IdGenerator
     }
 
     @Override
+    public String nextAnonymousComponentUuid(Component comp, ComponentInfo compInfo)
+    {
+        return getIdGenerator().nextAnonymousComponentUuid(comp, compInfo);
+    }
+
+    @Override
     public String nextDesktopId(Desktop desktop)
     {
         return getIdGenerator().nextDesktopId(desktop);

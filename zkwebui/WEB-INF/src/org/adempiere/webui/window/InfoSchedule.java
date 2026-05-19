@@ -238,7 +238,7 @@ public class InfoSchedule extends Window implements EventListener
 			Button btnNew = new Button();
 	        btnNew.setName("btnNew");
 	        btnNew.setId("New");
-	        btnNew.setSrc("/images/New24.png");
+	        btnNew.setImage("/images/New24.png");
 	        
 			confirmPanel.addComponentsLeft(btnNew);			
 			btnNew.addEventListener(Events.ON_CLICK, this);

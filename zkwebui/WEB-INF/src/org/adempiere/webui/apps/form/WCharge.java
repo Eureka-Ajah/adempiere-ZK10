@@ -45,11 +45,13 @@ import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Borderlayout;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.North;
 import org.zkoss.zul.South;
@@ -261,7 +263,8 @@ public class WCharge extends Charge implements IFormController, EventListener
 
 		Center center = new Center();
 		center.setBorder("none");
-		center.setFlex(true);
+		center.setHflex("1");
+		center.setVflex("1");
 		center.setAutoscroll(true);
 		borderlayout.appendChild(center);
 		center.appendChild(m_tblData);
@@ -270,7 +273,7 @@ public class WCharge extends Charge implements IFormController, EventListener
 		south.setBorder("none");
 		borderlayout.appendChild(south);
 		Panel southPanel = new Panel();
-		southPanel.setAlign("right");
+		southPanel.setStyle("text-align: right;");
 		south.appendChild(southPanel);
 		m_btnAccount.setLabel(Msg.getMsg(Env.getCtx(), AD_MESSAGE_CREATE) + " " + Msg.getMsg(Env.getCtx(), "From") + " " + Msg.getElement(Env.getCtx(), "Account_ID"));
         m_btnAccount.addEventListener(Events.ON_CLICK, this);
@@ -302,17 +305,18 @@ public class WCharge extends Charge implements IFormController, EventListener
         m_btnNew.setLabel(Msg.getMsg(Env.getCtx(), AD_MESSAGE_CREATE) + " " + Util.cleanAmp(Msg.getMsg(Env.getCtx(), "New")));
         m_btnNew.addEventListener(Events.ON_CLICK, this);
 
-    	Rows rows = new Rows();
-    	m_grdNew.appendChild(rows);
+        Rows rows = new Rows();
+        m_grdNew.appendChild(rows);
 
-    	Row row = new Row();
+        Row row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
+
         Label label = new Label(Msg.getMsg(Env.getCtx(), "ChargeNewAccount"));
         label.setStyle("font-weight: bold;");
-        row.appendChild(label);
 
-    	row = new Row();
+        row.appendChild(createCell(label, 3));
+
+        row = new Row();
         rows.appendChild(row);
         row.appendChild(m_lblValue);
         row.appendChild(m_txbValueField);
@@ -326,10 +330,18 @@ public class WCharge extends Charge implements IFormController, EventListener
 
         row = new Row();
         rows.appendChild(row);
-        row.setSpans("3");
-        row.appendChild(new Separator());
+        row.appendChild(createCell(new Separator(), 3));
+    }
+    
+    private Cell createCell(Component child, int colspan)
+    {
+        Cell cell = new Cell();
+        cell.setColspan(colspan);
 
-        return;
+        if (child != null)
+            cell.appendChild(child);
+
+        return cell;
     }
 
 

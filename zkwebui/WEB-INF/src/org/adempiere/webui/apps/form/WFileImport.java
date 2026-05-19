@@ -50,6 +50,7 @@ import org.compiere.util.Env;
 import org.compiere.util.Ini;
 import org.compiere.util.Msg;
 import org.zkoss.util.media.Media;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -125,7 +126,7 @@ public class WFileImport extends FileImportController implements IFormController
 			layout.appendChild(north);
 			north.appendChild(northPanel);
 			Center center = new Center();
-			center.setFlex(true);
+			//center.setFlex(true);
 			layout.appendChild(center);
 			center.appendChild(centerPanel);
 			South south = new South();
@@ -157,7 +158,6 @@ public class WFileImport extends FileImportController implements IFormController
 		bFile.addEventListener(Events.ON_CLICK, this);
 		
 		fCharset.setMold("select");
-		fCharset.setRows(0);
 		fCharset.setTooltiptext(Msg.getMsg(Env.getCtx(), "Charset", false));
 		
 		info.setValue("   ");
@@ -165,7 +165,6 @@ public class WFileImport extends FileImportController implements IFormController
 		labelFormat.setValue(Msg.translate(Env.getCtx(), "AD_ImpFormat_ID"));
 		
 		pickFormat.setMold("select");
-		pickFormat.setRows(0);
 		
 		bNext.setTooltiptext(Msg.getMsg(Env.getCtx(), "Next"));
 		bNext.setLabel(">");
@@ -317,55 +316,62 @@ public class WFileImport extends FileImportController implements IFormController
 	 */
 	
 	private void cmd_loadFormat() {
-		//	clear panel
-		previewPanel.getChildren().clear();
-		
-		ListItem listitem = pickFormat.getSelectedItem();
-		
-		String formatName = (String)listitem.getValue();
-		
-		if (formatName.equals(s_none))
-			return;
-		String error = loadFormat(formatName);
-		//	
-		if (error != null) {
-			FDialog.error(getWindowNo(), form, formatName);
-			return;
-		}
-		//	pointers
-		int size = getRowCount();
-		m_labels = new Label[size];
-		m_fields = new Textbox[size];
-		
-		for (int i = 0; i < size; i++) {
-			ImpFormatRow row = getRow(i);
-			m_labels[i] = new Label(row.getColumnName());
-			
-			Hbox hbox = new Hbox();
-			hbox.setWidth("100%");
-			hbox.setWidths("30%, 70%");
-			hbox.setStyle("padding-bottom: 3px");
-			
-			hbox.appendChild(m_labels[i].rightAlign());
-			
-			int length = row.getEndNo() - row.getStartNo();
-			
-			if (length <= 5)
-				length = 5;
-			else if (length > 20)
-				length = 20;
-			
-			m_fields[i] = new Textbox();
-			m_fields[i].setStyle("margin-left: 2px");
-			
-			hbox.appendChild(m_fields[i]);
-			
-			previewPanel.appendChild(hbox);
-		}
-		setRecordNo(-1);
-		//	Visible for load data from connection
-		loadData.setVisible(isFromConnection());
-		clearPreview();
+	    // clear panel
+	    previewPanel.getChildren().clear();
+
+	    ListItem listitem = pickFormat.getSelectedItem();
+
+	    String formatName = (String) listitem.getValue();
+
+	    if (formatName.equals(s_none))
+	        return;
+
+	    String error = loadFormat(formatName);
+
+	    if (error != null) {
+	        FDialog.error(getWindowNo(), form, formatName);
+	        return;
+	    }
+
+	    int size = getRowCount();
+	    m_labels = new Label[size];
+	    m_fields = new Textbox[size];
+
+	    for (int i = 0; i < size; i++) {
+	        ImpFormatRow row = getRow(i);
+	        m_labels[i] = new Label(row.getColumnName());
+
+	        Hbox hbox = new Hbox();
+	        hbox.setWidth("100%");
+	        hbox.setStyle("padding-bottom: 3px;");
+
+	        Div labelBox = new Div();
+	        labelBox.setWidth("30%");
+	        labelBox.appendChild(m_labels[i].rightAlign());
+
+	        hbox.appendChild(labelBox);
+
+	        int length = row.getEndNo() - row.getStartNo();
+
+	        if (length <= 5)
+	            length = 5;
+	        else if (length > 20)
+	            length = 20;
+
+	        m_fields[i] = new Textbox();
+	        m_fields[i].setWidth("70%");
+	        m_fields[i].setStyle("margin-left: 2px;");
+
+	        hbox.appendChild(m_fields[i]);
+
+	        previewPanel.appendChild(hbox);
+	    }
+
+	    setRecordNo(-1);
+
+	    // Visible for load data from connection
+	    loadData.setVisible(isFromConnection());
+	    clearPreview();
 	}	//	cmd_format
 
 	/**
