@@ -45,10 +45,7 @@
 		<id-generator-class>org.adempiere.webui.AdempiereIdGenerator</id-generator-class>
 	</system-config>
 
-	<!--
-		polling - org.zkoss.zkex.ui.impl.PollingServerPush
-		comet - org.zkoss.zkmax.ui.comet.CometServerPush ( enterprise edition only )  
-	-->
+	<!-- Server push implementation bundled with ZK 10.2.1. -->
 	<device-config>
  		<device-type>ajax</device-type>
 		<server-push-class>org.zkoss.zk.ui.impl.PollingServerPush</server-push-class>
