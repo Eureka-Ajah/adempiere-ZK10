@@ -1,13 +1,20 @@
 function zoom(cmpid, column, value){
-	zkau.send({uuid: cmpid, cmd: 'onZoom', data: [column, value], ctl: true});
+	sendAdempiereAu(cmpid, 'onZoom', {columnName: column, code: value});
 }
 
 function drillAcross(cmpid, column, value){
-	zkau.send({uuid: cmpid, cmd: 'onDrillAcross', data: [column, value], ctl: true});
+	sendAdempiereAu(cmpid, 'onDrillAcross', {columnName: column, code: value});
 }
 
 function drillDown(cmpid, column, value){
-	zkau.send({uuid: cmpid, cmd: 'onDrillDown', data: [column, value], ctl: true});
+	sendAdempiereAu(cmpid, 'onDrillDown', {columnName: column, code: value});
+}
+
+function sendAdempiereAu(cmpid, cmd, data) {
+	var widget = zk.Widget.$(cmpid);
+	if (widget) {
+		widget.fire(cmd, data, {toServer: true});
+	}
 }
 
 function showColumnMenu(e, columnName, row) {

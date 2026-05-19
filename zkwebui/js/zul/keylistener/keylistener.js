@@ -1,4 +1,4 @@
-// keylistener.js actualizado para ZK 6.5.7
+// keylistener.js actualizado para ZK 10.2.1
 
 (function () {
     zk.afterLoad('zul', function () {

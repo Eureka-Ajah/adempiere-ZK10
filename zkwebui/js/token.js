@@ -29,7 +29,10 @@ adempiere.findUserToken = function (cmpid, key)
 		if (ok && !!val && !!sid)
 		{
 			var hash = val;
-			zkau.send({uuid: cmpid, cmd: 'onUserToken', data: [sid, hash], ctl: true});
+			var widget = zk.Widget.$(cmpid);
+			if (widget) {
+				widget.fire('onUserToken', {sid: sid, hash: hash}, {toServer: true});
+			}
 		}
 	};
 	

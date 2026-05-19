@@ -532,7 +532,7 @@ tr.z-row .z-detail-outer {
 
 
 .z-bandbox-inp {
-	background-image: url(../images/zul/misc/text-bg.gif);
+	background-image: url(../images/zul/misc/text-bg8.gif);
 }
 .z-bandbox-text-invalid {
 	background-image: url(../images/zul/misc/text-bg-invalid.gif);
@@ -555,22 +555,22 @@ tr.z-row .z-detail-outer {
 	background-image : url(../images/zul/button/datebtn9.png);
 }
 .z-timebox-inp {
-	background-image: url(../images/zul/misc/text-bg.gif);
+	background-image: url(../images/zul/misc/text-bg8.gif);
 }
 .z-timebox-text-invalid {
 	background-image: url(../images/zul/misc/text-bg-invalid.gif);
 }
 .z-timebox .z-timebox-img {
-	background-image : url(../images/zul/button/timebtn8.png);
+	background-image : url(../images/zul/button/timebtn9.png);
 }
 .z-spinner-inp {
-	background-image: url(../images/zul/misc/text-bg.gif);
+	background-image: url(../images/zul/misc/text-bg8.gif);
 }
 .z-spinner-text-invalid {
 	background-image: url(../images/zul/misc/text-bg-invalid.gif);
 }
 .z-spinner .z-spinner-img {
-	background-image : url(../images/zul/button/timebtn8.png);
+	background-image : url(../images/zul/button/timebtn9.png);
 }
 <%-- grid.css.dsp - 13 --%>
 div.z-grid-header tr.z-columns, div.z-grid-header tr.z-auxhead {
@@ -1000,7 +1000,7 @@ div.z-dottree-header tr.z-tree-cols, div.z-tree-header tr.z-auxhead  {
 	background-image: url(../images/zul/grid/column-bg.png);
 }
 span.z-dottree-root-open, span.z-dottree-root-close{
-	background-image: url(../images/zul/tree/dot-toggle.png);
+	background-image: url(../images/zul/tree/dot-toggle.gif);
 }
 span.z-dottree-tee-open {
 	background-image: url(../images/zul/tree/tee-open.gif);
