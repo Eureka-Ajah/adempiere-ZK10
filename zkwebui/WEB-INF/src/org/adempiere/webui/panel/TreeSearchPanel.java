@@ -113,27 +113,25 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
         lblSearch.setValue(Msg.getMsg(Env.getCtx(),"TreeSearch").replaceAll("&", "") + ":");
         lblSearch.setTooltiptext(Msg.getMsg(Env.getCtx(),"TreeSearchText"));
         div.appendChild(lblSearch);
-        String divStyle = " height: 20px; vertical-align: middle;";
-        if (!AEnv.isInternetExplorer())
-        {
-        	divStyle += "margin-bottom: 10px; display: inline-block;";
-        }
-        div.setStyle(divStyle);
+        div.setStyle("height:30px; min-width:52px; display:flex; align-items:center; flex:0 0 auto; margin:0; padding:0;");
 
         cmbSearch = new AutoComplete();
         cmbSearch.setAutodrop(true);
         cmbSearch.addEventListener(Events.ON_CHANGE, this);
         if (AEnv.isInternetExplorer())
         {
+        	cmbSearch.setHflex("min");
         	cmbSearch.setWidth("200px");
+        }
+        else
+        {
+        	cmbSearch.setHflex("1");
         }
 
         this.appendChild(div);
         this.appendChild(cmbSearch);
-        if (!AEnv.isInternetExplorer())
-        {
-        	this.setStyle("height: 20px; padding: 7px;");
-    	}
+        this.setHflex("1");
+        this.setStyle("width:100%; height:auto; min-height:30px; padding:0; margin:0; display:flex; align-items:center; gap:6px; overflow:visible; box-sizing:border-box;");
     }
 
     private void addTreeItem(Treeitem treeItem)

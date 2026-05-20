@@ -265,7 +265,7 @@ public class LoginPanel extends Window implements EventListener
     	tr.appendChild(td);
     	td.setDynamicProperty("colspan", "2");
     	td.setSclass(ITheme.LOGIN_LABEL_CLASS);
-    	td.setStyle("text-align:left");
+    	td.setStyle("text-align:center");
     	td.appendChild(btnForgotPass);
     	btnForgotPass.addEventListener(Events.ON_CLICK,this);
 
@@ -276,6 +276,9 @@ public class LoginPanel extends Window implements EventListener
         LayoutUtils.addSclass(ITheme.LOGIN_BOX_FOOTER_PANEL_CLASS, pnlButtons);
         pnlButtons.setWidth(null);
         pnlButtons.getButton(ConfirmPanel.A_OK).setSclass(ITheme.LOGIN_BUTTON_CLASS);
+        pnlButtons.getButton(ConfirmPanel.A_OK).setImage("images/Ok16.png");
+        pnlButtons.getButton(ConfirmPanel.A_OK).setTooltiptext(ConfirmPanel.A_OK);
+        pnlButtons.getButton(ConfirmPanel.A_OK).setStyle("min-width:72px; height:32px;");
         div.appendChild(pnlButtons);
         this.appendChild(div);
 

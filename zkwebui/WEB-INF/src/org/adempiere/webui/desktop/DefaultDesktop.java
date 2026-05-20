@@ -93,6 +93,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private Div portalLayout;
 	private DashboardRunnable dashboardRunnable;
 
+	private static final String HEADER_HEIGHT = "76px";
+
 	private int noOfNotice;
 
 	private int noOfRequest;
@@ -147,9 +149,13 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         dashboardRunnable = createDashboardRunnable();
 
         North n = new North();
-        n.setSplittable(true);
+        n.setHeight(HEADER_HEIGHT);
+        n.setSplittable(false);
         n.setCollapsible(false);
+        n.setBorder("none");
+        n.setStyle("height:" + HEADER_HEIGHT + "; min-height:" + HEADER_HEIGHT + "; overflow:visible; padding:0; margin:0;");
         layout.appendChild(n);
+
         pnlHead.setParent(n);
 
         West w = new West();
@@ -195,7 +201,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		//homeTab.appendChild(portalLayout);
 		// Nuevo layout usando Div con flexbox
 		portalLayout = new Div();
-		portalLayout.setStyle("display: flex; flex-wrap: nowrap; width: 100%; height: 100%; overflow: auto; gap: 10px;");
+		portalLayout.setSclass("desktop-home-dashboard");
+		portalLayout.setStyle("display:flex; flex-wrap:wrap; width:100%; height:100%; overflow-x:hidden; overflow-y:auto; gap:6px; padding:4px; box-sizing:border-box; align-content:flex-start;");
 		homeTab.appendChild(portalLayout);
 		// Dashboard content
 		//Portalchildren portalChildren = null;
@@ -226,7 +233,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 					if (size != null && size.length > 0 && size.length > counter && !Util.isEmpty(size[counter], true))
 						columnWidth = size[counter];
 					currentColumn = new Div();
-					currentColumn.setStyle("flex: 0 0 " + columnWidth.trim() + "%; padding: 5px; box-sizing: border-box;");
+					currentColumn.setSclass("desktop-home-column dashboard-column-" + counter);
+					currentColumn.setStyle("flex:1 1 calc(" + columnWidth.trim() + "% - 6px); min-width:min(220px, 100%); max-width:100%; padding:0; margin:0; box-sizing:border-box; overflow:visible;");
 					portalLayout.appendChild(currentColumn);
 					currentColumnNo = columnNo;
 					counter++;
@@ -234,7 +242,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
 
 				Panel panel = new Panel();
-				panel.setStyle("margin-bottom:10px");
+				panel.setStyle("margin:0 0 6px 0; min-width:0; box-sizing:border-box;");
 				panel.setTitle(dashboardContent.get_Translation(MDashboardContent.COLUMNNAME_Name));
 
 				String description = dashboardContent.get_Translation(MDashboardContent.COLUMNNAME_Description);
@@ -246,6 +254,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				panel.setBorder("normal");
 				currentColumn.appendChild(panel);
 				Panelchildren content = new Panelchildren();
+				content.setStyle("padding:0; margin:0; overflow:auto; box-sizing:border-box;");
 				panel.appendChild(content);
 				boolean panelEmpty = true;
 
