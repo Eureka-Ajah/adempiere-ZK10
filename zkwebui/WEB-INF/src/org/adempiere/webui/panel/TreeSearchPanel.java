@@ -105,33 +105,64 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
 
     private void init()
     {
-    	Div div = new Div();
+        Div div = new Div();
+
         lblSearch = new Label();
-        //	[ #1118 ] Remove Class
-        //	LayoutUtils.addSclass("desktop-header-font", lblSearch);
-        
         lblSearch.setValue(Msg.getMsg(Env.getCtx(),"TreeSearch").replaceAll("&", "") + ":");
         lblSearch.setTooltiptext(Msg.getMsg(Env.getCtx(),"TreeSearchText"));
+
         div.appendChild(lblSearch);
-        div.setStyle("height:30px; min-width:52px; display:flex; align-items:center; flex:0 0 auto; margin:0; padding:0;");
+        div.setStyle(
+                "display:flex;"
+              + "align-items:center;"
+              + "justify-content:flex-start;"
+              + "height:32px;"
+              + "min-width:auto;"
+              + "width:auto;"
+              + "padding:0;"
+              + "margin:0;"
+              + "white-space:nowrap;"
+              + "box-sizing:border-box;"
+        );
 
         cmbSearch = new AutoComplete();
         cmbSearch.setAutodrop(true);
         cmbSearch.addEventListener(Events.ON_CHANGE, this);
+
         if (AEnv.isInternetExplorer())
         {
-        	cmbSearch.setHflex("min");
-        	cmbSearch.setWidth("200px");
+            cmbSearch.setHflex("min");
+            cmbSearch.setWidth("200px");
         }
         else
         {
-        	cmbSearch.setHflex("1");
+            cmbSearch.setHflex("1");
         }
+
+        cmbSearch.setStyle(
+                "height:32px;"
+              + "min-height:32px;"
+              + "box-sizing:border-box;"
+        );
 
         this.appendChild(div);
         this.appendChild(cmbSearch);
+
+        // ZK10: no usar setWidth("100%") junto con setHflex("1")
         this.setHflex("1");
-        this.setStyle("width:100%; height:auto; min-height:30px; padding:0; margin:0; display:flex; align-items:center; gap:6px; overflow:visible; box-sizing:border-box;");
+        this.setSclass("eureka-menu-search-panel");
+
+        this.setStyle(
+                "display:flex;"
+              + "align-items:center;"
+              + "height:32px;"
+              + "min-height:32px;"
+              + "padding:0;"
+              + "margin:0;"
+              + "gap:6px;"
+              + "overflow:hidden;"
+              + "box-sizing:border-box;"
+        );
     }
 
     private void addTreeItem(Treeitem treeItem)
