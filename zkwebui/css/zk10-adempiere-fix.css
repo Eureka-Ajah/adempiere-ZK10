@@ -1,0 +1,30 @@
+/* ==========================================================================
+   ADempiere/Eureka WebUI sobre ZK10
+   Correcciones de compatibilidad visual para layouts clásicos
+   ========================================================================== */
+
+.z-window.z-window-embedded {
+	padding: 0 !important;
+}
+
+.z-window-embedded > .z-window-content {
+	padding: 0 !important;
+}
+
+.z-panel-noheader.z-panel-noframe > .z-panelchildren,
+.z-panelchildren-noheader.z-panelchildren-noframe {
+	padding: 0 !important;
+}
+
+.z-west,
+.z-east,
+.z-center,
+.z-north,
+.z-south,
+.z-tabpanel,
+.z-tabpanels,
+.z-panel-body {
+	background: #fff;
+	border-color: #dde5ef !important;
+	padding: 0 !important;
+}
