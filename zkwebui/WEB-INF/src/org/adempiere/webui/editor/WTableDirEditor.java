@@ -388,7 +388,21 @@ ContextMenuListener, IZoomableEditor
 	 */
     public void actionZoom()
 	{
-    	AEnv.actionZoom(lookup, getValue());
+    	try {
+            logger.warning("ZOOM INICIO column=" + getColumnName()
+                + ", value=" + getValue()
+                + ", lookup=" + lookup);
+
+            AEnv.actionZoom(lookup, getValue());
+
+            logger.warning("ZOOM FIN OK column=" + getColumnName());
+        }
+        catch (Throwable t) {
+            logger.log(java.util.logging.Level.SEVERE,
+                "ERROR EN ZOOM column=" + getColumnName()
+                + ", value=" + getValue()
+                + ", lookup=" + lookup, t);
+        }
 	}	
     
 	public void onMenu(ContextMenuEvent evt) 

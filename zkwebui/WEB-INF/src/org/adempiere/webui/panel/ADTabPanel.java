@@ -1261,8 +1261,17 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 	        model.addNode(newNode);
 
 	        int[] path = model.getPath(newNode);
-	        Treeitem ti = treePanel.getTree().renderItemByPath(path);
-	        treePanel.getTree().setSelectedItem(ti);
+	        try {
+	            Treeitem ti = treePanel.getTree().renderItemByPath(path);
+
+	            if (ti != null) {
+	                treePanel.getTree().setSelectedItem(ti);
+	            }
+
+	        } catch (Throwable t) {
+	            logger.log(Level.WARNING,
+	                "Error seleccionando nuevo nodo árbol", t);
+	        }
 	    }
 	}
 
@@ -1281,9 +1290,42 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
 	    DefaultTreeNode treeNode = model.find(null, recordId);
 	    if (treeNode != null) {
+
 	        int[] path = model.getPath(treeNode);
-	        Treeitem ti = treePanel.getTree().renderItemByPath(path);
-	        treePanel.getTree().setSelectedItem(ti);
+
+	        try {
+
+	            if (path == null || path.length == 0) {
+	                logger.warning("Tree path null/vacio para recordId=" + recordId);
+	                return;
+	            }
+
+	            Tree tree = treePanel.getTree();
+
+	            if (tree == null || tree.getModel() == null) {
+	                logger.warning("Tree o model null para recordId=" + recordId);
+	                return;
+	            }
+
+	            Treeitem ti = tree.renderItemByPath(path);
+
+	            if (ti != null) {
+	                tree.setSelectedItem(ti);
+	            } else {
+	                logger.warning("Treeitem null para path=" + Arrays.toString(path));
+	            }
+
+	        } catch (Throwable t) {
+
+	            logger.log(Level.WARNING,
+	                "Error renderizando nodo árbol. recordId="
+	                + recordId
+	                + ", path="
+	                + Arrays.toString(path),
+	                t);
+
+	        }
+
 	    } else {
 	        addNewNode();
 	    }

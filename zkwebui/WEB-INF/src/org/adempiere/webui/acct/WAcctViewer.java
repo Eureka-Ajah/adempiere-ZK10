@@ -695,7 +695,7 @@ public class WAcctViewer extends Window implements EventListener
 		resultCenter.setVflex("1");
 		resultPanel.appendChild(resultCenter);
 		table.setWidth("96%");
-		table.setHeight("98%");
+		//table.setHeight("98%");
 		table.setVflex(true);
 		table.setStyle("overflow: auto; position: absolute;");
 		resultCenter.appendChild(table);

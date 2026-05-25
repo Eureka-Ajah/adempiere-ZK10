@@ -30,7 +30,6 @@ import org.adempiere.webui.util.TreeUtils;
 import org.compiere.model.MTreeNode;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -272,8 +271,6 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
                 select(treeItem);
                 Clients.showBusy("Procesando...");
                 Events.echoEvent("onPostSelect", this, null);
-                Event event2=new Event(Events.ON_CLICK, ((Component)(treeItem.getTreerow().getChildren().get(0))));
-                Events.postEvent(event2);
 				cmbSearch.setText(null);
             }
         }
@@ -283,15 +280,17 @@ public class TreeSearchPanel extends Panel implements EventListener, TreeDataLis
      * don't call this directly, use internally for post selection event
      */
     public void onPostSelect() {
-    	Clients.showBusy("Procesando...");
-    	Event event = null;
-    	if(tree.getSelectedItem() == null && eventToFire.equals(Events.ON_CLICK))
-    		return;
-    	if (eventToFire.equals(Events.ON_CLICK) )
-    		event = new Event(Events.ON_CLICK, tree.getSelectedItem().getTreerow());
-    	else
-    		event = new Event(eventToFire, tree);
-    	Events.postEvent(event);
+    	try {
+    		if(tree.getSelectedItem() == null && eventToFire.equals(Events.ON_CLICK))
+    			return;
+    		if (eventToFire.equals(Events.ON_CLICK) )
+    			Events.sendEvent(tree.getSelectedItem().getTreerow(),
+    					new Event(Events.ON_CLICK, tree.getSelectedItem().getTreerow()));
+    		else
+    			Events.sendEvent(tree, new Event(eventToFire, tree));
+    	} finally {
+    		Clients.clearBusy();
+    	}
     }
 
 	private void select(Treeitem selectedItem) {

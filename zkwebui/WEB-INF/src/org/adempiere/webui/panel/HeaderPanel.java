@@ -43,7 +43,7 @@ public class HeaderPanel extends Panel implements EventListener
 {
 	private static final long serialVersionUID = -2351317624519209484L;
 
-	private static final String HEADER_HEIGHT = "76px";
+	private static final String HEADER_HEIGHT = "50px";
 
 	private Image image = new Image();
 

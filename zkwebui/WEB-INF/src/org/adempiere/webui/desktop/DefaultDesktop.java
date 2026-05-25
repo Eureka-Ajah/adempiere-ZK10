@@ -93,7 +93,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 	private Div portalLayout;
 	private DashboardRunnable dashboardRunnable;
 
-	private static final String HEADER_HEIGHT = "76px";
+	private static final String HEADER_HEIGHT = "50px";
 
 	private int noOfNotice;
 

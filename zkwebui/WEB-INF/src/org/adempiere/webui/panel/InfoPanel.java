@@ -482,8 +482,11 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		//  Setup the north reset button and criteria grid
 		West spWest = new West();
 		spWest.setBorder("0");
+		spWest.setWidth("50px");
+
 		Center spCenter = new Center();
 		spCenter.setBorder("0");
+		spCenter.setHflex("1");
 
 		p_northLayout.setWidth("");
 		p_northLayout.appendChild(spWest);

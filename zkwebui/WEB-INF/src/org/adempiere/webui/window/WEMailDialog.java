@@ -270,7 +270,7 @@ public class WEMailDialog extends Window implements EventListener, ValueChangeLi
 		rows.appendChild(row);
 		row.appendChild(createCell(fMessage, 2));
 		fMessage.setWidth("100%");
-		fMessage.setHeight("100%");
+		//fMessage.setHeight("100%");
 		fMessage.setRows(10);
 		
 		row = new Row();

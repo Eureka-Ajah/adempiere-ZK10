@@ -1,7 +1,33 @@
 /* ==========================================================================
    ADempiere/Eureka WebUI sobre ZK10
-   Correcciones de compatibilidad visual para layouts clásicos
+   Correcciones de compatibilidad visual para layouts clasicos
    ========================================================================== */
+
+:root {
+	--adempiere-login-background: #003764;
+	--adempiere-loader-accent: #149ad6;
+	--adempiere-loader-text: #263645;
+	--adempiere-loader-border: #d7e0e7;
+}
+
+/* Header principal */
+.desktop-header,
+.desktop-header.z-borderlayout,
+.desktop-header .z-borderlayout,
+.desktop-header .z-west,
+.desktop-header .z-center,
+.desktop-header-left,
+.desktop-header-right {
+	background: var(--adempiere-login-background) !important;
+	background-image: none !important;
+	border-color: var(--adempiere-login-background) !important;
+}
+
+/* Ventanas embebidas */
+.z-window {
+	padding: 5px;
+
+	}
 
 .z-window.z-window-embedded {
 	padding: 0 !important;
@@ -11,20 +37,193 @@
 	padding: 0 !important;
 }
 
-.z-panel-noheader.z-panel-noframe > .z-panelchildren,
-.z-panelchildren-noheader.z-panelchildren-noframe {
+/* Paneles */
+.z-panelchildren,
+.z-panelchildren-noheader,
+.z-panelchildren-noborder,
+.z-panelchildren-noheader.z-panelchildren-noborder {
 	padding: 0 !important;
 }
 
+.z-panel-noheader.z-panel-noframe > .z-panelchildren,
+.z-panel-noheader.z-panel-noborder > .z-panelchildren,
+.z-panel-noheader.z-panel-noframe > .z-panelchildren-noheader,
+.z-panel-noheader.z-panel-noborder > .z-panelchildren-noheader {
+	padding: 0 !important;
+}
+
+/* Layout estructural ZK10 */
 .z-west,
 .z-east,
 .z-center,
 .z-north,
 .z-south,
+.z-west-body,
+.z-east-body,
+.z-center-body,
+.z-north-body,
+.z-south-body,
 .z-tabpanel,
 .z-tabpanels,
 .z-panel-body {
-	background: #fff;
-	border-color: #dde5ef !important;
 	padding: 0 !important;
+}
+
+/* ZK10 agrega aire extra en celdas de layout clasico */
+.z-column-content,
+.z-row-content,
+.z-group-content,
+.z-groupfoot-content,
+.z-footer-content,
+.z-cell-content {
+	padding: 3px !important;
+}
+
+.z-treecol-content,
+.z-treecell-content,
+.z-treefooter-content {
+	padding: 2px !important;
+}
+
+.z-tree-icon,
+.z-tree-line {
+	width: 3px;
+}
+
+.docStatus td:first-child {
+	align-content: center;
+	text-align: right;
+	width: 20px;
+}
+
+.z-toolbarbutton {
+	padding: 2px;
+}
+
+.z-window-content {
+	padding: 0;
+}
+
+/* Panel del menu */
+.z-north-header,
+.z-south-header,
+.z-west-header,
+.z-center-header,
+.z-east-header {
+	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
+	font-size: 13px !important;
+	font-weight: 800;
+	line-height: 15px;
+	padding: 5px 3px 4px 5px;
+}
+
+/* Indicador de procesamiento */
+.z-loading {
+	background: #fff !important;
+	border: 1px solid var(--adempiere-loader-border) !important;
+	box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18) !important;
+	box-sizing: border-box !important;
+	color: var(--adempiere-loader-text) !important;
+	min-width: 116px !important;
+	padding: 18px 20px !important;
+	text-align: center !important;
+}
+
+.z-loading-indicator {
+	background: transparent !important;
+	border: 0 !important;
+	box-sizing: border-box !important;
+	color: var(--adempiere-loader-text) !important;
+	display: block !important;
+	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
+	font-size: 13px !important;
+	line-height: 18px !important;
+	padding: 0 !important;
+	text-align: center !important;
+	white-space: nowrap !important;
+}
+
+.z-loading-icon,
+.z-apply-loading-icon {
+	animation: adempiere-zk10-spin 0.85s linear infinite !important;
+	background: none !important;
+	border: 5px solid #d7e2ea !important;
+	border-radius: 50% !important;
+	border-top-color: var(--adempiere-loader-accent) !important;
+	box-sizing: border-box !important;
+	display: block !important;
+	font-size: 0 !important;
+	height: 42px !important;
+	line-height: 0 !important;
+	margin: 0 auto 9px auto !important;
+	padding: 0 !important;
+	position: static !important;
+	width: 42px !important;
+}
+
+.z-loading-icon::before,
+.z-loading-icon::after,
+.z-apply-loading-icon::before,
+.z-apply-loading-icon::after {
+	content: none !important;
+	display: none !important;
+}
+
+@keyframes adempiere-zk10-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Checkboxes ZK10: compatibilidad visual ADempiere/Eureka */
+.z-checkbox,
+.z-checkbox-content {
+	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
+	font-size: 12px !important;
+	font-weight: normal !important;
+	line-height: 16px !important;
+	color: #000 !important;
+}
+
+.z-checkbox input[type="checkbox"] {
+	width: 14px !important;
+	height: 14px !important;
+	margin: 0 4px 0 0 !important;
+	vertical-align: middle !important;
+}
+
+.z-checkbox input[type="checkbox"]:focus,
+.z-checkbox input[type="checkbox"]:active {
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.z-checkbox-content {
+	display: inline-block !important;
+	vertical-align: middle !important;
+}
+
+.z-checkbox input[type="checkbox"] + label,
+.z-checkbox input[type="checkbox"]:checked + label,
+.z-checkbox input[type="checkbox"]:focus + label {
+	outline: none !important;
+	box-shadow: none !important;
+	background: transparent !important;
+}
+
+/*===== Pesañas ===== */
+.z-tabs, .z-tabs-content{
+    line-height: 20px;
+    min-height: 20px;
+}
+.z-tab{
+    padding: 0px 6px;
+}
+/*===== Paginacion ========*/
+.z-paging-input{
+	height: 20px;
+	text-align: center;
+}
+.z-paging-button{
+	margin: 0px;
 }
