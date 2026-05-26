@@ -176,20 +176,24 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
     {
         LayoutUtils.addSclass("adtab-content", this);
 
+        this.setHflex("1");
+        this.setVflex("1");
+
         grid = new Grid();
 
-        /*
-         * ZK 10.2.1:
-         * No se permite combinar setWidth("100%") con setHflex("1")
-         * en el mismo componente.
-         */
         grid.setHflex("1");
         grid.setVflex("1");
-        grid.setStyle("margin:0; padding:0; position: absolute");
+
+        grid.setStyle("margin:0; padding:0;");
         grid.makeNoStrip();
 
         listPanel = new GridPanel();
+
+        listPanel.setHflex("1");
+        listPanel.setVflex("1");
+
         listPanel.setADTabPanel(this);
+
         listPanel.getListbox().addEventListener(Events.ON_DOUBLE_CLICK, this);
         listPanel.addEventListener(Events.ON_FOCUS, this);
 
@@ -226,7 +230,9 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 		{
 			Borderlayout layout = new Borderlayout();
 			layout.setParent(this);
-			layout.setStyle("width: 100%; height: 100%; position: absolute;");
+			layout.setHflex("1");
+			layout.setVflex("1");
+			layout.setStyle("margin:0; padding:0;");
 			treePanel = new ADTreePanel(windowNo, !gridTab.isReadOnly() && !gridTab.isReadOnlyFromContext());
 			if (gridTab.getTabLevel() == 0)	//	initialize other tabs later
 				treePanel.initTree(treeId, gridTab.getWhereExtended());
@@ -868,17 +874,16 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 		if (getListPanel() != null && activate)
 		{
 			GridPanel gridPanel = getListPanel();
-			//gridPanel.setHeight("95%");
 			((HtmlBasedComponent)gridPanel).setStyle("border-left: 3px solid #009bde; "); //border-top: 1px solid #fa962f; border-bottom: 1px solid #fa962f; border-right: 1px solid #fa962f;");
-			gridPanel.setWidth("99.1%");
-			//gridPanel.setHeight("95%");
+			gridPanel.setHflex("1");
+			gridPanel.setVflex("1");
 		}
 		else if (getListPanel() != null && !activate)
 		{
 			GridPanel gridPanel = getListPanel();
 		    ((HtmlBasedComponent)gridPanel).setStyle("border:none;");
-		    gridPanel.setWidth("100%");
-		    gridPanel.setHeight("100%");
+		    gridPanel.setHflex("1");
+		    gridPanel.setVflex("1");
 		}
 
         //activate embedded panel
