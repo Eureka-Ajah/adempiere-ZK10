@@ -136,15 +136,19 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
         pnlSide.getMenuPanel().addMenuListener(this);
 
         layout = new Borderlayout();
+        layout.setStyle("margin:0; padding:0;");
         if (parent != null)
         {
         	layout.setParent(parent);
-        	layout.setWidth("100%");
-        	layout.setHeight("100%");
-        	layout.setStyle("position: absolute");
+        	layout.setHflex("1");
+        	layout.setVflex("1");
         }
         else
+        {
         	layout.setPage(page);
+        	layout.setWidth("100%");
+        	layout.setHeight("100%");
+        }
 
         dashboardRunnable = createDashboardRunnable();
 
@@ -181,6 +185,8 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 
         windowArea = new Center();
         windowArea.setParent(layout);
+        windowArea.setHflex("1");
+        windowArea.setVflex("1");
 
 
         windowContainer.createPart(windowArea);
@@ -197,7 +203,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 		//portalLayout = createPortalLayout();
 		//portalLayout.setWidth("100%");
 		//portalLayout.setHeight("100%");
-		//portalLayout.setStyle("position: absolute; overflow: auto");
+		//portalLayout.setStyle("legacy full-size layout; overflow: auto");
 		//homeTab.appendChild(portalLayout);
 		// Nuevo layout usando Div con flexbox
 		portalLayout = new Div();

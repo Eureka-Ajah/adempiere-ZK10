@@ -370,13 +370,8 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	 */
 	protected void setSizes()
 	{
-		//  TODO this can be removed if Zk is upgraded to 5+.  Use vflex=min for all layout areas except 
-		//  the p_centerCenter which should fill the remaining space.
-		// Have to set the criteriaGrid height specifically.  58 is the height of the reset button and label.
-		// p_criteriaGrid is assumed to hold a Rows component that is non null and has children.
-		int rowHeight = (30*((Rows) p_criteriaGrid.getFirstChild()).getChildren().size());
-		rowHeight = rowHeight > 58 ? rowHeight : 58;
-		p_northLayout.setHeight(rowHeight + "px");
+		p_northLayout.setVflex("min");
+		p_northLayout.setHeight(null);
 		p_southLayout.setHeight("70px");
 		
 		if (p_centerNorth.getChildren().size() == 0)
@@ -390,8 +385,8 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		
 		if (p_centerSouth.getChildren().size() > 0)
 		{
-			int detailHeight = (p_height * 25 / 100);
-			p_centerSouth.setHeight(detailHeight + "px");
+			p_centerSouth.setVflex("min");
+			p_centerSouth.setHeight(null);
 		}
 		else
 		{
@@ -417,9 +412,9 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		{
 			setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 			setBorder("none");
-			setWidth("100%");
-			setHeight("100%");
-			setStyle("position: absolute");
+			setHflex("1");
+			setVflex("1");
+			setStyle("margin:0; padding:0;");
 		}
 		
         confirmPanel = new ConfirmPanel(true, true, false, true, true, true);  // Elaine 2008/12/16
@@ -456,12 +451,10 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
         p_table.setAttribute("zk_component_ID", "Lookup_Data_SearchResults");        
         p_table.setVflex(true);
         
-        p_centerLayout.setWidth("100%");
+        p_centerLayout.setHflex("1");
+        p_centerLayout.setVflex("1");
         //p_centerLayout.setHeight("100%");
-        if (isModal())
-        	p_centerLayout.setStyle("border: none; position: relative");
-        else
-        	p_centerLayout.setStyle("border: none; position: absolute");
+        p_centerLayout.setStyle("border: none;");
 
 		p_centerLayout.appendChild(p_centerNorth);  // May be empty
 		p_centerLayout.appendChild(p_centerCenter); // the table
@@ -507,8 +500,17 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		spCenter.appendChild(p_criteriaGrid);
 
         Borderlayout mainPanel = new Borderlayout();
-        mainPanel.setWidth("100%");
-        mainPanel.setHeight("100%");
+        if (isModal())
+        {
+            mainPanel.setWidth("100%");
+            mainPanel.setHeight("100%");
+        }
+        else
+        {
+        	mainPanel.setHflex("1");
+        	mainPanel.setVflex("1");
+        	mainPanel.setStyle("margin:0; padding:0;");
+        }
         //
         North north = new North();
         mainPanel.appendChild(north);
@@ -533,10 +535,6 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 
         mainPanel.appendChild(mainSouth);
         //
-        if (!isModal())
-        {
-        	mainPanel.setStyle("position: absolute");
-        }
 		this.appendChild(mainPanel);
         this.addEventListener(Events.ON_OK, this);
         this.setVisible(true);

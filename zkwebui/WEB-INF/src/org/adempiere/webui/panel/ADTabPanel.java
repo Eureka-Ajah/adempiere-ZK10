@@ -859,18 +859,22 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
     	if (getGrid() != null && activate)
     	{
-    	    Grid gridCurrent = getGrid();
-    	    ((HtmlBasedComponent) gridCurrent).setStyle(
-    	        "margin:0; padding:0; position: absolute; border-left: 3px solid #009bde;"
-    	    );
-    	}
-    	else if (getGrid() != null && !activate)
-    	{
-    	    Grid gridPrevious = getGrid();
-    	    ((HtmlBasedComponent) gridPrevious).setStyle(
-    	        "margin:0; padding:0; position: absolute; border:none;"
-    	    );
-    	}
+	    Grid gridCurrent = getGrid();
+	    ((HtmlBasedComponent) gridCurrent).setStyle(
+	        "margin:0; padding:0; border-left: 3px solid #009bde;"
+	    );
+	    gridCurrent.setHflex("1");
+	    gridCurrent.setVflex("1");
+	}
+	else if (getGrid() != null && !activate)
+	{
+	    Grid gridPrevious = getGrid();
+	    ((HtmlBasedComponent) gridPrevious).setStyle(
+	        "margin:0; padding:0; border:none;"
+	    );
+	    gridPrevious.setHflex("1");
+	    gridPrevious.setVflex("1");
+	}
 		if (getListPanel() != null && activate)
 		{
 			GridPanel gridPanel = getListPanel();
@@ -1025,10 +1029,8 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
 	    		if(isGridView())
 	    		{
-	    			int size = MSysConfig.getIntValue("TAB_INCLUDING_HEIGHT", 400);
-		    		window.setHeight(size + "px");
+	    			resizeEmbeddedWindow(window);
 					listPanel.resize();
-	    			window.resize();
 	    		}
 	    		else
 	    		{
@@ -1054,17 +1056,15 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 		    			}
 
                         size += 25; // 25 = statusbar
-		    			size += addSize;
-		    			size += doAutoSize();
-						window.setHeight(size + "px");
-		    			window.resize();
+	    			size += addSize;
+	    			size += doAutoSize();
+						resizeEmbeddedWindow(window);
 	    			}
 	    			catch(Exception e)
 	    			{
 	    				e.printStackTrace();
 	    				//nothing to do, just ignore
-	    				window.setHeight( "61px");
-                        window.resize();
+	    				resizeEmbeddedWindow(window);
 	    			}
 
 	    		}
@@ -1072,6 +1072,14 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
 			}
     	}
+    }
+
+    private void resizeEmbeddedWindow(Borderlayout window)
+    {
+        window.setHflex("1");
+        window.setVflex("min");
+        window.setHeight(null);
+        window.resize();
     }
 
 
@@ -1490,9 +1498,10 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
 		grid.getRows().insertBefore(row, includedTabFooter.get(ep.adTabId));
 		ep.windowPanel.createPart(row);
-		ep.windowPanel.getComponent().setWidth("100%");
+		ep.windowPanel.getComponent().setHflex("1");
+		ep.windowPanel.getComponent().setVflex("min");
 		ep.windowPanel.getComponent().setStyle("position: relative");
-		//ep.windowPanel.getComponent().setHeight(400 + "px");
+		// ZK10: embedded tabs use natural flex sizing instead of fixed pixel height.
 
 		Label title = new Label(ep.gridWindow.getTab(ep.tabIndex).getName());
 		ep.group.appendChild(title);
@@ -1671,8 +1680,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 			    			}
 	    				}
 
-					    window.setHeight(size + "px");
-	    			    window.resize();
+					    resizeEmbeddedWindow(window);
 	    			    return size;
 	    			}
 	    			catch(Exception e)
@@ -1730,8 +1738,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
                         }
                     }
 
-                    window.setHeight(size + "px");
-                    window.resize();
+                    resizeEmbeddedWindow(window);
                     return size;
                 }
                 catch(Exception e)
@@ -1926,9 +1933,10 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         org.zkoss.zul.Row ChildRow = createHorizontalPanelForEmbedded(ep.divComponent, includedTabFooter.get(ep.adTabId), ep);
 
         ep.windowPanel.createPart(ChildRow);
-        ep.windowPanel.getComponent().setWidth("100%");
+        ep.windowPanel.getComponent().setHflex("1");
+        ep.windowPanel.getComponent().setVflex("min");
         //ep.windowPanel.getComponent().setStyle("position: relative");
-        ep.windowPanel.getComponent().setHeight("600px");
+        ep.windowPanel.getComponent().setHeight(null);
 
         FToolbar bar = ep.windowPanel.getToolbar();
         bar.setAlign("start");
@@ -1941,14 +1949,14 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
     private org.zkoss.zul.Row createHorizontalPanelForEmbedded(org.zkoss.zul.Div divComponent, org.zkoss.zul.Row footer , HorizontalEmbeddedPanel ep ) {
         //Setting Properties to Div Component
-        divComponent.setHeight("100%");
-        divComponent.setWidth("100%");
+        divComponent.setHflex("1");
+        divComponent.setVflex("min");
         // Create a Panel Object
         Panel panel = new Panel();
         panel.setStyle("border: 1px solid #d9d9d9; background: #ffffff;");
     	//panel.setStyle("overflow:auto");
-        panel.setWidth("100%");
-        panel.setHeight("100%");
+        panel.setHflex("1");
+        panel.setVflex("min");
         panel.setMaximizable(true);
 
 
@@ -1958,7 +1966,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         Grid newGrid = new Grid();
         newGrid.setHflex("1");
         newGrid.setVflex("1");
-        newGrid.setStyle("margin:0; padding:0; position: absolute; border: none;");
+        newGrid.setStyle("margin:0; padding:0; border: none;");
         newGrid.makeNoStrip();
         // Grid append to Panel Children
         ep.panelChildren.appendChild( newGrid );
@@ -1971,7 +1979,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         ep.embeddedGrid = newGrid;
         //Creating Rows based on the Grid
         Rows newRows = newGrid.newRows();
-        newRows.setHeight("100%");
+        newRows.setVflex("min");
         org.zkoss.zul.Row newRow = new Group();
         // Create a Row For ToolBar
         org.zkoss.zul.Row toolbarRow = new org.adempiere.webui.component.Row();
@@ -1981,7 +1989,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         org.zkoss.zul.Row panelRow = new org.adempiere.webui.component.Row();
         panelRow.appendChild(createCell(new Separator(), 5));
         //panelRow.setWidth("100%");
-        panelRow.setHeight("100%");
+        panelRow.setVflex("min");
         // Added to Group
         newRows.appendChild( newRow );
         // Added to tool-bar Row
@@ -1999,10 +2007,12 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         // For One Tab We created only one TabBox
         if (null == tabBox && null == tabPanels) {
             tabBox = new Tabbox();
-            tabBox.setHeight("100%");
+            tabBox.setHflex("1");
+            tabBox.setVflex("min");
             //tabBox.setStyle("height: 100%; width: 100%; position: relative;");
             tabPanels = new Tabpanels();
-            tabPanels.setHeight("600px");
+            tabPanels.setHflex("1");
+            tabPanels.setVflex("min");
             tabBox.appendChild(tabPanels);
             tabs = new Tabs();
             tabBox.appendChild(tabs);
@@ -2017,7 +2027,9 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         //Creating a TabPanel For every Tab
         Tabpanel tabPanel = new Tabpanel();
         embeddedTabPanel.put(ep.adTabId, tabPanel);
-        tabPanel.setStyle("margin:0; padding:0; border: none; height:600px;");
+        tabPanel.setHflex("1");
+        tabPanel.setVflex("min");
+        tabPanel.setStyle("margin:0; padding:0; border: none;");
         //Setting Embedded Panel to tabPanel
         tabPanel.appendChild(panel);
         //Appending Tab Panel To TabPanels
@@ -2083,4 +2095,3 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         return cell;
     }
 }
-

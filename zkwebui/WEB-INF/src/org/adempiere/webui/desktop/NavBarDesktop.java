@@ -118,15 +118,19 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
         pnlSide.getMenuPanel().addMenuListener(this);
 
         layout = new Borderlayout();
+        layout.setStyle("margin:0; padding:0;");
         if (parent != null)
         {
         	layout.setParent(parent);
-        	layout.setWidth("100%");
-        	layout.setHeight("100%");
-        	layout.setStyle("position: absolute");
+        	layout.setHflex("1");
+        	layout.setVflex("1");
         }
         else
+        {
         	layout.setPage(page);
+        	layout.setWidth("100%");
+        	layout.setHeight("100%");
+        }
 
 		dashboardRunnable = new DashboardRunnable(layout.getDesktop(), this);
 
@@ -188,6 +192,8 @@ public class NavBarDesktop extends TabbedDesktop implements MenuListener, Serial
 
         windowArea = new Center();
         windowArea.setParent(layout);
+        windowArea.setHflex("1");
+        windowArea.setVflex("1");
 
         windowContainer.createPart(windowArea);
 

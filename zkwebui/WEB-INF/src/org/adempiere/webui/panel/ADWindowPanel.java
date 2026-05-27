@@ -104,13 +104,15 @@ public class ADWindowPanel extends AbstractADWindowPanel
 	protected Component doCreatePart(Component parent)
     {
         layout = new Borderlayout();
+        layout.setStyle("margin:0; padding:0;");
         if (parent != null) {
 	        layout.setParent(parent);
-	        layout.setStyle("position:absolute");
-	        layout.setHeight("100%");
-	        layout.setWidth("100%");
+	        layout.setHflex("1");
+	        layout.setVflex("1");
         } else {
         	layout.setPage(page);
+        	layout.setWidth("100%");
+        	layout.setHeight("100%");
         }
 
         if (!isEmbedded())
@@ -178,6 +180,8 @@ public class ADWindowPanel extends AbstractADWindowPanel
 
         contentArea = new Center();
         contentArea.setParent(layout);
+        contentArea.setHflex("1");
+        contentArea.setVflex("1");
         contentArea.setAutoscroll(true);
         adTab.createPart(contentArea);
 

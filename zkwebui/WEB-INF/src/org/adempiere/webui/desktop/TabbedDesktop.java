@@ -211,15 +211,14 @@ public abstract class TabbedDesktop extends AbstractDesktop {
      */
     private void addWin(Iframe fr, String title, boolean closeable)
     {
-    	fr.setWidth("100%");
-        fr.setHeight("100%");
-        fr.setStyle("padding: 0; margin: 0; border: none; position: absolute");
+    	fr.setHflex("1");
+        fr.setVflex("1");
+        fr.setStyle("padding: 0; margin: 0; border: none");
         Window window = new Window();
-        window.setWidth("100%");
-        window.setHeight("100%");
+        window.setHflex("1");
+        window.setVflex("1");
         window.setStyle("padding: 0; margin: 0; border: none");
         window.appendChild(fr);
-        window.setStyle("position: absolute");
 
         Tabpanel tabPanel = new Tabpanel();
     	window.setParent(tabPanel);

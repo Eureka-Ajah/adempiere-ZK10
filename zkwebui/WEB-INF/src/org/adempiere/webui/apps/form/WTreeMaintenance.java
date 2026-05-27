@@ -116,13 +116,13 @@ public class WTreeMaintenance extends TreeMaintenance implements IFormController
 		bDelete.setImage("images/StepForward16.png");
 		bDeleteAll.setImage("images/FastForward16.png");
 		
-		form.setWidth("99%");
-		form.setHeight("100%");
-		form.setStyle("position: absolute; padding: 0; margin: 0");
+		form.setHflex("1");
+		form.setVflex("1");
+		form.setStyle("padding: 0; margin: 0");
 		form.appendChild (mainLayout);
-		mainLayout.setWidth("100%");
-		mainLayout.setHeight("100%");
-		mainLayout.setStyle("position: absolute");
+		mainLayout.setHflex("1");
+		mainLayout.setVflex("1");
+		mainLayout.setStyle("margin:0; padding:0;");
 		
 		treeLabel.setText (Msg.translate(Env.getCtx(), "AD_Tree_ID"));
 		cbAllNodes.setEnabled (false);

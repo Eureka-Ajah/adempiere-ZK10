@@ -292,9 +292,9 @@ public class WAcctViewer extends Window implements EventListener
 			setTitle(Msg.getMsg(Env.getCtx(), "InfoAccount"));
 			setAttribute(Window.MODE_KEY, Window.MODE_EMBEDDED);
 			setBorder("none");
-			setWidth("100%");
-			setHeight("100%");
-			setStyle("position: absolute");
+			setHflex("1");
+			setVflex("1");
+			setStyle("margin:0; padding:0;");
 		}
 
 		
@@ -685,19 +685,19 @@ public class WAcctViewer extends Window implements EventListener
 		// Result Tab
 
 		resultPanel = new Borderlayout();
-		resultPanel.setStyle("position: absolute");
-		resultPanel.setWidth("99%");
-		resultPanel.setHeight("99%");
+		resultPanel.setHflex("1");
+		resultPanel.setVflex("1");
+		resultPanel.setStyle("margin:0; padding:0;");
 		result.appendChild(resultPanel);
 
 		Center resultCenter = new Center();
 		resultCenter.setHflex("1");
 		resultCenter.setVflex("1");
 		resultPanel.appendChild(resultCenter);
-		table.setWidth("96%");
+		table.setHflex("1");
 		//table.setHeight("98%");
 		table.setVflex(true);
-		table.setStyle("overflow: auto; position: absolute;");
+		table.setStyle("overflow: auto;");
 		resultCenter.appendChild(table);
 
 		pagingPanel = new South();
