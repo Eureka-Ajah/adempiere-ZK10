@@ -227,3 +227,71 @@
 .z-paging-button{
 	margin: 0px;
 }
+
+/* Field groups in AD windows: hide only the artificial spacer row from the ZK5 layout. */
+.adtab-form-grid tr.adtab-fieldgroup-spacer {
+	display: none !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup td.z-group-inner {
+	background: #ffffff !important;
+	background-image: none !important;
+	border-top: 1px solid #b8c1ca !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup-toggle td,
+.adtab-form-grid tr.adtab-fieldgroup-toggle td.z-row-inner {
+	background: #ffffff !important;
+	background-image: none !important;
+	border-top: 1px solid #b8c1ca !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup .z-group-content,
+.adtab-form-grid tr.adtab-fieldgroup .z-group-cnt {
+	color: #1f2f3d !important;
+	cursor: pointer !important;
+	font-weight: 700 !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-title {
+	align-items: center !important;
+	color: #1f2f3d !important;
+	cursor: pointer !important;
+	display: flex !important;
+	font-weight: 700 !important;
+	gap: 7px !important;
+	line-height: 18px !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-caret {
+	color: #0076c9 !important;
+	display: inline-block !important;
+	font-size: 10px !important;
+	line-height: 10px !important;
+	text-align: center !important;
+	width: 10px !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-text {
+	font-weight: 700 !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup .z-group-icon,
+.adtab-form-grid tr.adtab-fieldgroup .z-group-img {
+	background-image: url("../theme/default/images/zul/common/toggle.png") !important;
+	background-repeat: no-repeat !important;
+	display: inline-block !important;
+	height: 8px !important;
+	margin: 0 7px 0 2px !important;
+	opacity: 1 !important;
+	vertical-align: middle !important;
+	width: 8px !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup .z-group-img-open {
+	background-position: 0 -8px !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup .z-group-img-close {
+	background-position: 0 0 !important;
+}

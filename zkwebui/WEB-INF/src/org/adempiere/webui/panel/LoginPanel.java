@@ -119,8 +119,6 @@ public class LoginPanel extends Window implements EventListener
 
     public LoginPanel(Properties ctx, LoginWindow loginWindow)
     {
-    	System.out.println("### LOGINPANEL CUSTOM EUREKA CARGADO ###");
-    	
         this.ctx = ctx;
         this.wndLogin = loginWindow;
         initComponents();

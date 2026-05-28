@@ -122,6 +122,10 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
     private Map<String, List<org.zkoss.zul.Row>> fieldGroupHeaders = new HashMap<String, List<org.zkoss.zul.Row>>();
 
+    private Map<String, Boolean> fieldGroupCollapsed = new HashMap<String, Boolean>();
+
+    private Map<String, Label> fieldGroupToggles = new HashMap<String, Label>();
+
 	private ArrayList<org.zkoss.zul.Row> rowList;
 
 	private Component formComponent = null;
@@ -180,6 +184,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         this.setVflex("1");
 
         grid = new Grid();
+        LayoutUtils.addSclass("adtab-form-grid", grid);
 
         grid.setHflex("1");
         grid.setVflex("1");
@@ -409,44 +414,14 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
             			List<org.zkoss.zul.Row> headerRows = new ArrayList<org.zkoss.zul.Row>();
             			fieldGroupHeaders.put(fieldGroup, headerRows);
 
-            			row.appendChild(createCell(new Separator(), 5));
-            			row.appendChild(new Separator());
-            			rows.appendChild(row);
-            			headerRows.add(row);
-
         				rowList = new ArrayList<org.zkoss.zul.Row>();
         				fieldGroupContents.put(fieldGroup, rowList);
 
-            			if (X_AD_FieldGroup.FIELDGROUPTYPE_Label.equals(field.getFieldGroupType()))
-            			{
-            				row = new Row();
-            				row.appendChild(createCell(new Separator(), 4));
-            				Label groupLabel = new Label(fieldGroup);
-            				row.appendChild(groupLabel);
-            				row.appendChild(createSpacer());
-            				rows.appendChild(row);
-            				headerRows.add(row);
-
-            				row = new Row();
-            				row.appendChild(createCell(new Separator(), 4));
-	                        Separator separator = new Separator();
-	                        separator.setBar(true);
-	            			row.appendChild(separator);
-	            			row.appendChild(createSpacer());
-	            			rows.appendChild(row);
-	            			headerRows.add(row);
-            			}
-            			else
-            			{
-            				row = new Group(fieldGroup);
-            				if (X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault())
-            				{
-            					((Group)row).setOpen(false);
-            				}
-            				currentGroup = (Group)row;
-            				rows.appendChild(row);
-            				headerRows.add(row);
-            			}
+            			boolean collapsed = X_AD_FieldGroup.FIELDGROUPTYPE_Tab.equals(field.getFieldGroupType()) || field.getIsCollapsedByDefault();
+            			fieldGroupCollapsed.put(fieldGroup, Boolean.valueOf(collapsed));
+            			row = createFieldGroupHeader(fieldGroup, collapsed);
+            			rows.appendChild(row);
+            			headerRows.add(row);
 
             			row = new Row();
             		}
@@ -607,6 +582,84 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         dynamicDisplay(-1);
     }
 
+    private org.zkoss.zul.Row createFieldGroupHeader(final String fieldGroup, boolean collapsed)
+    {
+    	org.zkoss.zul.Row headerRow = new Row();
+    	LayoutUtils.addSclass("adtab-fieldgroup", headerRow);
+    	LayoutUtils.addSclass("adtab-fieldgroup-toggle", headerRow);
+
+    	Cell cell = new Cell();
+    	cell.setColspan(5);
+
+    	Div header = new Div();
+    	LayoutUtils.addSclass("adtab-fieldgroup-title", header);
+
+    	Label toggle = new Label(collapsed ? "\u25b8" : "\u25be");
+    	LayoutUtils.addSclass("adtab-fieldgroup-caret", toggle);
+    	fieldGroupToggles.put(fieldGroup, toggle);
+
+    	Label label = new Label(fieldGroup);
+    	LayoutUtils.addSclass("adtab-fieldgroup-text", label);
+
+    	header.appendChild(toggle);
+    	header.appendChild(label);
+    	cell.appendChild(header);
+    	headerRow.appendChild(cell);
+    	headerRow.addEventListener(Events.ON_CLICK, new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				toggleFieldGroup(fieldGroup);
+			}
+		});
+
+    	return headerRow;
+    }
+
+    private void toggleFieldGroup(String fieldGroup)
+    {
+    	boolean collapsed = !isFieldGroupCollapsed(fieldGroup);
+    	fieldGroupCollapsed.put(fieldGroup, Boolean.valueOf(collapsed));
+    	updateFieldGroupToggle(fieldGroup);
+    	applyFieldGroupCollapsed(fieldGroup);
+    }
+
+    private boolean isFieldGroupCollapsed(String fieldGroup)
+    {
+    	Boolean collapsed = fieldGroupCollapsed.get(fieldGroup);
+    	return collapsed != null && collapsed.booleanValue();
+    }
+
+    private void updateFieldGroupToggle(String fieldGroup)
+    {
+    	Label toggle = fieldGroupToggles.get(fieldGroup);
+    	if (toggle != null)
+    		toggle.setValue(isFieldGroupCollapsed(fieldGroup) ? "\u25b8" : "\u25be");
+    }
+
+    private void applyFieldGroupCollapsed(String fieldGroup)
+    {
+    	List<org.zkoss.zul.Row> contents = fieldGroupContents.get(fieldGroup);
+    	if (contents == null)
+    		return;
+
+    	boolean collapsed = isFieldGroupCollapsed(fieldGroup);
+    	for (org.zkoss.zul.Row row : contents)
+    	{
+    		if (collapsed)
+    		{
+    			if (row.isVisible())
+    				row.setVisible(false);
+    		}
+    		else
+    		{
+    			Object rowVisible = row.getAttribute("adtab-row-visible");
+    			boolean visible = !(rowVisible instanceof Boolean) || ((Boolean)rowVisible).booleanValue();
+    			if (row.isVisible() != visible)
+    				row.setVisible(visible);
+    		}
+    	}
+    	updateFieldGroupToggle(fieldGroup);
+    }
+
 	private Component createSpacer() {
 		return new Space();
 	}
@@ -696,8 +749,12 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         			}
         		}
         	}
-        	if (editorRow && (row.isVisible() != visible))
-        		row.setVisible(visible);
+        	if (editorRow)
+        	{
+        		row.setAttribute("adtab-row-visible", Boolean.valueOf(visible));
+        		if (row.isVisible() != visible)
+        			row.setVisible(visible);
+        	}
         }
 
         //hide fieldgroup if all editor row within the fieldgroup is invisible
@@ -708,7 +765,9 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         	boolean visible = false;
         	for (org.zkoss.zul.Row row : contents)
         	{
-        		if (row.isVisible())
+        		Object rowVisible = row.getAttribute("adtab-row-visible");
+        		if ((rowVisible instanceof Boolean && ((Boolean)rowVisible).booleanValue()) ||
+        				(!(rowVisible instanceof Boolean) && row.isVisible()))
         		{
         			visible = true;
         			break;
@@ -720,6 +779,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         		if (row.isVisible() != visible)
         			row.setVisible(visible);
         	}
+        	applyFieldGroupCollapsed(entry.getKey());
         }
 
         for (EmbeddedPanel ep : includedPanel) {
