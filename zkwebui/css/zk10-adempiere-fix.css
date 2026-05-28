@@ -221,11 +221,41 @@
 }
 /*===== Paginacion ========*/
 .z-paging-input{
-	height: 20px;
+	height: 22px;
 	text-align: center;
 }
 .z-paging-button{
 	margin: 0px;
+}
+
+.z-listheader-content, .z-listcell-content, .z-listgroup-content, .z-listgroupfoot-content, .z-listfooter-content{
+	padding: 2px 6px;
+ }
+ 
+ .z-panel-header{
+ padding: 4px;
+ }
+ 
+.login-panel #txtUserId,
+.login-panel #txtPassword,
+.login-panel #lstLanguage,
+.login-panel #lstLanguage input,
+.login-panel #lstLanguage .z-combobox-input,
+.login-panel #lstLanguage .z-combobox-button {
+	height: 20px !important;
+	min-height: 20px !important;
+	line-height: 20px !important;
+	box-sizing: border-box !important;
+	font-size: 12px !important;
+}
+
+.login-panel #lstLanguage .z-combobox-input {
+	padding: 0 4px !important;
+}
+
+.login-panel #lstLanguage .z-combobox-button {
+	width: 20px !important;
+	padding: 0 !important;
 }
 
 /* Field groups in AD windows: hide only the artificial spacer row from the ZK5 layout. */
@@ -266,10 +296,14 @@
 .adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-caret {
 	color: #0076c9 !important;
 	display: inline-block !important;
-	font-size: 10px !important;
+	font-size: 20px !important;
 	line-height: 10px !important;
 	text-align: center !important;
 	width: 10px !important;
+}
+
+.z-grid-body .z-cell{
+	padding: 7px 11px !important;
 }
 
 .adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-text {
