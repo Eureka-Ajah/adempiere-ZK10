@@ -100,6 +100,22 @@
 	padding: 2px;
 }
 
+/* DocAction/Form buttons: the theme width belongs to the button, not to its icon. */
+button.form-button img.z-button-image,
+button.form-button > img.form-button.z-button-image,
+img.form-button.z-button-image {
+	display: inline-block !important;
+	height: 16px !important;
+	margin-right: 6px !important;
+	max-height: 16px !important;
+	max-width: 16px !important;
+	min-height: 16px !important;
+	min-width: 16px !important;
+	object-fit: contain !important;
+	vertical-align: middle !important;
+	width: 16px !important;
+}
+
 .z-window-content {
 	padding: 0;
 }
