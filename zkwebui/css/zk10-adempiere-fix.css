@@ -116,6 +116,74 @@ img.form-button.z-button-image {
 	width: 16px !important;
 }
 
+/* ZK10 form editors: keep classic ADempiere compact field height. */
+.z-combobox,
+.z-datebox,
+.z-bandbox,
+.z-timebox,
+.z-spinner {
+	box-sizing: border-box !important;
+	height: 20px !important;
+	line-height: 20px !important;
+	min-height: 20px !important;
+}
+
+.z-combobox-input,
+.z-combobox-inp,
+.z-datebox-input,
+.z-datebox-inp,
+.z-bandbox-input,
+.z-bandbox-inp,
+.z-timebox-input,
+.z-timebox-inp,
+.z-spinner-input,
+.z-spinner-inp {
+	box-sizing: border-box !important;
+	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
+	font-size: 12px !important;
+	height: 20px !important;
+	line-height: 18px !important;
+	min-height: 20px !important;
+	padding-bottom: 0 !important;
+	padding-left: 6px !important;
+	padding-right: 24px !important;
+	padding-top: 0 !important;
+}
+
+.z-combobox-button,
+.z-combobox-img,
+.z-datebox-button,
+.z-datebox-img,
+.z-bandbox-button,
+.z-bandbox-img,
+.z-timebox-button,
+.z-timebox-img,
+.z-spinner-button,
+.z-spinner-img {
+	align-items: center !important;
+	box-sizing: border-box !important;
+	display: inline-flex !important;
+	font-size: 13px !important;
+	height: 20px !important;
+	justify-content: center !important;
+	line-height: 20px !important;
+	min-height: 20px !important;
+	min-width: 22px !important;
+	padding: 0 !important;
+	transform: translateY(1px) !important;
+	vertical-align: top !important;
+	width: 22px !important;
+}
+
+.z-combobox-button i,
+.z-datebox-button i,
+.z-bandbox-button i,
+.z-timebox-button i,
+.z-spinner-button i {
+	font-size: 13px !important;
+	line-height: 20px !important;
+}
+
 .z-window-content {
 	padding: 0;
 }
@@ -212,6 +280,18 @@ img.form-button.z-button-image {
 .z-checkbox input[type="checkbox"]:active {
 	outline: none !important;
 	box-shadow: none !important;
+}
+
+input[type="checkbox"]::before,
+input[type="checkbox"]::after,
+input[type="checkbox"]:checked::before,
+input[type="checkbox"]:checked::after,
+.z-checkbox input[type="checkbox"]::before,
+.z-checkbox input[type="checkbox"]::after,
+.z-checkbox input[type="checkbox"]:checked::before,
+.z-checkbox input[type="checkbox"]:checked::after {
+	content: none !important;
+	display: none !important;
 }
 
 .z-checkbox-content {
