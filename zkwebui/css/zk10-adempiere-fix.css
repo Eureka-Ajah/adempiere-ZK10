@@ -38,6 +38,10 @@
 }
 
 /* Paneles */
+.z-panel{
+	border-radius: 6px !important;
+}
+
 .z-panelchildren,
 .z-panelchildren-noheader,
 .z-panelchildren-noborder,
@@ -328,9 +332,86 @@ input[type="checkbox"]:checked::after,
 	padding: 2px 6px;
  }
  
- .z-panel-header{
- padding: 4px;
- }
+.z-panel-header {
+	padding: 4px;
+}
+
+.z-panel-icons .z-panel-icon,
+.z-panel-header .z-panel-icon {
+	background-color: transparent !important;
+	background-image: url(../theme/default/images/zul/wnd/ol-btn.png) !important;
+	background-repeat: no-repeat !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	color: transparent !important;
+	cursor: pointer !important;
+	display: inline-block !important;
+	float: right;
+	font-size: 0 !important;
+	-webkit-appearance: none !important;
+	appearance: none !important;
+	height: 16px !important;
+	line-height: 16px !important;
+	margin: 0 1px !important;
+	min-height: 16px !important;
+	min-width: 16px !important;
+	overflow: hidden !important;
+	padding: 0 !important;
+	text-align: left !important;
+	text-indent: -9999px !important;
+	vertical-align: top !important;
+	width: 16px !important;
+}
+
+.z-panel-icons .z-panel-icon:before,
+.z-panel-icons .z-panel-icon:after,
+.z-panel-header .z-panel-icon:before,
+.z-panel-header .z-panel-icon:after {
+	content: none !important;
+	display: none !important;
+}
+
+.z-panel-icons .z-panel-exp,
+.z-panel-icons .z-panel-expand,
+.z-panel-header .z-panel-exp,
+.z-panel-header .z-panel-expand {
+	background-position: 0 -64px !important;
+}
+
+.z-panel-icons .z-panel-exp-over,
+.z-panel-icons .z-panel-exp:hover,
+.z-panel-icons .z-panel-expand:hover,
+.z-panel-icons .z-panel-expand:focus,
+.z-panel-header .z-panel-exp-over,
+.z-panel-header .z-panel-exp:hover,
+.z-panel-header .z-panel-expand:hover,
+.z-panel-header .z-panel-expand:focus {
+	background-position: -16px -64px !important;
+}
+
+.z-panel-icons .z-panel-col,
+.z-panel-icons .z-panel-collapse,
+.z-panel-header .z-panel-col,
+.z-panel-header .z-panel-collapse,
+.z-panel-collapsed .z-panel-icons .z-panel-expand,
+.z-panel[z\.open="false"] .z-panel-icons .z-panel-expand {
+	background-position: 0 -80px !important;
+}
+
+.z-panel-icons .z-panel-col-over,
+.z-panel-icons .z-panel-col:hover,
+.z-panel-icons .z-panel-collapse:hover,
+.z-panel-icons .z-panel-collapse:focus,
+.z-panel-header .z-panel-col-over,
+.z-panel-header .z-panel-col:hover,
+.z-panel-header .z-panel-collapse:hover,
+.z-panel-header .z-panel-collapse:focus,
+.z-panel-collapsed .z-panel-icons .z-panel-expand:hover,
+.z-panel-collapsed .z-panel-icons .z-panel-expand:focus,
+.z-panel[z\.open="false"] .z-panel-icons .z-panel-expand:hover,
+.z-panel[z\.open="false"] .z-panel-icons .z-panel-expand:focus {
+	background-position: -16px -80px !important;
+}
  
 .login-panel #txtUserId,
 .login-panel #txtPassword,
