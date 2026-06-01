@@ -225,6 +225,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 				size = proportion.split(",");
 
 			noOfColumns = getSessionColumnCount();
+			portalLayout.setSclass("desktop-home-dashboard desktop-home-dashboard-cols-" + Math.max(1, noOfColumns));
 			width = noOfColumns <= 0 ? 100 : 100 / noOfColumns;
 			Div currentColumn = null;
 			for (final MDashboardContent dashboardContent : getDashboardContent()) {
@@ -240,7 +241,7 @@ public class DefaultDesktop extends TabbedDesktop implements MenuListener, Seria
 						columnWidth = size[counter];
 					currentColumn = new Div();
 					currentColumn.setSclass("desktop-home-column dashboard-column-" + counter);
-					currentColumn.setStyle("flex:1 1 calc(" + columnWidth.trim() + "% - 6px); min-width:min(220px, 100%); max-width:100%; padding:0; margin:0; box-sizing:border-box; overflow:visible;");
+					currentColumn.setStyle("flex:1 1 calc(" + columnWidth.trim() + "% - 6px); min-width:0; max-width:100%; padding:0; margin:0; box-sizing:border-box; overflow:visible;");
 					portalLayout.appendChild(currentColumn);
 					currentColumnNo = columnNo;
 					counter++;
