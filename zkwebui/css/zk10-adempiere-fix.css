@@ -80,83 +80,199 @@
 	padding: 0 !important;
 }
 
-/* ============================================================================
-   04. Dashboard de inicio responsive
-   ============================================================================ */
-
-.desktop-home-dashboard {
-	align-content: flex-start !important;
-	align-items: flex-start !important;
+/* Ventanas AD: barra de estado y pestanas laterales. */
+.adwindow-status {
+	background: #fff !important;
+	border-top: 1px solid #b8c8d9 !important;
 	box-sizing: border-box !important;
-	display: flex !important;
-	flex-wrap: wrap !important;
-	gap: 6px !important;
-	height: 100% !important;
-	overflow-x: hidden !important;
-	overflow-y: auto !important;
-	padding: 4px !important;
+	color: #000 !important;
+	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
+	font-size: 12px !important;
+	font-weight: 700 !important;
+	line-height: 20px !important;
+	min-height: 22px !important;
+	overflow: hidden !important;
+	padding: 0 2px !important;
+	white-space: nowrap !important;
 	width: 100% !important;
 }
 
-.desktop-home-dashboard > .desktop-home-column {
+.adwindow-status.message-info {
+	height: 22px !important;
+}
+
+.adwindow-status.message-error {
+	min-height: 50px !important;
+}
+
+.adwindow-status .statusbar-row {
+	align-items: center !important;
 	box-sizing: border-box !important;
-	margin: 0 !important;
-	max-width: 100% !important;
-	min-width: min(220px, 100%) !important;
-	padding: 0 !important;
-}
-
-.desktop-home-dashboard-cols-1 > .desktop-home-column {
-	flex: 1 1 100% !important;
-	min-width: 100% !important;
-}
-
-.desktop-home-dashboard-cols-2 > .desktop-home-column {
-	flex: 1 1 320px !important;
-	min-width: min(260px, 100%) !important;
-}
-
-/* 3 columnas: distribucion objetivo 20% / 60% / 20%.
-   Permite que la columna central baje hasta 300px antes de apilar. */
-.desktop-home-dashboard-cols-3 > .dashboard-column-0,
-.desktop-home-dashboard-cols-3 > .dashboard-column-2 {
-	flex: 1 1 calc(20% - 6px) !important;
-	max-width: none !important;
-	min-width: min(120px, 100%) !important;
-}
-
-.desktop-home-dashboard-cols-3 > .dashboard-column-1 {
-	flex: 3 1 calc(60% - 6px) !important;
-	max-width: none !important;
-	min-width: min(300px, 100%) !important;
-}
-
-/* 4 columnas: mantener laterales compactas y columna central prioritaria. */
-.desktop-home-dashboard-cols-4 > .desktop-home-column:not(.dashboard-column-1) {
-	flex: 0 1 170px !important;
-	max-width: 230px !important;
-	min-width: min(150px, 100%) !important;
-}
-
-.desktop-home-dashboard-cols-4 > .dashboard-column-1 {
-	flex: 2 1 420px !important;
-	min-width: min(340px, 100%) !important;
-}
-
-.desktop-home-dashboard .z-panel {
-	box-sizing: border-box !important;
-	margin: 0 0 6px 0 !important;
+	display: flex !important;
+	gap: 4px !important;
+	height: 100% !important;
 	min-width: 0 !important;
 	width: 100% !important;
 }
 
-@media (max-width: 560px) {
-	.desktop-home-dashboard > .desktop-home-column {
-		flex: 1 1 100% !important;
-		max-width: 100% !important;
-		min-width: 100% !important;
-	}
+.adwindow-status .status-image {
+	flex: 0 0 16px !important;
+	height: 16px !important;
+	width: 16px !important;
 }
+
+.adwindow-status .status-left {
+	box-sizing: border-box !important;
+	flex: 1 1 220px !important;
+	min-width: 0 !important;
+	width: auto !important;
+}
+
+.adwindow-status .status-detail {
+	box-sizing: border-box !important;
+	flex: 0 1 auto !important;
+	max-width: 78% !important;
+	min-width: 0 !important;
+	width: auto !important;
+}
+
+.adwindow-status .status-line-container,
+.adwindow-status .status-detail-container {
+	box-sizing: border-box !important;
+	line-height: 20px !important;
+	min-width: 0 !important;
+	overflow: hidden !important;
+	width: 100% !important;
+}
+
+.adwindow-status .status-detail-container {
+	align-items: center !important;
+	display: flex !important;
+	gap: 8px !important;
+	justify-content: flex-end !important;
+}
+
+.adwindow-status .status-line,
+.adwindow-status .message-info-text,
+.adwindow-status .message-error-text,
+.adwindow-status .status-info,
+.adwindow-status .status-db {
+	background: transparent !important;
+	color: #000 !important;
+	display: block !important;
+	font-size: 12px !important;
+	font-weight: 700 !important;
+	line-height: 20px !important;
+	overflow: hidden !important;
+	padding: 0 !important;
+	text-overflow: ellipsis !important;
+	white-space: nowrap !important;
+}
+
+.adwindow-status .status-info {
+	flex: 1 1 auto !important;
+	max-width: 100% !important;
+	min-width: 0 !important;
+	text-align: right !important;
+}
+
+.adwindow-status .status-db {
+	flex: 0 0 auto !important;
+	text-align: right !important;
+}
+
+.adwindow-nav {
+	background: #e6e6e6 !important;
+	box-sizing: border-box !important;
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
+	padding: 0 !important;
+}
+
+.adwindow-left-nav,
+.adwindow-right-nav {
+	max-width: 120px !important;
+	min-width: 120px !important;
+	width: 120px !important;
+}
+
+.adwindow-left-nav {
+	border-right: 1px solid #008ee8 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.adwindow-right-nav {
+	border-left: 1px solid #008ee8 !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.adwindow-nav .z-west-body,
+.adwindow-nav .z-east-body {
+	box-sizing: border-box !important;
+	margin: 0 !important;
+	overflow-x: hidden !important;
+	overflow-y: auto !important;
+	padding: 0 !important;
+}
+
+.adwindow-nav-content {
+	box-sizing: border-box !important;
+	display: block !important;
+	margin: 0 !important;
+	max-width: 100% !important;
+	overflow-x: hidden !important;
+	padding: 0 !important;
+	width: 100% !important;
+}
+
+/*
+ * Pestañas laterales de ventanas AD.
+ * No se fuerza margin, padding, width ni display del boton completo,
+ * porque esas propiedades conservan la jerarquia/indexado nativo padre-hijo.
+ */
+.adwindow-navbtn-sel,
+.adwindow-navbtn-uns,
+.adwindow-navbtn-dis {
+	box-sizing: border-box !important;
+	height: auto !important;
+	min-height: 34px !important;
+	overflow: visible !important;
+	text-align: right !important;
+	white-space: normal !important;
+}
+
+/* Texto interno: permitir 2 o mas lineas y alinear a la derecha. */
+.adwindow-navbtn-sel .z-button-content,
+.adwindow-navbtn-uns .z-button-content,
+.adwindow-navbtn-dis .z-button-content,
+.adwindow-navbtn-sel .z-button-cnt,
+.adwindow-navbtn-uns .z-button-cnt,
+.adwindow-navbtn-dis .z-button-cnt,
+.adwindow-navbtn-sel .z-label,
+.adwindow-navbtn-uns .z-label,
+.adwindow-navbtn-dis .z-label {
+	box-sizing: border-box !important;
+	display: block !important;
+	line-height: 14px !important;
+	overflow: visible !important;
+	text-align: right !important;
+	text-overflow: clip !important;
+	white-space: normal !important;
+	word-break: normal !important;
+	overflow-wrap: break-word !important;
+}
+
+/* Fallback para implementaciones donde el texto queda directo en el boton. */
+.adwindow-navbtn-sel,
+.adwindow-navbtn-uns,
+.adwindow-navbtn-dis {
+	text-overflow: clip !important;
+	word-break: normal !important;
+	overflow-wrap: break-word !important;
+}
+
 
 /* ============================================================================
    05. Paneles ZK
@@ -312,6 +428,11 @@
 	text-align: right;
 	width: 20px;
 }
+.z-listitem-checkable, .z-listheader-checkable {
+    text-align: center;
+    align-content: center;
+}
+
 
 /* ============================================================================
    07. Editores de formulario
@@ -648,4 +769,95 @@ img.form-button.z-button-image {
 	to {
 		transform: rotate(360deg);
 	}
+}
+
+/* ============================================================================
+   Entrega Manual - grid nativo clásico
+   ============================================================================ */
+
+.inoutgen-native-grid,
+.inoutgen-native-grid .z-grid-body {
+	height: 100% !important;
+	overflow: visible !important;
+	width: 100% !important;
+}
+
+.inoutgen-native-grid .z-grid-body table {
+	table-layout: auto !important;
+	width: auto !important;
+	min-width: 100% !important;
+}
+
+.inoutgen-native-grid .z-row-inner,
+.inoutgen-native-grid .z-row-content {
+	box-sizing: border-box !important;
+	height: 26px !important;
+	line-height: 22px !important;
+	min-height: 26px !important;
+	overflow: visible !important;
+	padding-bottom: 1px !important;
+	padding-top: 1px !important;
+	vertical-align: middle !important;
+	white-space: nowrap !important;
+}
+
+.inoutgen-native-grid .z-label {
+	line-height: 22px !important;
+	white-space: nowrap !important;
+}
+
+.inoutgen-native-grid .z-textbox,
+.inoutgen-native-grid .z-combobox,
+.inoutgen-native-grid .z-bandbox {
+	vertical-align: middle !important;
+}
+/* ============================================================================
+   ADWindow - corrección final pestañas laterales
+   Mantiene jerarquía nativa, pero pega los botones al borde derecho
+   ============================================================================ */
+
+.adwindow-left-nav,
+.adwindow-left-nav .z-west-body,
+.adwindow-nav-content {
+	margin-right: 0 !important;
+	padding-right: 0 !important;
+}
+
+.adwindow-nav-content {
+	text-align: right !important;
+}
+
+/* No forzar ancho completo: sólo mover el botón hacia el borde derecho */
+.adwindow-navbtn-sel,
+.adwindow-navbtn-uns,
+.adwindow-navbtn-dis {
+	float: right !important;
+	clear: both !important;
+	margin-right: 0 !important;
+	text-align: right !important;
+}
+
+/* Texto multilinea alineado a la derecha */
+.adwindow-navbtn-sel .z-button-content,
+.adwindow-navbtn-uns .z-button-content,
+.adwindow-navbtn-dis .z-button-content,
+.adwindow-navbtn-sel .z-button-cnt,
+.adwindow-navbtn-uns .z-button-cnt,
+.adwindow-navbtn-dis .z-button-cnt,
+.adwindow-navbtn-sel .z-label,
+.adwindow-navbtn-uns .z-label,
+.adwindow-navbtn-dis .z-label {
+	text-align: right !important;
+	white-space: normal !important;
+	text-overflow: clip !important;
+	overflow: visible !important;
+	word-break: normal !important;
+	overflow-wrap: break-word !important;
+}
+
+/* Evita que el float reduzca artificialmente el alto del contenedor */
+.adwindow-nav-content:after {
+	content: "";
+	display: block;
+	clear: both;
 }
