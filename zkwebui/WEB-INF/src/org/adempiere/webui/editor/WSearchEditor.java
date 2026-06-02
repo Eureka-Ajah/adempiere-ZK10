@@ -1073,10 +1073,7 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
         }
         else
         {
-        	if (evt.getNewValue() != null)
-			{
-				actionCombo(evt.getNewValue());
-			}
+			actionCombo(evt.getNewValue());
         }
 
 	}

@@ -1,7 +1,11 @@
-/* ==========================================================================
-   ADempiere/Eureka WebUI sobre ZK10
+/* ============================================================================
+   Eureka WebUI sobre ZK10
    Correcciones de compatibilidad visual para layouts clasicos
-   ========================================================================== */
+   ============================================================================ */
+
+/* ============================================================================
+   01. Variables generales
+   ============================================================================ */
 
 :root {
 	--adempiere-login-background: #003764;
@@ -10,7 +14,10 @@
 	--adempiere-loader-border: #d7e0e7;
 }
 
-/* Header principal */
+/* ============================================================================
+   02. Header principal y layout base
+   ============================================================================ */
+
 .desktop-header,
 .desktop-header.z-borderlayout,
 .desktop-header .z-borderlayout,
@@ -23,11 +30,47 @@
 	border-color: var(--adempiere-login-background) !important;
 }
 
-/* Ventanas embebidas */
+/* Layout estructural ZK10: quitar padding agregado por el tema. */
+.z-west,
+.z-east,
+.z-center,
+.z-north,
+.z-south,
+.z-west-body,
+.z-east-body,
+.z-center-body,
+.z-north-body,
+.z-south-body,
+.z-tabpanel,
+.z-tabpanels,
+.z-panel-body {
+	padding: 0 !important;
+}
+
+/* Encabezados de regiones Borderlayout. */
+.z-north-header,
+.z-south-header,
+.z-west-header,
+.z-center-header,
+.z-east-header {
+	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
+	font-size: 13px !important;
+	font-weight: 800;
+	line-height: 15px;
+	padding: 5px 3px 4px 5px;
+}
+
+/* ============================================================================
+   03. Ventanas ZK
+   ============================================================================ */
+
 .z-window {
 	padding: 5px;
+}
 
-	}
+.z-window-content {
+	padding: 0;
+}
 
 .z-window.z-window-embedded {
 	padding: 0 !important;
@@ -37,7 +80,10 @@
 	padding: 0 !important;
 }
 
-/* Dashboard de inicio: mantener columnas compactas hasta su ancho minimo nativo. */
+/* ============================================================================
+   04. Dashboard de inicio responsive
+   ============================================================================ */
+
 .desktop-home-dashboard {
 	align-content: flex-start !important;
 	align-items: flex-start !important;
@@ -70,17 +116,26 @@
 	min-width: min(260px, 100%) !important;
 }
 
+/* 3 columnas: distribucion objetivo 20% / 60% / 20%.
+   Permite que la columna central baje hasta 300px antes de apilar. */
 .desktop-home-dashboard-cols-3 > .dashboard-column-0,
-.desktop-home-dashboard-cols-3 > .dashboard-column-2,
+.desktop-home-dashboard-cols-3 > .dashboard-column-2 {
+	flex: 1 1 calc(20% - 6px) !important;
+	max-width: none !important;
+	min-width: min(120px, 100%) !important;
+}
+
+.desktop-home-dashboard-cols-3 > .dashboard-column-1 {
+	flex: 3 1 calc(60% - 6px) !important;
+	max-width: none !important;
+	min-width: min(300px, 100%) !important;
+}
+
+/* 4 columnas: mantener laterales compactas y columna central prioritaria. */
 .desktop-home-dashboard-cols-4 > .desktop-home-column:not(.dashboard-column-1) {
 	flex: 0 1 170px !important;
 	max-width: 230px !important;
 	min-width: min(150px, 100%) !important;
-}
-
-.desktop-home-dashboard-cols-3 > .dashboard-column-1 {
-	flex: 2 1 430px !important;
-	min-width: min(300px, 100%) !important;
 }
 
 .desktop-home-dashboard-cols-4 > .dashboard-column-1 {
@@ -95,7 +150,7 @@
 	width: 100% !important;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 560px) {
 	.desktop-home-dashboard > .desktop-home-column {
 		flex: 1 1 100% !important;
 		max-width: 100% !important;
@@ -103,9 +158,16 @@
 	}
 }
 
-/* Paneles */
-.z-panel{
+/* ============================================================================
+   05. Paneles ZK
+   ============================================================================ */
+
+.z-panel {
 	border-radius: 6px !important;
+}
+
+.z-panel-header {
+	padding: 4px;
 }
 
 .z-panelchildren,
@@ -122,24 +184,84 @@
 	padding: 0 !important;
 }
 
-/* Layout estructural ZK10 */
-.z-west,
-.z-east,
-.z-center,
-.z-north,
-.z-south,
-.z-west-body,
-.z-east-body,
-.z-center-body,
-.z-north-body,
-.z-south-body,
-.z-tabpanel,
-.z-tabpanels,
-.z-panel-body {
+/* Iconos clasicos de expandir/colapsar panel. */
+.z-panel-icons .z-panel-icon,
+.z-panel-header .z-panel-icon {
+	-webkit-appearance: none !important;
+	appearance: none !important;
+	background-color: transparent !important;
+	background-image: url(../theme/default/images/zul/wnd/ol-btn.png) !important;
+	background-repeat: no-repeat !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	color: transparent !important;
+	cursor: pointer !important;
+	display: inline-block !important;
+	float: right;
+	font-size: 0 !important;
+	height: 16px !important;
+	line-height: 16px !important;
+	margin: 0 1px !important;
+	min-height: 16px !important;
+	min-width: 16px !important;
+	overflow: hidden !important;
 	padding: 0 !important;
+	text-align: left !important;
+	text-indent: -9999px !important;
+	vertical-align: top !important;
+	width: 16px !important;
 }
 
-/* ZK10 agrega aire extra en celdas de layout clasico */
+.z-panel-icons .z-panel-icon:before,
+.z-panel-icons .z-panel-icon:after,
+.z-panel-header .z-panel-icon:before,
+.z-panel-header .z-panel-icon:after {
+	content: none !important;
+	display: none !important;
+}
+
+.z-panel-icons .z-panel-exp,
+.z-panel-icons .z-panel-expand,
+.z-panel-header .z-panel-exp,
+.z-panel-header .z-panel-expand {
+	background-position: 0 -64px !important;
+}
+
+.z-panel-icons .z-panel-exp-over,
+.z-panel-icons .z-panel-exp:hover,
+.z-panel-icons .z-panel-expand:hover,
+.z-panel-header .z-panel-exp-over,
+.z-panel-header .z-panel-exp:hover,
+.z-panel-header .z-panel-expand:hover {
+	background-position: -16px -64px !important;
+}
+
+.z-panel-icons .z-panel-col,
+.z-panel-icons .z-panel-collapse,
+.z-panel-header .z-panel-col,
+.z-panel-header .z-panel-collapse,
+.z-panel-collapsed .z-panel-icons .z-panel-expand,
+.z-panel[z\.open="false"] .z-panel-icons .z-panel-expand {
+	background-position: 0 -96px !important;
+}
+
+.z-panel-icons .z-panel-col-over,
+.z-panel-icons .z-panel-col:hover,
+.z-panel-icons .z-panel-collapse:hover,
+.z-panel-icons .z-panel-collapse:focus,
+.z-panel-header .z-panel-col-over,
+.z-panel-header .z-panel-col:hover,
+.z-panel-header .z-panel-collapse:hover,
+.z-panel-collapsed .z-panel-icons .z-panel-expand:hover,
+.z-panel[z\.open="false"] .z-panel-icons .z-panel-expand:hover {
+	background-position: -16px -96px !important;
+}
+
+/* ============================================================================
+   06. Celdas, grillas, listas y arboles
+   ============================================================================ */
+
+/* ZK10 agrega aire extra en celdas de layout clasico. */
 .z-column-content,
 .z-row-content,
 .z-group-content,
@@ -147,6 +269,31 @@
 .z-footer-content,
 .z-cell-content {
 	padding: 3px !important;
+}
+
+.z-panel .z-grid-body .z-cell {
+	padding: 7px 11px !important;
+}
+
+.z-listheader-content,
+.z-listcell-content,
+.z-listgroup-content,
+.z-listgroupfoot-content,
+.z-listfooter-content {
+	padding: 2px 6px;
+}
+
+.z-listbox,
+.z-listbox-header,
+.z-listbox-body,
+.z-listbox-footer {
+	background: #ffffff !important;
+}
+
+.z-listbox-header table,
+.z-listbox-body table,
+.z-listbox-footer table {
+	min-width: 100% !important;
 }
 
 .z-treecol-content,
@@ -166,27 +313,11 @@
 	width: 20px;
 }
 
-.z-toolbarbutton {
-	padding: 2px;
-}
+/* ============================================================================
+   07. Editores de formulario
+   ============================================================================ */
 
-/* DocAction/Form buttons: the theme width belongs to the button, not to its icon. */
-button.form-button img.z-button-image,
-button.form-button > img.form-button.z-button-image,
-img.form-button.z-button-image {
-	display: inline-block !important;
-	height: 16px !important;
-	margin-right: 6px !important;
-	max-height: 16px !important;
-	max-width: 16px !important;
-	min-height: 16px !important;
-	min-width: 16px !important;
-	object-fit: contain !important;
-	vertical-align: middle !important;
-	width: 16px !important;
-}
-
-/* ZK10 form editors: keep classic ADempiere compact field height. */
+/* ZK10 form editors: keep classic Eureka compact field height. */
 .z-combobox,
 .z-datebox,
 .z-bandbox,
@@ -240,7 +371,7 @@ img.form-button.z-button-image {
 	min-height: 20px !important;
 	min-width: 22px !important;
 	padding: 0 !important;
-	transform: translateY(1px) !important;
+	transform: translateY(2px) !important;
 	vertical-align: top !important;
 	width: 22px !important;
 }
@@ -254,184 +385,214 @@ img.form-button.z-button-image {
 	line-height: 20px !important;
 }
 
-/* Cabecera responsive de Entrega Manual. */
-.inoutgen-criteria-grid,
-.inoutgen-criteria-grid .z-grid-body,
-.inoutgen-criteria-grid .z-grid-body table,
-.inoutgen-criteria-grid .z-row,
-.inoutgen-criteria-grid .z-row-inner,
-.inoutgen-criteria-grid .z-row-content {
-	box-sizing: border-box !important;
-	width: 100% !important;
-}
+/* ============================================================================
+   08. Checkbox
+   ============================================================================ */
 
-.inoutgen-criteria-grid .z-grid-body {
-	overflow: visible !important;
-}
-
-/* Defensa para clases aun no recompiladas: no convertir el Borderlayout en flex. */
-.inoutgen-criteria-layout {
-	display: block !important;
-	flex: none !important;
-	position: relative !important;
-	width: 100% !important;
-	height: 100% !important;
-	overflow: hidden !important;
-}
-
-.inoutgen-criteria-layout > .z-north,
-.inoutgen-criteria-layout > .z-center,
-.inoutgen-criteria-layout > .z-south {
-	display: block !important;
-	flex: none !important;
-	position: absolute !important;
-}
-
-.inoutgen-criteria-layout > .z-north {
-	top: 0 !important;
-	left: 0 !important;
-	right: 0 !important;
-	bottom: auto !important;
-}
-
-.inoutgen-criteria-layout > .z-center {
-	left: 0 !important;
-	right: 0 !important;
-	overflow: hidden !important;
-}
-
-.inoutgen-criteria-layout > .z-south {
-	left: 0 !important;
-	right: 0 !important;
-	bottom: 0 !important;
-	top: auto !important;
-}
-
-.inoutgen-criteria-north,
-.inoutgen-criteria-north .z-north-body {
-	height: 46px !important;
-	min-height: 46px !important;
-	overflow: visible !important;
-}
-
-.inoutgen-criteria-north ~ .z-center {
-	top: 46px !important;
-}
-
-.inoutgen-criteria-grid .z-row-inner,
-.inoutgen-criteria-grid .z-row-content,
-.inoutgen-criteria-grid .z-cell {
-	padding: 0 !important;
-}
-
-.inoutgen-criteria {
-	box-sizing: border-box !important;
-	display: flex !important;
-	flex-wrap: wrap !important;
-	gap: 6px 22px !important;
-	padding: 6px 10px 7px 10px !important;
-	width: 100% !important;
-}
-
-.inoutgen-criteria-field {
-	align-items: center !important;
-	box-sizing: border-box !important;
-	display: flex !important;
-	flex: 1 1 280px !important;
-	gap: 6px !important;
-	max-width: 560px !important;
-	min-width: 220px !important;
-}
-
-.inoutgen-criteria-label {
-	flex: 0 0 auto !important;
-	max-width: 150px !important;
-	text-align: right !important;
-	white-space: nowrap !important;
-}
-
-.inoutgen-criteria-editor {
-	box-sizing: border-box !important;
-	flex: 1 1 150px !important;
-	max-width: 400px !important;
-	min-width: 0 !important;
-	width: 100% !important;
-}
-
-.inoutgen-criteria-editor.z-combobox,
-.inoutgen-criteria-editor.z-datebox,
-.inoutgen-criteria-editor.z-bandbox,
-.inoutgen-criteria-editor.z-timebox,
-.inoutgen-criteria-editor.z-spinner,
-.inoutgen-criteria-editor.z-textbox {
-	width: 100% !important;
-}
-
-.inoutgen-criteria-editor table {
-	table-layout: fixed !important;
-	width: 100% !important;
-}
-
-@media (max-width: 720px) {
-	.inoutgen-criteria-north,
-	.inoutgen-criteria-north .z-north-body {
-		height: 148px !important;
-		min-height: 148px !important;
-	}
-
-	.inoutgen-criteria-north ~ .z-center {
-		top: 148px !important;
-	}
-
-	.inoutgen-criteria-field {
-		flex-basis: 100% !important;
-		max-width: 100% !important;
-		min-width: 100% !important;
-	}
-}
-
-@media (min-width: 721px) and (max-width: 1050px) {
-	.inoutgen-criteria-north,
-	.inoutgen-criteria-north .z-north-body {
-		height: 104px !important;
-		min-height: 104px !important;
-	}
-
-	.inoutgen-criteria-north ~ .z-center {
-		top: 104px !important;
-	}
-}
-
-@media (min-width: 1051px) and (max-width: 1500px) {
-	.inoutgen-criteria-north,
-	.inoutgen-criteria-north .z-north-body {
-		height: 76px !important;
-		min-height: 76px !important;
-	}
-
-	.inoutgen-criteria-north ~ .z-center {
-		top: 76px !important;
-	}
-}
-
-.z-window-content {
-	padding: 0;
-}
-
-/* Panel del menu */
-.z-north-header,
-.z-south-header,
-.z-west-header,
-.z-center-header,
-.z-east-header {
+.z-checkbox,
+.z-checkbox-content {
+	color: #000 !important;
 	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
-	font-size: 13px !important;
-	font-weight: 800;
-	line-height: 15px;
-	padding: 5px 3px 4px 5px;
+	font-size: 12px !important;
+	font-weight: normal !important;
+	line-height: 16px !important;
 }
 
-/* Indicador de procesamiento */
+.z-checkbox input[type="checkbox"] {
+	height: 14px !important;
+	margin: 0 4px 0 0 !important;
+	vertical-align: middle !important;
+	width: 14px !important;
+}
+
+.z-checkbox input[type="checkbox"]:focus,
+.z-checkbox input[type="checkbox"]:active {
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+input[type="checkbox"]::before,
+input[type="checkbox"]::after,
+input[type="checkbox"]:checked::before,
+input[type="checkbox"]:checked::after,
+.z-checkbox input[type="checkbox"]::before,
+.z-checkbox input[type="checkbox"]::after,
+.z-checkbox input[type="checkbox"]:checked::before,
+.z-checkbox input[type="checkbox"]:checked::after {
+	content: none !important;
+	display: none !important;
+}
+
+.z-checkbox-content {
+	display: inline-block !important;
+	vertical-align: middle !important;
+}
+
+.z-checkbox input[type="checkbox"] + label,
+.z-checkbox input[type="checkbox"]:checked + label,
+.z-checkbox input[type="checkbox"]:focus + label {
+	background: transparent !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+/* ============================================================================
+   09. Botones y toolbar
+   ============================================================================ */
+
+.z-toolbarbutton {
+	padding: 2px;
+}
+
+/* DocAction/Form buttons: the theme width belongs to the button, not to its icon. */
+button.form-button img.z-button-image,
+button.form-button > img.form-button.z-button-image,
+img.form-button.z-button-image {
+	display: inline-block !important;
+	height: 16px !important;
+	margin-right: 6px !important;
+	max-height: 16px !important;
+	max-width: 16px !important;
+	min-height: 16px !important;
+	min-width: 16px !important;
+	object-fit: contain !important;
+	vertical-align: middle !important;
+	width: 16px !important;
+}
+
+/* ============================================================================
+   10. Tabs
+   ============================================================================ */
+
+.z-tabs,
+.z-tabs-content {
+	line-height: 20px;
+	min-height: 20px;
+}
+
+.z-tab {
+	padding: 0 6px;
+}
+
+.z-tab-button+.z-tab-text {
+    margin-right: 18px;
+}
+
+/* ============================================================================
+   11. Paginacion
+   ============================================================================ */
+
+.z-paging-input {
+	height: 22px;
+	text-align: center;
+}
+
+.z-paging-button {
+	margin: 0;
+}
+
+/* ============================================================================
+   12. Login
+   ============================================================================ */
+
+.login-panel #txtUserId,
+.login-panel #txtPassword,
+.login-panel #lstLanguage,
+.login-panel #lstLanguage input,
+.login-panel #lstLanguage .z-combobox-input,
+.login-panel #lstLanguage .z-combobox-button {
+	box-sizing: border-box !important;
+	font-size: 12px !important;
+	height: 20px !important;
+	line-height: 20px !important;
+	min-height: 20px !important;
+}
+
+.login-panel #lstLanguage .z-combobox-input {
+	padding: 0 4px !important;
+}
+
+.login-panel #lstLanguage .z-combobox-button {
+	padding: 0 !important;
+	width: 20px !important;
+}
+
+/* ============================================================================
+   13. Field groups en ventanas Eureka
+   ============================================================================ */
+
+/* Field groups in AD windows: hide only the artificial spacer row from the ZK5 layout. */
+.adtab-form-grid tr.adtab-fieldgroup-spacer {
+	display: none !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup td.z-group-inner {
+	background: #ffffff !important;
+	background-image: none !important;
+	border-top: 1px solid #b8c1ca !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup-toggle td,
+.adtab-form-grid tr.adtab-fieldgroup-toggle td.z-row-inner {
+	background: #ffffff !important;
+	background-image: none !important;
+	border-top: 1px solid #b8c1ca !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup .z-group-content,
+.adtab-form-grid tr.adtab-fieldgroup .z-group-cnt {
+	color: #1f2f3d !important;
+	cursor: pointer !important;
+	font-weight: 700 !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-title {
+	align-items: center !important;
+	color: #1f2f3d !important;
+	cursor: pointer !important;
+	display: flex !important;
+	font-weight: 700 !important;
+	gap: 7px !important;
+	line-height: 18px !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-caret {
+	color: #0076c9 !important;
+	display: inline-block !important;
+	font-size: 20px !important;
+	line-height: 10px !important;
+	text-align: center !important;
+	width: 10px !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-text {
+	font-weight: 700 !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup .z-group-icon,
+.adtab-form-grid tr.adtab-fieldgroup .z-group-img {
+	background-image: url("../theme/default/images/zul/common/toggle.png") !important;
+	background-repeat: no-repeat !important;
+	display: inline-block !important;
+	height: 8px !important;
+	margin: 0 7px 0 2px !important;
+	opacity: 1 !important;
+	vertical-align: middle !important;
+	width: 8px !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup .z-group-img-open {
+	background-position: 0 -8px !important;
+}
+
+.adtab-form-grid tr.adtab-fieldgroup .z-group-img-close {
+	background-position: 0 0 !important;
+}
+
+/* ============================================================================
+   14. Indicador de procesamiento
+   ============================================================================ */
+
 .z-loading {
 	background: #fff !important;
 	border: 1px solid var(--adempiere-loader-border) !important;
@@ -487,261 +648,4 @@ img.form-button.z-button-image {
 	to {
 		transform: rotate(360deg);
 	}
-}
-
-/* Checkboxes ZK10: compatibilidad visual ADempiere/Eureka */
-.z-checkbox,
-.z-checkbox-content {
-	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
-	font-size: 12px !important;
-	font-weight: normal !important;
-	line-height: 16px !important;
-	color: #000 !important;
-}
-
-.z-checkbox input[type="checkbox"] {
-	width: 14px !important;
-	height: 14px !important;
-	margin: 0 4px 0 0 !important;
-	vertical-align: middle !important;
-}
-
-.z-checkbox input[type="checkbox"]:focus,
-.z-checkbox input[type="checkbox"]:active {
-	outline: none !important;
-	box-shadow: none !important;
-}
-
-input[type="checkbox"]::before,
-input[type="checkbox"]::after,
-input[type="checkbox"]:checked::before,
-input[type="checkbox"]:checked::after,
-.z-checkbox input[type="checkbox"]::before,
-.z-checkbox input[type="checkbox"]::after,
-.z-checkbox input[type="checkbox"]:checked::before,
-.z-checkbox input[type="checkbox"]:checked::after {
-	content: none !important;
-	display: none !important;
-}
-
-.z-checkbox-content {
-	display: inline-block !important;
-	vertical-align: middle !important;
-}
-
-.z-checkbox input[type="checkbox"] + label,
-.z-checkbox input[type="checkbox"]:checked + label,
-.z-checkbox input[type="checkbox"]:focus + label {
-	outline: none !important;
-	box-shadow: none !important;
-	background: transparent !important;
-}
-
-/*===== Pesañas ===== */
-.z-tabs, .z-tabs-content{
-    line-height: 20px;
-    min-height: 20px;
-}
-.z-tab{
-    padding: 0px 6px;
-}
-/*===== Paginacion ========*/
-.z-paging-input{
-	height: 22px;
-	text-align: center;
-}
-.z-paging-button{
-	margin: 0px;
-}
-
-.z-listheader-content, .z-listcell-content, .z-listgroup-content, .z-listgroupfoot-content, .z-listfooter-content{
-	padding: 2px 6px;
- }
-
-.z-listbox,
-.z-listbox-header,
-.z-listbox-body,
-.z-listbox-footer {
-	background: #ffffff !important;
-}
-
-.z-listbox-header table,
-.z-listbox-body table,
-.z-listbox-footer table {
-	min-width: 100% !important;
-}
- 
-.z-panel-header {
-	padding: 4px;
-}
-
-.z-panel-icons .z-panel-icon,
-.z-panel-header .z-panel-icon {
-	background-color: transparent !important;
-	background-image: url(../theme/default/images/zul/wnd/ol-btn.png) !important;
-	background-repeat: no-repeat !important;
-	border: 0 !important;
-	box-shadow: none !important;
-	color: transparent !important;
-	cursor: pointer !important;
-	display: inline-block !important;
-	float: right;
-	font-size: 0 !important;
-	-webkit-appearance: none !important;
-	appearance: none !important;
-	height: 16px !important;
-	line-height: 16px !important;
-	margin: 0 1px !important;
-	min-height: 16px !important;
-	min-width: 16px !important;
-	overflow: hidden !important;
-	padding: 0 !important;
-	text-align: left !important;
-	text-indent: -9999px !important;
-	vertical-align: top !important;
-	width: 16px !important;
-}
-
-.z-panel-icons .z-panel-icon:before,
-.z-panel-icons .z-panel-icon:after,
-.z-panel-header .z-panel-icon:before,
-.z-panel-header .z-panel-icon:after {
-	content: none !important;
-	display: none !important;
-}
-
-.z-panel-icons .z-panel-exp,
-.z-panel-icons .z-panel-expand,
-.z-panel-header .z-panel-exp,
-.z-panel-header .z-panel-expand {
-	background-position: 0 -64px !important;
-}
-
-.z-panel-icons .z-panel-exp-over,
-.z-panel-icons .z-panel-exp:hover,
-.z-panel-icons .z-panel-expand:hover,
-.z-panel-icons .z-panel-expand:focus,
-.z-panel-header .z-panel-exp-over,
-.z-panel-header .z-panel-exp:hover,
-.z-panel-header .z-panel-expand:hover,
-.z-panel-header .z-panel-expand:focus {
-	background-position: -16px -64px !important;
-}
-
-.z-panel-icons .z-panel-col,
-.z-panel-icons .z-panel-collapse,
-.z-panel-header .z-panel-col,
-.z-panel-header .z-panel-collapse,
-.z-panel-collapsed .z-panel-icons .z-panel-expand,
-.z-panel[z\.open="false"] .z-panel-icons .z-panel-expand {
-	background-position: 0 -80px !important;
-}
-
-.z-panel-icons .z-panel-col-over,
-.z-panel-icons .z-panel-col:hover,
-.z-panel-icons .z-panel-collapse:hover,
-.z-panel-icons .z-panel-collapse:focus,
-.z-panel-header .z-panel-col-over,
-.z-panel-header .z-panel-col:hover,
-.z-panel-header .z-panel-collapse:hover,
-.z-panel-header .z-panel-collapse:focus,
-.z-panel-collapsed .z-panel-icons .z-panel-expand:hover,
-.z-panel-collapsed .z-panel-icons .z-panel-expand:focus,
-.z-panel[z\.open="false"] .z-panel-icons .z-panel-expand:hover,
-.z-panel[z\.open="false"] .z-panel-icons .z-panel-expand:focus {
-	background-position: -16px -80px !important;
-}
- 
-.login-panel #txtUserId,
-.login-panel #txtPassword,
-.login-panel #lstLanguage,
-.login-panel #lstLanguage input,
-.login-panel #lstLanguage .z-combobox-input,
-.login-panel #lstLanguage .z-combobox-button {
-	height: 20px !important;
-	min-height: 20px !important;
-	line-height: 20px !important;
-	box-sizing: border-box !important;
-	font-size: 12px !important;
-}
-
-.login-panel #lstLanguage .z-combobox-input {
-	padding: 0 4px !important;
-}
-
-.login-panel #lstLanguage .z-combobox-button {
-	width: 20px !important;
-	padding: 0 !important;
-}
-
-/* Field groups in AD windows: hide only the artificial spacer row from the ZK5 layout. */
-.adtab-form-grid tr.adtab-fieldgroup-spacer {
-	display: none !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup td.z-group-inner {
-	background: #ffffff !important;
-	background-image: none !important;
-	border-top: 1px solid #b8c1ca !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup-toggle td,
-.adtab-form-grid tr.adtab-fieldgroup-toggle td.z-row-inner {
-	background: #ffffff !important;
-	background-image: none !important;
-	border-top: 1px solid #b8c1ca !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup .z-group-content,
-.adtab-form-grid tr.adtab-fieldgroup .z-group-cnt {
-	color: #1f2f3d !important;
-	cursor: pointer !important;
-	font-weight: 700 !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-title {
-	align-items: center !important;
-	color: #1f2f3d !important;
-	cursor: pointer !important;
-	display: flex !important;
-	font-weight: 700 !important;
-	gap: 7px !important;
-	line-height: 18px !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-caret {
-	color: #0076c9 !important;
-	display: inline-block !important;
-	font-size: 20px !important;
-	line-height: 10px !important;
-	text-align: center !important;
-	width: 10px !important;
-}
-
-.z-panel .z-grid-body .z-cell{
-	padding: 7px 11px !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup-toggle .adtab-fieldgroup-text {
-	font-weight: 700 !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup .z-group-icon,
-.adtab-form-grid tr.adtab-fieldgroup .z-group-img {
-	background-image: url("../theme/default/images/zul/common/toggle.png") !important;
-	background-repeat: no-repeat !important;
-	display: inline-block !important;
-	height: 8px !important;
-	margin: 0 7px 0 2px !important;
-	opacity: 1 !important;
-	vertical-align: middle !important;
-	width: 8px !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup .z-group-img-open {
-	background-position: 0 -8px !important;
-}
-
-.adtab-form-grid tr.adtab-fieldgroup .z-group-img-close {
-	background-position: 0 0 !important;
 }

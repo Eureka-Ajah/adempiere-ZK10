@@ -1010,6 +1010,39 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
         p_table.addEventListener(Events.ON_DOUBLE_CLICK, this);
         doubleClickListenerAdded = true;
     }
+
+    private boolean isTableDoubleClick(Event event)
+    {
+        if (!Events.ON_DOUBLE_CLICK.equals(event.getName()))
+            return false;
+
+        if (event.getTarget() == p_table)
+            return true;
+
+        Listitem item = findListitem(event.getTarget());
+        if (item == null && event.getData() instanceof Component)
+            item = findListitem((Component)event.getData());
+
+        return item != null && item.getListbox() == p_table;
+    }
+
+    private void selectDoubleClickRow(Event event)
+    {
+        Listitem item = findListitem(event.getTarget());
+        if (item == null && event.getData() instanceof Component)
+            item = findListitem((Component)event.getData());
+
+        if (item != null && item.getListbox() == p_table)
+            p_table.setSelectedItem(item);
+    }
+
+    private Listitem findListitem(Component component)
+    {
+        while (component != null && !(component instanceof Listitem))
+            component = component.getParent();
+
+        return (Listitem)component;
+    }
     
     protected void insertPagingComponent() {
     	p_centerNorth.appendChild(paging);
@@ -1582,8 +1615,9 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		                onOk();
     			
 	            }
-	            else if (component == p_table && event.getName().equals(Events.ON_DOUBLE_CLICK))
+	            else if (isTableDoubleClick(event))
 	            {
+	            	selectDoubleClickRow(event);
 	            	onDoubleClick();
 	            }
 				else if (component.equals(confirmPanel.getButton(ConfirmPanel.A_RESET)))
@@ -1610,6 +1644,16 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	            else if (component.equals(confirmPanel.getButton(ConfirmPanel.A_CANCEL)) || event.getName().equals(Events.ON_CANCEL))
 	            {
 	            	m_cancel = true;
+	            	if (listeners != null && listeners.size() > 0)
+	            	{
+	            		ValueChangeEvent cancelEvent = new ValueChangeEvent(
+	            			this,
+	            			p_keyColumn,
+	            			null,
+	            			null
+	            		);
+	            		fireValueChange(cancelEvent);
+	            	}
 	                dispose(false);  // close
 	            }
 	            // Elaine 2008/12/16
@@ -1775,7 +1819,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	{
 		if (isModal())
 		{
-			dispose(p_saveResults);
+			onOk();
 		}
 		else
 		{
