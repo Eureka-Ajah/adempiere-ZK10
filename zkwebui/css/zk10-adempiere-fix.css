@@ -82,13 +82,14 @@
 
 /* Ventanas AD: barra de estado y pestanas laterales. */
 .adwindow-status {
-	background: #fff !important;
+	background: #ffffff !important;
 	border-top: 1px solid #b8c8d9 !important;
 	box-sizing: border-box !important;
-	color: #000 !important;
+	color: #000000 !important;
 	font-family: "Segoe UI", Tahoma, Verdana, Arial, sans-serif !important;
 	font-size: 12px !important;
 	font-weight: 700 !important;
+	height: 22px !important;
 	line-height: 20px !important;
 	min-height: 22px !important;
 	overflow: hidden !important;
@@ -99,9 +100,11 @@
 
 .adwindow-status.message-info {
 	height: 22px !important;
+	min-height: 22px !important;
 }
 
 .adwindow-status.message-error {
+	height: 50px !important;
 	min-height: 50px !important;
 }
 
@@ -109,9 +112,13 @@
 	align-items: center !important;
 	box-sizing: border-box !important;
 	display: flex !important;
+	flex-direction: row !important;
+	flex-wrap: nowrap !important;
 	gap: 4px !important;
 	height: 100% !important;
+	line-height: 20px !important;
 	min-width: 0 !important;
+	overflow: hidden !important;
 	width: 100% !important;
 }
 
@@ -121,23 +128,16 @@
 	width: 16px !important;
 }
 
+/* Mensaje izquierdo: debe ceder todo el espacio necesario al bloque de totales. */
 .adwindow-status .status-left {
 	box-sizing: border-box !important;
-	flex: 1 1 220px !important;
+	flex: 1 1 0 !important;
 	min-width: 0 !important;
-	width: auto !important;
+	overflow: hidden !important;
+	text-align: left !important;
 }
 
-.adwindow-status .status-detail {
-	box-sizing: border-box !important;
-	flex: 0 1 auto !important;
-	max-width: 78% !important;
-	min-width: 0 !important;
-	width: auto !important;
-}
-
-.adwindow-status .status-line-container,
-.adwindow-status .status-detail-container {
+.adwindow-status .status-line-container {
 	box-sizing: border-box !important;
 	line-height: 20px !important;
 	min-width: 0 !important;
@@ -145,41 +145,97 @@
 	width: 100% !important;
 }
 
+/* Bloque derecho: totales + contador. No debe reducirse ni quedar oculto. */
+.adwindow-status .status-detail,
 .adwindow-status .status-detail-container {
 	align-items: center !important;
+	box-sizing: border-box !important;
 	display: flex !important;
-	gap: 8px !important;
+	flex: 0 0 auto !important;
+	flex-direction: row !important;
+	flex-wrap: nowrap !important;
+	gap: 4px !important;
 	justify-content: flex-end !important;
+	margin-left: auto !important;
+	max-width: none !important;
+	min-width: 0 !important;
+	overflow: visible !important;
+	text-align: right !important;
+	white-space: nowrap !important;
+	width: auto !important;
 }
 
+/* Texto izquierdo */
 .adwindow-status .status-line,
 .adwindow-status .message-info-text,
-.adwindow-status .message-error-text,
-.adwindow-status .status-info,
-.adwindow-status .status-db {
+.adwindow-status .message-error-text {
 	background: transparent !important;
-	color: #000 !important;
+	color: #000000 !important;
 	display: block !important;
 	font-size: 12px !important;
 	font-weight: 700 !important;
 	line-height: 20px !important;
 	overflow: hidden !important;
 	padding: 0 !important;
+	text-align: left !important;
 	text-overflow: ellipsis !important;
 	white-space: nowrap !important;
 }
 
-.adwindow-status .status-info {
-	flex: 1 1 auto !important;
-	max-width: 100% !important;
-	min-width: 0 !important;
+/* Totales, contador y posibles componentes agregados a la barra. */
+.adwindow-status .status-info,
+.adwindow-status .status-db,
+.adwindow-status .status-detail-container > * {
+	background: #ffffff !important;
+	color: #000000 !important;
+	display: block !important;
+	font-size: 12px !important;
+	font-weight: 700 !important;
+	line-height: 20px !important;
+	padding: 0 !important;
+	position: relative !important;
 	text-align: right !important;
+	vertical-align: middle !important;
+	white-space: nowrap !important;
 }
 
-.adwindow-status .status-db {
+/* Totales: debe conservar ancho natural, como en la barra clasica. */
+.adwindow-status .status-info {
 	flex: 0 0 auto !important;
-	text-align: right !important;
+	max-width: none !important;
+	min-width: max-content !important;
+	overflow: visible !important;
+	text-overflow: clip !important;
+	z-index: 1 !important;
 }
+
+/* Contador de registros: visible, compacto y ajustado al contenido. */
+.adwindow-status .status-db {
+	box-sizing: border-box !important;
+	flex: 0 0 max-content !important;
+	margin-left: 6px !important;
+	min-width: 0 !important;
+	width: auto !important;
+	max-width: max-content !important;
+	overflow: visible !important;
+	text-align: right !important;
+	text-overflow: clip !important;
+	white-space: nowrap !important;
+	z-index: 2 !important;
+}
+
+/* Componentes adicionales agregados con addStatusComponent(), por ejemplo [ +*1/1 ]. */
+.adwindow-status .status-detail-container > *:not(.status-info):not(.status-db) {
+	flex: 0 0 auto !important;
+	overflow: visible !important;
+	text-overflow: clip !important;
+	z-index: 2 !important;
+}
+
+/* ============================================================================
+   ADWindow - pestanas laterales clasicas
+   Mantiene jerarquia/indexado nativo, permite multilinea y pega al borde derecho.
+   ============================================================================ */
 
 .adwindow-nav {
 	background: #e6e6e6 !important;
@@ -224,26 +280,33 @@
 	max-width: 100% !important;
 	overflow-x: hidden !important;
 	padding: 0 !important;
+	text-align: right !important;
 	width: 100% !important;
 }
 
 /*
  * Pestañas laterales de ventanas AD.
- * No se fuerza margin, padding, width ni display del boton completo,
- * porque esas propiedades conservan la jerarquia/indexado nativo padre-hijo.
+ * No se fuerza ancho completo para no perder la jerarquia/indexado nativo.
+ * Se alinean al borde derecho con float.
  */
 .adwindow-navbtn-sel,
 .adwindow-navbtn-uns,
 .adwindow-navbtn-dis {
 	box-sizing: border-box !important;
+	clear: both !important;
+	float: right !important;
 	height: auto !important;
+	margin-right: 0 !important;
 	min-height: 34px !important;
 	overflow: visible !important;
 	text-align: right !important;
+	text-overflow: clip !important;
 	white-space: normal !important;
+	word-break: normal !important;
+	overflow-wrap: break-word !important;
 }
 
-/* Texto interno: permitir 2 o mas lineas y alinear a la derecha. */
+/* Texto interno: permitir 2 o mas lineas y alinear a la derecha */
 .adwindow-navbtn-sel .z-button-content,
 .adwindow-navbtn-uns .z-button-content,
 .adwindow-navbtn-dis .z-button-content,
@@ -264,15 +327,11 @@
 	overflow-wrap: break-word !important;
 }
 
-/* Fallback para implementaciones donde el texto queda directo en el boton. */
-.adwindow-navbtn-sel,
-.adwindow-navbtn-uns,
-.adwindow-navbtn-dis {
-	text-overflow: clip !important;
-	word-break: normal !important;
-	overflow-wrap: break-word !important;
+.adwindow-nav-content:after {
+	clear: both;
+	content: "";
+	display: block;
 }
-
 
 /* ============================================================================
    05. Paneles ZK
@@ -775,6 +834,150 @@ img.form-button.z-button-image {
    Entrega Manual - grid nativo clásico
    ============================================================================ */
 
+.allocation-form-layout {
+	height: 100% !important;
+	min-height: 0 !important;
+	width: 100% !important;
+}
+
+.allocation-parameter-grid,
+.allocation-footer-grid,
+.allocation-parameter-grid .z-grid-body,
+.allocation-footer-grid .z-grid-body {
+	height: auto !important;
+	overflow: visible !important;
+	width: 100% !important;
+}
+
+.allocation-parameter-grid .z-grid-body table,
+.allocation-footer-grid .z-grid-body table {
+	table-layout: auto !important;
+	width: 100% !important;
+}
+
+.allocation-parameter-grid .z-row-inner,
+.allocation-parameter-grid .z-row-content,
+.allocation-footer-grid .z-row-inner,
+.allocation-footer-grid .z-row-content {
+	box-sizing: border-box !important;
+	height: auto !important;
+	min-height: 28px !important;
+	overflow: visible !important;
+	padding: 0 !important;
+	vertical-align: middle !important;
+}
+
+.allocation-criteria {
+	align-items: center !important;
+	box-sizing: border-box !important;
+	display: flex !important;
+	flex-wrap: wrap !important;
+	gap: 8px 18px !important;
+	padding: 6px 8px !important;
+	width: 100% !important;
+}
+
+.allocation-footer-criteria {
+	padding-bottom: 4px !important;
+	padding-top: 4px !important;
+}
+
+.allocation-criteria-field {
+	align-items: center !important;
+	box-sizing: border-box !important;
+	column-gap: 6px !important;
+	display: grid !important;
+	flex: 1 1 280px !important;
+	grid-template-columns: max-content minmax(120px, 1fr) !important;
+	max-width: 400px !important;
+	min-width: 220px !important;
+}
+
+.allocation-difference-field {
+	grid-template-columns: max-content max-content minmax(120px, 1fr) !important;
+}
+
+.allocation-criteria-checkbox {
+	align-items: center !important;
+	box-sizing: border-box !important;
+	display: flex !important;
+	flex: 0 1 220px !important;
+	min-height: 26px !important;
+	min-width: 180px !important;
+}
+
+.allocation-confirm-field {
+	align-items: center !important;
+	display: flex !important;
+	flex: 0 0 auto !important;
+	margin-left: auto !important;
+	min-height: 28px !important;
+}
+
+.allocation-criteria-label,
+.allocation-currency-label {
+	line-height: 22px !important;
+	white-space: nowrap !important;
+}
+
+.allocation-criteria-editor {
+	box-sizing: border-box !important;
+	min-width: 0 !important;
+}
+
+.allocation-criteria-editor.z-textbox,
+.allocation-criteria-editor.z-bandbox,
+.allocation-criteria-editor.z-combobox,
+.allocation-criteria-editor .z-textbox,
+.allocation-criteria-editor .z-bandbox,
+.allocation-criteria-editor .z-combobox,
+.allocation-criteria-editor .z-bandbox-input,
+.allocation-criteria-editor .z-combobox-input {
+	box-sizing: border-box !important;
+	max-width: 400px !important;
+	width: 100% !important;
+}
+
+.allocation-main-center,
+.allocation-main-center .z-center-body,
+.allocation-info-panel {
+	box-sizing: border-box !important;
+	height: 100% !important;
+	min-height: 240px !important;
+	overflow: hidden !important;
+	width: 100% !important;
+}
+
+.allocation-detail-panel,
+.allocation-detail-panel > .z-borderlayout {
+	box-sizing: border-box !important;
+	height: 100% !important;
+	min-height: 120px !important;
+	width: 100% !important;
+}
+
+.allocation-detail-panel .z-listbox {
+	height: 100% !important;
+	width: 100% !important;
+}
+
+@media (max-width: 720px) {
+	.allocation-criteria {
+		gap: 6px !important;
+	}
+
+	.allocation-criteria-field,
+	.allocation-criteria-checkbox {
+		flex-basis: 100% !important;
+		max-width: 400px !important;
+		min-width: 0 !important;
+	}
+
+	.allocation-confirm-field {
+		margin-left: 0 !important;
+	}
+}
+
 .inoutgen-native-grid,
 .inoutgen-native-grid .z-grid-body {
 	height: 100% !important;
@@ -811,53 +1014,55 @@ img.form-button.z-button-image {
 .inoutgen-native-grid .z-bandbox {
 	vertical-align: middle !important;
 }
+
 /* ============================================================================
-   ADWindow - corrección final pestañas laterales
-   Mantiene jerarquía nativa, pero pega los botones al borde derecho
+   StatusBar - mensajes de error visibles
    ============================================================================ */
 
-.adwindow-left-nav,
-.adwindow-left-nav .z-west-body,
-.adwindow-nav-content {
-	margin-right: 0 !important;
-	padding-right: 0 !important;
-}
-
-.adwindow-nav-content {
-	text-align: right !important;
-}
-
-/* No forzar ancho completo: sólo mover el botón hacia el borde derecho */
-.adwindow-navbtn-sel,
-.adwindow-navbtn-uns,
-.adwindow-navbtn-dis {
-	float: right !important;
-	clear: both !important;
-	margin-right: 0 !important;
-	text-align: right !important;
-}
-
-/* Texto multilinea alineado a la derecha */
-.adwindow-navbtn-sel .z-button-content,
-.adwindow-navbtn-uns .z-button-content,
-.adwindow-navbtn-dis .z-button-content,
-.adwindow-navbtn-sel .z-button-cnt,
-.adwindow-navbtn-uns .z-button-cnt,
-.adwindow-navbtn-dis .z-button-cnt,
-.adwindow-navbtn-sel .z-label,
-.adwindow-navbtn-uns .z-label,
-.adwindow-navbtn-dis .z-label {
-	text-align: right !important;
-	white-space: normal !important;
-	text-overflow: clip !important;
+.adwindow-status.message-error {
+	height: 50px !important;
+	min-height: 50px !important;
 	overflow: visible !important;
+}
+
+.adwindow-status.message-error .statusbar-row {
+	align-items: flex-start !important;
+	height: 50px !important;
+	min-height: 50px !important;
+	overflow: visible !important;
+	padding-top: 2px !important;
+}
+
+.adwindow-status.message-error .status-image {
+	flex: 0 0 16px !important;
+	margin-top: 2px !important;
+}
+
+.adwindow-status.message-error .status-left,
+.adwindow-status.message-error .status-line-container {
+	height: auto !important;
+	min-height: 44px !important;
+	overflow: visible !important;
+}
+
+.adwindow-status.message-error .status-line,
+.adwindow-status.message-error .message-error-text {
+	color: #b00000 !important;
+	display: block !important;
+	font-size: 12px !important;
+	font-weight: 700 !important;
+	line-height: 16px !important;
+	max-height: 46px !important;
+	overflow: visible !important;
+	text-align: left !important;
+	text-overflow: clip !important;
+	white-space: normal !important;
 	word-break: normal !important;
 	overflow-wrap: break-word !important;
 }
 
-/* Evita que el float reduzca artificialmente el alto del contenedor */
-.adwindow-nav-content:after {
-	content: "";
-	display: block;
-	clear: both;
+.adwindow-status.message-error .status-detail,
+.adwindow-status.message-error .status-detail-container {
+	align-self: flex-start !important;
+	padding-top: 0 !important;
 }
