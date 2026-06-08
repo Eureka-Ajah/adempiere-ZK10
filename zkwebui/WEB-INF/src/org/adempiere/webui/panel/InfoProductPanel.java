@@ -1586,27 +1586,27 @@ public class InfoProductPanel extends InfoPanel implements EventListener, ValueC
 				//  Display the window
 				InfoPAttributeInstancePanel pai = new InfoPAttributeInstancePanel (this, title, 
 						wh_id, 0, p_table.getLeadRowKey(), bp_id);
-				
-				if (!pai.wasCancelled())
-				{
-					//  Get the results and update the fASI criteria field
-					m_M_AttributeSetInstance_ID = pai.getM_AttributeSetInstance_ID();
-					m_M_Locator_ID = pai.getM_Locator_ID();
-					if (m_M_AttributeSetInstance_ID > 0)
-						fASI_ID.setValue(m_M_AttributeSetInstance_ID);
-					else
-						fASI_ID.setValue(0); //  No instance
-				}
-				
-				//  Saving here is confusing with multi-selection.  The Product Attribute button shouldn't be enabled
-				//  if multiple records are selected.  Also, don't close the info window if the
-				//  pai window was cancelled or nothing was selected.  Assume the user was just
-				//  looking around.
-				if (p_saveResults && m_M_AttributeSetInstance_ID != -1 && !pai.wasCancelled())  //  If the results are saved, we can save now - an ASI is product specific
-				{
-					dispose(p_saveResults);
-					return;
-				}
+				pai.setSelectionCallback(new InfoPAttributeInstancePanel.SelectionCallback() {
+					public void onClose(InfoPAttributeInstancePanel panel) {
+						if (panel.wasCancelled())
+							return;
+						
+						//  Get the results and update the fASI criteria field
+						m_M_AttributeSetInstance_ID = panel.getM_AttributeSetInstance_ID();
+						m_M_Locator_ID = panel.getM_Locator_ID();
+						if (m_M_AttributeSetInstance_ID > 0)
+							fASI_ID.setValue(m_M_AttributeSetInstance_ID);
+						else
+							fASI_ID.setValue(0); //  No instance
+						
+						//  Saving here is confusing with multi-selection.  The Product Attribute button shouldn't be enabled
+						//  if multiple records are selected.  Also, don't close the info window if the
+						//  pai window was cancelled or nothing was selected.  Assume the user was just
+						//  looking around.
+						if (p_saveResults && m_M_AttributeSetInstance_ID != -1)  //  If the results are saved, we can save now - an ASI is product specific
+							dispose(p_saveResults);
+					}
+				});
 				return;
 			}		
 			else if (component instanceof Combobox)
