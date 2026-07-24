@@ -131,6 +131,17 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 	private Component formComponent = null;
 
 	private ADTreePanel treePanel = null;
+	
+	/** Indica si el árbol de la pestaña ya fue inicializado. */
+	private boolean treeInitialized = false;
+
+	/** Evento diferido para seleccionar un nodo cuando ZK termine de renderizar. */
+	private static final String ON_SELECT_TREE_NODE = "onSelectTreeNode";
+
+	/** Registro pendiente de seleccionar. */
+	private Integer pendingTreeRecordId = null;
+
+	private boolean treeSelectionScheduled = false;
 
 	private GridTabDataBinder dataBinder;
 
@@ -204,6 +215,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
         this.addEventListener(Events.ON_CLICK, this);
         this.addEventListener(Events.ON_FOCUS, this);
+        this.addEventListener(ON_SELECT_TREE_NODE, this);
     }
 
     /**
@@ -238,9 +250,11 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 			layout.setHflex("1");
 			layout.setVflex("1");
 			layout.setStyle("margin:0; padding:0;");
-			treePanel = new ADTreePanel(windowNo, !gridTab.isReadOnly() && !gridTab.isReadOnlyFromContext());
-			if (gridTab.getTabLevel() == 0)	//	initialize other tabs later
-				treePanel.initTree(treeId, gridTab.getWhereExtended());
+			treePanel = new ADTreePanel(
+			        windowNo,
+			        !gridTab.isReadOnly()
+			        && !gridTab.isReadOnlyFromContext()
+			);
 
 			West west = new West();
 			west.appendChild(treePanel);
@@ -255,7 +269,12 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 			layout.appendChild(center);
 
 			formComponent = layout;
+
 			treePanel.getTree().addEventListener(Events.ON_SELECT, this);
+
+			if (gridTab.getTabLevel() == 0) {
+			    ensureTreeInitialized();
+			}
 		}
 		else
 		{
@@ -566,7 +585,7 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 //				Env.getAD_Client_ID(Env.getCtx()), gridTab.getKeyColumnName());
 //			treePanel.initTree(AD_Tree_ID, windowNo);
 //        }
-        if (gridTab.isTreeTab() && treePanel != null) {
+        /*if (gridTab.isTreeTab() && treePanel != null) {
         	String treeName = "AD_Tree_ID";
         	int treeId = Env.getContextAsInt (Env.getCtx(), windowNo, treeName, true);
         	//	Valid Tree Value from context
@@ -575,7 +594,8 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         	}
 			//	Where
         	treePanel.initTree(treeId, gridTab.getWhereExtended());
-        }
+        }*/
+        ensureTreeInitialized();
         //	End Yamel Senih
         if (!gridTab.isSingleRow() && !isGridView() && !gridTab.isQuickEntry())
         	switchRowPresentation();
@@ -1016,7 +1036,33 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
      * @see EventListener#onEvent(Event)
      */
     public void onEvent(Event event)
+    
     {
+    	if (ON_SELECT_TREE_NODE.equals(event.getName())) {
+
+    	    treeSelectionScheduled = false;
+
+    	    Integer recordId = pendingTreeRecordId;
+    	    pendingTreeRecordId = null;
+
+    	    if (recordId != null
+    	            && treePanel != null
+    	            && treePanel.getTree() != null) {
+
+    	        Tree tree = treePanel.getTree();
+
+    	        if (tree.getTreechildren() != null) {
+    	            setSelectedNode(recordId.intValue());
+    	        } else {
+    	            logger.warning(
+    	                "Treechildren continúa sin inicializar después "
+    	                + "del evento diferido. recordId=" + recordId
+    	            );
+    	        }
+    	    }
+
+    	    return;
+    	}
     	if (event.getTarget() instanceof Tab)
     	{
     		Tab tab = (Tab)event.getTarget();
@@ -1244,14 +1290,15 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         	createUI();
         dynamicDisplay(col);
 
-		int treeId = Env.getContextAsInt(Env.getCtx(), windowNo , gridTab.getTabNo(), "AD_Tree_ID");
+		/*int treeId = Env.getContextAsInt(Env.getCtx(), windowNo , gridTab.getTabNo(), "AD_Tree_ID");
 		if ((gridTab.isTreeTab() && treeId == 0) || (gridTab.isTreeTab() && gridTab.getTabLevel() == 0))
 			treeId = MTree.getDefaultTreeIdFromTableId(Env.getAD_Client_ID(Env.getCtx()), gridTab.getAD_Table_ID());
 		if (gridTab.isTreeTab() && treeId > 0 && treePanel != null) {
 			treePanel.initTree(treeId, gridTab.getWhereExtended());
 			if (!gridTab.isSingleRow() && !isGridView() && !gridTab.isQuickEntry())
 				switchRowPresentation();
-		}
+		}*/
+        ensureTreeInitialized();
 
         //sync tree
         if (treePanel != null) {
@@ -1335,7 +1382,29 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
 	        int[] path = model.getPath(newNode);
 	        try {
-	            Treeitem ti = treePanel.getTree().renderItemByPath(path);
+	        	Tree tree = treePanel.getTree();
+
+	        	if (tree == null || tree.getTreechildren() == null) {
+	        	    pendingTreeRecordId = Integer.valueOf(
+	        	        gridTab.getRecord_ID()
+	        	    );
+
+	        	    if (!treeSelectionScheduled) {
+	        	        treeSelectionScheduled = true;
+	        	        tree.invalidate();
+
+	        	        Events.echoEvent(
+	        	            ON_SELECT_TREE_NODE,
+	        	            this,
+	        	            null
+	        	        );
+	        	    }
+
+	        	    return;
+	        	}
+	            //Treeitem ti = treePanel.getTree().renderItemByPath(path);
+	        	Treeitem ti = tree.renderItemByPath(path);
+	            
 
 	            if (ti != null) {
 	                treePanel.getTree().setSelectedItem(ti);
@@ -1348,59 +1417,121 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 	    }
 	}
 
+	/**
+	 * Sincroniza el registro actual con el nodo correspondiente del árbol.
+	 */
 	private void setSelectedNode(int recordId) {
-	    if (recordId <= 0) return;
 
-	    if (treePanel.getTree().getSelectedItem() != null) {
-	        DefaultTreeNode treeNode = (DefaultTreeNode) treePanel.getTree().getSelectedItem().getValue();
-	        MTreeNode data = (MTreeNode) treeNode.getData();
-
-	        if (data.getNode_ID() == recordId) return;
+	    if (recordId <= 0 || treePanel == null) {
+	        return;
 	    }
 
-	    Object treeModel = treePanel.getTree().getModel();
-	    SimpleTreeModel model = (SimpleTreeModel) treeModel;
+	    Tree tree = treePanel.getTree();
 
-	    DefaultTreeNode treeNode = model.find(null, recordId);
-	    if (treeNode != null) {
+	    if (tree == null) {
+	        return;
+	    }
 
-	        int[] path = model.getPath(treeNode);
+	    Object rawModel = tree.getModel();
 
-	        try {
+	    if (!(rawModel instanceof SimpleTreeModel)) {
+	        logger.warning(
+	            "Modelo de árbol no disponible o incompatible para recordId="
+	            + recordId
+	            + ". Modelo="
+	            + (rawModel != null
+	                ? rawModel.getClass().getName()
+	                : "null")
+	        );
+	        return;
+	    }
 
-	            if (path == null || path.length == 0) {
-	                logger.warning("Tree path null/vacio para recordId=" + recordId);
-	                return;
-	            }
+	    /*
+	     * En ZK 10 el modelo puede estar asignado antes de que exista
+	     * el Treechildren visual. Se posterga la selección hasta el
+	     * siguiente ciclo de eventos.
+	     */
+	    if (tree.getTreechildren() == null) {
 
-	            Tree tree = treePanel.getTree();
+	        pendingTreeRecordId = Integer.valueOf(recordId);
 
-	            if (tree == null || tree.getModel() == null) {
-	                logger.warning("Tree o model null para recordId=" + recordId);
-	                return;
-	            }
+	        if (!treeSelectionScheduled) {
+	            treeSelectionScheduled = true;
 
-	            Treeitem ti = tree.renderItemByPath(path);
+	            tree.invalidate();
 
-	            if (ti != null) {
-	                tree.setSelectedItem(ti);
-	            } else {
-	                logger.warning("Treeitem null para path=" + Arrays.toString(path));
-	            }
-
-	        } catch (Throwable t) {
-
-	            logger.log(Level.WARNING,
-	                "Error renderizando nodo árbol. recordId="
-	                + recordId
-	                + ", path="
-	                + Arrays.toString(path),
-	                t);
-
+	            Events.echoEvent(
+	                ON_SELECT_TREE_NODE,
+	                this,
+	                null
+	            );
 	        }
 
-	    } else {
+	        return;
+	    }
+
+	    Treeitem selectedItem = tree.getSelectedItem();
+
+	    if (selectedItem != null
+	            && selectedItem.getValue() instanceof DefaultTreeNode) {
+
+	        DefaultTreeNode selectedNode =
+	            (DefaultTreeNode) selectedItem.getValue();
+
+	        if (selectedNode.getData() instanceof MTreeNode) {
+
+	            MTreeNode selectedData =
+	                (MTreeNode) selectedNode.getData();
+
+	            if (selectedData.getNode_ID() == recordId) {
+	                return;
+	            }
+	        }
+	    }
+
+	    SimpleTreeModel model = (SimpleTreeModel) rawModel;
+
+	    DefaultTreeNode treeNode = model.find(null, recordId);
+
+	    if (treeNode == null) {
 	        addNewNode();
+	        return;
+	    }
+
+	    int[] path = model.getPath(treeNode);
+
+	    if (path == null || path.length == 0) {
+	        logger.warning(
+	            "Ruta vacía para recordId=" + recordId
+	        );
+	        return;
+	    }
+
+	    try {
+
+	        Treeitem treeItem = tree.renderItemByPath(path);
+
+	        if (treeItem != null) {
+	            tree.setSelectedItem(treeItem);
+	        } else {
+	            logger.warning(
+	                "No se pudo renderizar el nodo. recordId="
+	                + recordId
+	                + ", path="
+	                + Arrays.toString(path)
+	            );
+	        }
+
+	    } catch (RuntimeException ex) {
+
+	        logger.log(
+	            Level.WARNING,
+	            "Error seleccionando nodo del árbol. recordId="
+	            + recordId
+	            + ", path="
+	            + Arrays.toString(path),
+	            ex
+	        );
 	    }
 	}
 	
@@ -2153,5 +2284,49 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
             cell.appendChild(child);
 
         return cell;
+    }
+    /**
+     * Inicializa el árbol solamente cuando todavía no tiene modelo.
+     */
+    private void ensureTreeInitialized() {
+
+        if (treePanel == null || !gridTab.isTreeTab()) {
+            return;
+        }
+
+        Tree tree = treePanel.getTree();
+
+        if (tree == null) {
+            return;
+        }
+
+        if (treeInitialized && tree.getModel() != null) {
+            return;
+        }
+
+        int treeId = Env.getContextAsInt(
+                Env.getCtx(),
+                windowNo,
+                gridTab.getTabNo(),
+                "AD_Tree_ID"
+        );
+
+        if (treeId <= 0) {
+            treeId = MTree.getDefaultTreeIdFromTableId(
+                    Env.getAD_Client_ID(Env.getCtx()),
+                    gridTab.getAD_Table_ID()
+            );
+        }
+
+        if (treeId <= 0) {
+            logger.warning(
+                    "No se encontró AD_Tree_ID para AD_Table_ID="
+                    + gridTab.getAD_Table_ID()
+            );
+            return;
+        }
+
+        treePanel.initTree(treeId, gridTab.getWhereExtended());
+        treeInitialized = tree.getModel() != null;
     }
 }

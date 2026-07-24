@@ -277,9 +277,20 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
         this.setSizable(true);
         this.setMaximizable(true);
         
+        //this.setVisible(true);
+        //AEnv.showWindow(this);
+        open();
+    }
+    
+    /**
+     * Muestra la ventana de búsqueda una vez que todos sus listeners
+     * han sido registrados.
+     */
+    public void open() {
         this.setVisible(true);
         AEnv.showWindow(this);
     }
+    
     /**
      * initialise lookup record tab
      * @throws IOException 
