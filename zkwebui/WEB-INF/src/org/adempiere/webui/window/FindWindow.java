@@ -228,6 +228,7 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
 	private static final String FIELD_SEPARATOR = "<^>";
 	private static final String SEGMENT_SEPARATOR = "<~>";
 
+	private int m_advancedRowSequence = 0;
     /**
      * FindPanel Constructor
      * @param targetWindowNo targetWindowNo
@@ -716,6 +717,7 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
     private void createFields(String[] fields, int row)
     {
         ListItem listItem = new ListItem();
+        listItem.setId("advancedRow" + m_advancedRowSequence++);
         listItem.setWidth("100%");
 
         Listbox listColumn = new Listbox();
@@ -1562,33 +1564,43 @@ public class FindWindow extends Window implements EventListener,ValueChangeListe
 		}
 		return code;
 	}
+	/**
+	 * Actualiza las consultas guardadas sin cargar automáticamente la última
+	 * búsqueda al abrir una ventana.
+	 */
 	private void refreshUserQueries()
 	{
-		String value = m_sLast;
-		if (fQueryName.getItemCount()>0){ // The list is initialized
-			value = fQueryName.getValue();
-		}
-		userQueries = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID);
-		fQueryName.getItems().clear();
-		boolean selected = false;
-		fQueryName.appendItem(m_sNew);  
-		for (int i = 0; i < userQueries.length; i++)
-		{
-			Comboitem ci = fQueryName.appendItem(userQueries[i].getName());
-			if(value.equals(userQueries[i].getName()))
-			{
-				fQueryName.setSelectedItem(ci);
-				parseUserQuery(userQueries[i]);
-				selected = true;
-			}
-		}
+	    String value = m_sNew;
 
-		if(!selected) 
-		{
-			fQueryName.setSelectedIndex(-1);
-			fQueryName.setText(m_sTipText);
-			createFields();
-		}		
+	    if (fQueryName.getItemCount() > 0)
+	    {
+	        value = fQueryName.getValue();
+	    }
+
+	    userQueries = MUserQuery.get(Env.getCtx(), m_AD_Tab_ID);
+	    fQueryName.getItems().clear();
+
+	    boolean selected = false;
+	    fQueryName.appendItem(m_sNew);
+
+	    for (int i = 0; i < userQueries.length; i++)
+	    {
+	        Comboitem item = fQueryName.appendItem(userQueries[i].getName());
+
+	        if (value.equals(userQueries[i].getName()))
+	        {
+	            fQueryName.setSelectedItem(item);
+	            parseUserQuery(userQueries[i]);
+	            selected = true;
+	        }
+	    }
+
+	    if (!selected)
+	    {
+	        fQueryName.setSelectedIndex(-1);
+	        fQueryName.setText(m_sTipText);
+	        createFields();
+	    }
 	}
 
     /**
