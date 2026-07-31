@@ -112,7 +112,12 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 
     private ArrayList<WEditor> editors = new ArrayList<WEditor>();
 
-    private ArrayList<String> editorIds = new ArrayList<String>();
+    /**
+     * Componentes asociados directamente a los editores.
+     * Se evita depender del UUID porque puede cambiar al adjuntar
+     * el componente al árbol de componentes de ZK.
+     */
+    private ArrayList<Component> editorComponents = new ArrayList<Component>();
 
     private boolean			  uiCreated = false;
 
@@ -484,9 +489,9 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
                     editor.setGridTab(this.getGridTab());
                     editor.setADTabPanel(this);
 
-                	field.addPropertyChangeListener(editor);
+                    field.addPropertyChangeListener(editor);
                     editors.add(editor);
-                    editorIds.add(editor.getComponent().getUuid());
+                    editorComponents.add(editor.getComponent());
                     if (field.isFieldOnly())
                     {
                     	row.appendChild(createSpacer());
@@ -721,6 +726,16 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
             GridField mField = comp.getGridField();
             if (mField != null && mField.getIncluded_Tab_ID() <= 0)
             {
+            	if ("AD_Form_ID".equals(mField.getColumnName())
+            			|| "AD_Window_ID".equals(mField.getColumnName()))
+            	{
+            		logger.warning(
+            			mField.getColumnName()
+            			+ " DisplayLogic=" + mField.getDisplayLogic()
+            			+ " ActionContext=" + mField.get_ValueAsString("Action")
+            			+ " Displayed=" + mField.isDisplayed(true)
+            		);
+            	}
                 if (mField.isDisplayed(true))       //  check context
                 {
                     if (!comp.isVisible())
@@ -759,14 +774,14 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         	for (int j = 0; j < components.size(); j++)
         	{
         		Component component = (Component) components.get(j);
-        		if (editorIds.contains(component.getUuid()))
+        		if (editorComponents.contains(component))
         		{
-        			editorRow = true;
-        			if (component.isVisible())
-        			{
-        				visible = true;
-        				break;
-        			}
+        		    editorRow = true;
+        		    if (component.isVisible())
+        		    {
+        		        visible = true;
+        		        break;
+        		    }
         		}
         	}
         	if (editorRow)
