@@ -1320,7 +1320,7 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 	{
 		// Don't trap single "%".  These can be used to find
 		// all non-null values.
-		if (s.length() > 0)
+		if (s != null && s.length() > 0)
 			return true;
 		return false;
 	}   //  isValidSQLText
