@@ -511,13 +511,25 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
 	                    row.appendChild(div);
                     }
                     row.appendChild(editor.getComponent());
-                    if (field.isLongField()) {
-                    	//row.setSpans("1,3,1");
-                    	row.appendChild(createSpacer());
-                    	rows.appendChild(row);
-                    	if (rowList != null)
-            				rowList.add(row);
-                    	row = new Row();
+                    if (field.isLongField())
+                    {
+                        org.zkoss.zul.Cell editorCell = new org.zkoss.zul.Cell();
+                        editorCell.setColspan(3);
+                        editorCell.setHflex("1");
+                        editorCell.appendChild(editor.getComponent());
+
+                        row.appendChild(editorCell);
+                        row.appendChild(createSpacer());
+                        rows.appendChild(row);
+
+                        if (rowList != null)
+                            rowList.add(row);
+
+                        row = new Row();
+                    }
+                    else
+                    {
+                        row.appendChild(editor.getComponent());
                     }
 
                     if (editor instanceof WButtonEditor)
@@ -774,10 +786,19 @@ public class ADTabPanel extends Div implements Evaluatee, EventListener, DataSta
         	for (int j = 0; j < components.size(); j++)
         	{
         		Component component = (Component) components.get(j);
-        		if (editorComponents.contains(component))
+        		Component editorComponent = component;
+
+        		if (component instanceof org.zkoss.zul.Cell
+        		        && component.getFirstChild() != null)
+        		{
+        		    editorComponent = component.getFirstChild();
+        		}
+
+        		if (editorComponents.contains(editorComponent))
         		{
         		    editorRow = true;
-        		    if (component.isVisible())
+
+        		    if (editorComponent.isVisible())
         		    {
         		        visible = true;
         		        break;
