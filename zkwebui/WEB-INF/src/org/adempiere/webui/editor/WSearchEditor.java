@@ -210,7 +210,9 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			getComponent().setButtonImage("/images/PickOpen10.png");
 		}
 		
-		getComponent().getTextbox().setContext(popupMenu.getId());
+		//getComponent().getTextbox().setContext(popupMenu.getId());
+		getComponent().setContext(popupMenu);
+		getComponent().getTextbox().setContext(popupMenu);
 		if (gridField != null && gridField.getGridTab() != null)
 		{
 			WRecordInfo.addMenu(popupMenu);

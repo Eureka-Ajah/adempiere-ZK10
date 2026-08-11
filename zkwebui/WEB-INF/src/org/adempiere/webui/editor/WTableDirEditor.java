@@ -66,6 +66,7 @@ ContextMenuListener, IZoomableEditor
     private Object oldValue;
     private Object m_oldValue;
     private WEditorPopupMenu popupMenu;
+    private boolean readWrite;
        
     public WTableDirEditor(GridField gridField)
     {
@@ -151,7 +152,7 @@ ContextMenuListener, IZoomableEditor
     		{
     			WRecordInfo.addMenu(popupMenu);
     		}
-        	getComponent().setContext(popupMenu.getId());
+        	getComponent().setContext(popupMenu);
         }
     }
 
@@ -229,15 +230,23 @@ ContextMenuListener, IZoomableEditor
 		return (Combobox) component;
 	}
 
-	@Override
-	public boolean isReadWrite() {
-		return getComponent().isEnabled();
-	}
+    @Override
+    public boolean isReadWrite() {
+        return readWrite;
+    }
 
-	@Override
-	public void setReadWrite(boolean readWrite) {
-		getComponent().setEnabled(readWrite);
-	}
+    @Override
+    public void setReadWrite(boolean readWrite) {
+        this.readWrite = readWrite;
+
+        getComponent().setDisabled(false);
+        getComponent().setReadonly(!readWrite);
+        getComponent().setButtonVisible(readWrite);
+        getComponent().setAutodrop(readWrite);
+
+        if (!readWrite)
+            getComponent().setOpen(false);
+    }
 
 	private void refreshList()
     {
