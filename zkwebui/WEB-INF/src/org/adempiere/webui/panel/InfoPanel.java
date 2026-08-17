@@ -401,7 +401,9 @@ public abstract class InfoPanel extends Window implements EventListener, WTableM
 		{
 			setAttribute(Window.MODE_KEY, Window.MODE_MODAL);
 			setBorder("normal");
-			setClosable(true);
+			// El cierre del encabezado evita el flujo Cancelar del ConfirmPanel.
+			// La búsqueda modal debe cerrarse únicamente con su botón inferior.
+			setClosable(false);
 			setWidth(p_width + "px");
 			setHeight(p_height + "px");
     		setContentStyle("overflow: auto");

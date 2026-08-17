@@ -116,6 +116,9 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
         super ( WindowNo, modal, "o", "C_Order_ID", multiSelection, saveResults, whereClause);
         log.info( "InfoOrder");
         setTitle(Msg.getMsg(Env.getCtx(), "InfoOrder"));
+        // Las búsquedas de orden se cierran con el botón inferior para que el
+        // editor pueda liberar su selección y abrirse nuevamente sin bloqueo.
+        if (modal) setClosable(false);
         //
 		//
 		StringBuffer where = new StringBuffer("o.IsActive='Y'");

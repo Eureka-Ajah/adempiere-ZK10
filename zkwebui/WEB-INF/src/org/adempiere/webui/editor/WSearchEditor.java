@@ -575,7 +575,15 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 		if (m_lookup == null)
 			return;		//	leave button disabled
 		if (m_searchWindowOpen)
-			return;
+		{
+			// Algunas rutas de cierre de ZK desasocian la ventana sin notificar
+			// ValueChange/ON_CLOSE. No conserve una guarda para un panel ya cerrado.
+			if (infoPanel != null && infoPanel.getPage() != null)
+				return;
+			infoPanel = null;
+			m_searchWindowOpen = false;
+			m_settingValue = false;
+		}
 
 		m_searchWindowOpen = true;
 		boolean lookupWindowShown = false;
@@ -704,6 +712,13 @@ public class WSearchEditor extends WEditor implements ContextMenuListener, Value
 			// ZK10 modal windows return through events. Reading getSelectedKeys()
 			// immediately and replaying Enter creates a second product window.
 			infoPanel.addValueChangeListener(this);
+			// Cerrar con la X no emite ValueChange. Libere la guarda para que el
+			// mismo editor pueda abrir la búsqueda nuevamente en el siguiente clic.
+			infoPanel.addEventListener(Events.ON_CLOSE, event -> {
+				infoPanel = null;
+				m_searchWindowOpen = false;
+				m_settingValue = false;
+			});
 			m_settingValue = false;
 			AEnv.showWindow(infoPanel);
 			lookupWindowShown = true;
