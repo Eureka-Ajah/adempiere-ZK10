@@ -214,6 +214,9 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
     public void statInit()
     {
     	initComponents();
+		// Align this criteria grid with the usable content area while retaining
+		// the reset button in the narrow left-hand column.
+		p_criteriaGrid.setStyle("position: relative; left: -12px; width: calc(100% + 12px);");
     	
     	fDocumentNo.setWidth("100%");
     	fDescription.setWidth("100%");
@@ -241,6 +244,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		row.appendChild(lblDateOrdered.rightAlign());
 
 		Hbox hbox = new Hbox();
+		hbox.setSpacing("4px");
 		hbox.appendChild(fDateFrom);
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(fDateTo);
@@ -260,6 +264,7 @@ public class InfoOrderPanel extends InfoPanel implements ValueChangeListener
 		row.appendChild(lblGrandTotal.rightAlign());
 
 		hbox = new Hbox();
+		hbox.setSpacing("4px");
 		hbox.appendChild(fAmtFrom);
 		hbox.appendChild(new Label("-"));
 		hbox.appendChild(fAmtTo);
